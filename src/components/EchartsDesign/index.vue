@@ -36,63 +36,67 @@
     <icon class="el-icon-edit" />
 -->
 <template>
-  <div class="echar-wrapper dnd-drop-wrapper" id="dnd-drop-wrapper">
-    {{ drawEchart[0] }}
-    <template v-for="(item, index) in drawEchart">
-      <Field
-        v-if="unit == '%'"
-        :key="item.id"
-        :chartData="item"
-        :hooks="hooks"
-        :style="{
-          position: 'absolute',
-          left: item['%'].x + '%',
-          top: item['%'].y + '%',
-          width: item['%'].width + '%',
-          height: item['%'].height + '%',
-        }"
-      />
-      <vue-draggable-resizable
-        v-else
-        :key="item.id"
-        :parent="true"
-        :active="false"
-        :grid="[10, 10]"
-        :draggable="design"
-        :resizable="design"
-        :x="item.px.x"
-        :y="item.px.y"
-        :z="item.px.z"
-        :w="item.px.width"
-        :h="item.px.height"
-        @dragging="onDragging"
-        @resizing="onResize"
-        @activated="onActivated(item)"
-        class-name-dragging="dragging-class"
+  <div class="echar-wrapper">
+    <header class="design-header">报表设计器</header>
+    <div class="split-layout">
+      <split-layout
+        first-panel-size="220px"
+        last-panel-size="220px"
+        :hasLastPanel="true"
       >
-        <div class="tools-wrapper" v-if="design">
-          <span class="delete-echart tool" @click="deleteChart(index)"
-            ><icon class="el-icon-delete"
-          /></span>
-        </div>
-        <Field :chartData="item" :hooks="hooks" :design="design" />
-      </vue-draggable-resizable>
-    </template>
+        <template slot="first">
+          <!-- 左侧报表组件 -->
+          <tabs v-model="activeLeftTab">
+            <tab-pane label="图表组件" name="component" class="tab-pane">
+              <tree :data="chartWidgets" default-expand-all>
+                <span
+                  class="tree-node"
+                  :data="onString(data)"
+                  slot-scope="{ node, data }"
+                >
+                  <icon
+                    v-if="node.childNodes.length > 0"
+                    :class="[data.icon]"
+                  ></icon>
+                  <span class="node-label">
+                    {{ data.title || data.label }}
+                  </span>
+                </span>
+              </tree>
+            </tab-pane>
+            <tab-pane label="报表设计" name="chartDesign"></tab-pane>
+          </tabs>
+        </template>
+        <template slot="center">
+          <Echarts :echarts="echarts" :design="true" :hooks="hooks" />
+        </template>
+        <template slot="last"></template>
+      </split-layout>
+    </div>
   </div>
 </template>
 <script>
-import Field from "./field";
-import SplitLayout from "../SplitLayout";
-import "element-ui/lib/theme-chalk/index.css";
-import { Icon } from "element-ui";
-import VueDraggableResizable from "vue-draggable-resizable";
-import "vue-draggable-resizable/dist/VueDraggableResizable.css";
-import "virtual-ruler/dist/virtual-ruler.css";
-import VirtualRuler from "virtual-ruler";
 import { chartWidgets } from "./meta";
+import Echarts from "@/components/Echarts";
+import DnDMixin from "@/utils/dnd.mixin.js";
+import SplitLayout from "@/components/SplitLayout";
+import "element-ui/lib/theme-chalk/index.css";
+import { Tabs, TabPane, Icon, Tree } from "element-ui";
+import VirtualRuler from "virtual-ruler";
+import "virtual-ruler/dist/virtual-ruler.css";
+
 export default {
   name: "echart",
-  components: { Icon, Field, SplitLayout, VirtualRuler, VueDraggableResizable },
+  mixins: [DnDMixin],
+  components: {
+    Tabs,
+    Icon,
+    Tree,
+    TabPane,
+    Echarts,
+    SplitLayout,
+    VirtualRuler,
+  },
   provide() {
     return {
       unit: this.echarts.unit || "px",
@@ -101,10 +105,12 @@ export default {
   props: {
     design: { type: Boolean, default: true }, // 是否是设计模式
     echarts: { type: Object, default: () => ({}) }, // 设计数据
-    hooks: { type: Object, default: () => ({}) }, // 钩子
   },
   data() {
     return {
+      dragOptions: {
+        selector: ".tree-node",
+      },
       dropOptions: {
         enabled: true,
         effect: "move",
@@ -122,6 +128,7 @@ export default {
       },
       beforeActive: {},
       chartWidgets, // 左侧子组件元数据
+      hooks: {}, // 钩子
     };
   },
   computed: {
@@ -132,8 +139,17 @@ export default {
   mounted() {
     this.canvasWH();
     this.drawEchart = JSON.parse(JSON.stringify(this.echarts.list));
+    // let echart = {
+    //   http: chartApi,
+    //   code: `let bbb=await http();`,
+    // };
+    // this.evalCode(echart);
   },
   methods: {
+    // async evalCode({ http, code } = {}) {
+    //   let result = eval("(async () => {" + code + "})()");
+    //   console.log(result);
+    // },
     async canvasWH() {
       await this.$nextTick();
       const canvas = document.getElementById("dnd-drop-wrapper");
@@ -148,6 +164,7 @@ export default {
       return JSON.stringify(item);
     },
     onDrop(target, data, event) {
+      console.log(1346)
       if (!this.design) return;
       let chart = JSON.parse(data);
       let unit = this.echarts.unit;
@@ -169,13 +186,6 @@ export default {
       percentage.y = parseInt((px.y / canvasHeight) * 100);
       percentage.width = parseInt((px.width / canvasWidth) * 100);
       percentage.height = parseInt((px.height / canvasHeight) * 100);
-    },
-    onActivated(item) {
-      if (Object.keys(this.beforeActive).length)
-        this.beforeActive[this.unit].z = 1;
-      item[this.unit].z = 999;
-      this.beforeActive = item;
-      this.activeChart = item;
     },
     onDragging(x, y) {
       if (!Object.keys(this.activeChart).length) return;
@@ -199,6 +209,12 @@ export default {
       this.hooks.redraw();
     },
   },
+  beforeMount() {
+    window.addEventListener("resize", this.$_resizeHandler);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.$_resizeHandler);
+  },
 };
 </script>
 
@@ -208,67 +224,81 @@ export default {
   height: 100%;
   position: relative;
   background: #fff;
-  .dragging-class {
-    background-color: red;
-    border: 1px solid black;
+  .design-header {
+    height: 55px;
+    line-height: 55px;
+    position: relative;
+    font-size: 20px;
+    color: #fff;
+    background: linear-gradient(90deg, #1179f4 45%, #079dc8, #01b3ac);
+    padding: 0 5px;
+    font-weight: 600;
   }
-  .first {
-    // 修复element ui tab的样式
-    .el-tabs__item {
-      width: 110px;
-      text-align: center;
-    }
-    .el-tabs__header {
-      height: 28px;
-    }
-    .tab-pane {
-      width: "120px";
-      height: "100%";
-      .tree-node {
-        font-size: 13px;
-      }
-    }
-  }
-  .center-wrapper {
-    width: 100%;
+  .split-layout {
+    position: relative;
     height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    background: #fff;
-    .canvas-header {
-      width: 100%;
-      height: 45px;
+    .dragging-class {
+      background-color: red;
+      border: 1px solid black;
     }
-    .canvas-aside {
-      width: 45px;
-      height: calc(100% - 45px);
-      background: #f00;
-      overflow: hidden;
-      > .column-ruler {
-        // width: 100%;
-        // transform: rotate(90deg);
-        // background: #00f;
+    .first {
+      // 修复element ui tab的样式
+      .el-tabs__item {
+        width: 110px;
+        text-align: center;
       }
-    }
-    .canvas-body {
-      width: calc(100% - 45px);
-      height: calc(100% - 45px);
-      position: relative;
-      > .dnd-drop-wrapper {
-        width: 100%;
-        height: 100%;
-        background: #0f0;
+      .el-tabs__header {
+        height: 28px;
       }
-      .tools-wrapper {
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 9999;
-        .tool {
-          font-size: 16px;
+      .tab-pane {
+        width: "120px";
+        height: "100%";
+        .tree-node {
+          font-size: 13px;
         }
-        .delete-echart {
-          cursor: pointer;
+      }
+    }
+    .center-wrapper {
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-wrap: wrap;
+      background: #fff;
+      .canvas-header {
+        width: 100%;
+        height: 45px;
+      }
+      .canvas-aside {
+        width: 45px;
+        height: calc(100% - 45px);
+        background: #f00;
+        overflow: hidden;
+        > .column-ruler {
+          // width: 100%;
+          // transform: rotate(90deg);
+          // background: #00f;
+        }
+      }
+      .canvas-body {
+        width: calc(100% - 45px);
+        height: calc(100% - 45px);
+        position: relative;
+        > .dnd-drop-wrapper {
+          width: 100%;
+          height: 100%;
+          background: #0f0;
+        }
+        .tools-wrapper {
+          position: absolute;
+          top: 0;
+          right: 0;
+          z-index: 9999;
+          .tool {
+            font-size: 16px;
+          }
+          .delete-echart {
+            cursor: pointer;
+          }
         }
       }
     }

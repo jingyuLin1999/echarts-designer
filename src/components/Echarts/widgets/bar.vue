@@ -3,7 +3,7 @@
 -->
 <template>
   <div class="bar-wrapper">
-    <Base :chartData="chartData" />
+    <Base :chartData="chartData" :hooks="hooks" :design="design" />
   </div>
 </template>
 <script>
@@ -12,17 +12,13 @@ import BaseMixin from "./base.mixin";
 export default {
   name: "bar",
   mixins: [BaseMixin],
+  components: { Base },
   data() {
     return {
-      defaultSchema: {}
+      defaultSchema: {},
     };
-  },
-  mounted() {
-  },
-  methods: {}
+  }
 };
 </script>
 <style lang="scss">
-.bar-wrapper {
-}
 </style>

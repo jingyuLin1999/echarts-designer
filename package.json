@@ -15,8 +15,10 @@
     "element-ui": "^2.15.2",
     "jquery": "^3.6.0",
     "short-uuid": "^4.1.0",
+    "virtual-ruler": "^0.1.4",
     "vue": "^2.6.11",
     "vue-draggable-resizable": "^2.3.0",
+    "vue-router": "^3.5.1",
     "vue2-perfect-scrollbar": "^1.5.0",
     "vuedraggable": "^2.24.3"
   },

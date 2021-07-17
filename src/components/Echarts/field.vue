@@ -1,27 +1,32 @@
 <template>
   <div class="field-wrapper">
-    <component :is="asyncComponent" :chartData="chartItem" />
+    <component
+      class="async-component"
+      :hooks="hooks"
+      :design="design"
+      :is="asyncComponent"
+      :chartData="chartData"
+    />
   </div>
 </template>
 
 <script>
 export default {
   name: "field",
-  props: { chartItem: { type: Object, default: () => ({}) } },
+  props: {
+    design: { type: Boolean, default: true }, // 是否是设计模式
+    hooks: { type: Object, default: () => ({}) },
+    chartData: { type: Object, default: () => ({}) },
+  },
   computed: {
     asyncComponent() {
-      const delay = 20;
-      const timeout = 2000;
-      let widget = this.chartItem.widget;
+      let widget = this.chartData.widget.toLowerCase();
       if (widget == undefined) widget = "bar";
-      widget = widget.toLowerCase();
-      return function () {
-        return {
-          component: import(`./widgets/${widget}`),
-          delay,
-          timeout,
-        };
-      };
+      return () => ({
+        component: import(`./widgets/${widget}`),
+        delay: 200,
+        timeout: 2000,
+      });
     },
   },
 };
@@ -29,6 +34,11 @@ export default {
 
 <style lang="scss" scoped>
 .field-wrapper {
-  background: #fff;
+  width: 100%;
+  height: 100%;
+  .async-component {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -1,4 +1,4 @@
-# i-test
+# Echarts Designer
 
 ## Project setup
 ```
