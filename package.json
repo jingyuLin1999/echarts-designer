@@ -1,26 +1,26 @@
 {
-  "name": "chart",
-  "version": "0.1.0",
+  "name": "wchart",
+  "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
+    "product": "vue-cli-service build --target lib --name wchart src/components/index.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
+    "@jiaminghi/data-view": "^2.10.0",
     "axios": "^0.21.1",
     "core-js": "^3.6.5",
-    "cs-ruler": "^2.1.5",
-    "echarts": "^5.1.0",
-    "element-ui": "^2.15.2",
+    "echarts": "^5.2.1",
+    "element-ui": "^2.15.6",
+    "hotkeys-js": "^3.8.7",
     "jquery": "^3.6.0",
+    "richform": "0.0.6",
     "short-uuid": "^4.1.0",
-    "virtual-ruler": "^0.1.4",
     "vue": "^2.6.11",
-    "vue-draggable-resizable": "^2.3.0",
-    "vue-router": "^3.5.1",
-    "vue2-perfect-scrollbar": "^1.5.0",
-    "vuedraggable": "^2.24.3"
+    "vue-draggable-resizable-gorkys": "^2.4.8",
+    "vue-router": "^3.5.1"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

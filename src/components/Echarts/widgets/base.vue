@@ -1,12 +1,5 @@
 <template>
-  <div
-    class="echart-hook"
-    :id="uuid"
-    :style="{
-      width: unit == 'px' ? chartData[unit].width + unit : '100%',
-      height: unit == 'px' ? chartData[unit].height - 2 + unit : '100%',
-    }"
-  ></div>
+  <div class="echart-hook" :id="uuid"></div>
 </template>
 
 <script>
@@ -14,11 +7,11 @@ import short from "short-uuid";
 
 export default {
   name: "echarts-base",
-  inject: ["unit"],
   props: {
     chartData: { type: Object, default: () => ({}) }, // 表单数据
     design: { type: Boolean, default: true }, // 是否是设计模式
     hooks: { type: Object, default: () => ({}) },
+    echarts: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -39,18 +32,23 @@ export default {
     },
   },
   methods: {
-    async createChart() {
-      await this.$nextTick();
-      this.chart = this.$echart.init(document.getElementById(this.uuid));
-      this.chart.setOption(this.chartData.data);
-    },
     redraw() {
       this.chart.resize();
+    },
+    async createChart() {
+      await this.$nextTick();
+      this.chart = this.$echart.init(
+        document.getElementById(this.uuid),
+        this.echarts.bgColor
+      );
+      this.chart.setOption(this.chartData.data);
     },
   },
 };
 </script>
 <style lang="scss">
 .echart-hook {
+  width: 100%;
+  height: 100%;
 }
 </style>

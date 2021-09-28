@@ -2,13 +2,14 @@
 export const chartWidgets = [
     {
         id: "1",
-        title: "柱形图",
+        title: "图表名称",
         icon: "el-icon-pie-chart",
         children: [
             {
                 // 报表数据
-                title: "图表名称",
+                title: "柱形图",
                 widget: "bar", // 组件名称
+                border: { type: "1", title: "" },
                 px: {
                     x: 0, // x坐标
                     y: 0, // y坐标

@@ -7,7 +7,6 @@
   </div>
 </template>
 <script>
-import Base from "./base.vue";
 import BaseMixin from "./base.mixin";
 export default {
   name: "basicline",
@@ -16,7 +15,7 @@ export default {
     return {};
   },
   mounted() {},
-  methods: {}
+  methods: {},
 };
 </script>
 <style lang="scss">

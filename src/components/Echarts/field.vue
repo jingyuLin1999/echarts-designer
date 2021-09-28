@@ -6,6 +6,7 @@
       :design="design"
       :is="asyncComponent"
       :chartData="chartData"
+      :echarts="echarts"
     />
   </div>
 </template>
@@ -14,9 +15,10 @@
 export default {
   name: "field",
   props: {
-    design: { type: Boolean, default: true }, // 是否是设计模式
+    design: { type: Boolean, default: false },
     hooks: { type: Object, default: () => ({}) },
     chartData: { type: Object, default: () => ({}) },
+    echarts: { type: Object, default: () => ({}) },
   },
   computed: {
     asyncComponent() {
@@ -33,12 +35,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.field-wrapper {
+.async-component {
   width: 100%;
   height: 100%;
-  .async-component {
-    width: 100%;
-    height: 100%;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 </style>

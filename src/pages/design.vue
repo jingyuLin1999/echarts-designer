@@ -11,110 +11,94 @@ export default {
   data() {
     return {
       charts: {
-        unit: "px", // 单位 px(默认) | %
-        background: "#f00", // 背景颜色
+        title: "图表名称",
+        bgColor: "#fff",
         list: [
           {
-            id: "2",
-            title: "图表名称",
+            id: "1",
+            title: "柱形图",
             widget: "bar",
-            px: { x: 0, y: 0, width: 480, height: 330, z: 1 },
-            "%": { x: 0, y: 0, width: 33, height: 37 },
+            borderType: "1",
+            px: { x: 0, y: 3, width: 552, height: 337, z: 2 },
+            "%": {
+              x: 0,
+              y: 0.0032017075773745998,
+              width: 0.4546952224052718,
+              height: 0.35965848452508004,
+            },
             data: {
-              title: { text: "ECharts 入门示例" },
-              tooltip: {},
-              xAxis: {
-                data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+              title: {
+                text: "ECharts 入门示例",
+                subtext: "Living Expenses in Shenzhen",
               },
-              yAxis: {},
+              legend: {
+                orient: "horizontal", // vertical/horizontal
+                left: 0,
+                // top: 0,
+                bottom: 0,
+              },
+              tooltip: {},
+              dataset: {
+                source: [
+                  ["product", "2015", "2016", "2017"],
+                  ["Matcha Latte", 43.3, 85.8, 93.7],
+                  ["Milk Tea", 83.1, 73.4, 55.1],
+                  ["Cheese Cocoa", 86.4, 65.2, 82.5],
+                  ["Walnut Brownie", 72.4, 53.9, 39.1],
+                ],
+              },
+              // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
+              xAxis: {
+                type: "category",
+                axisLabel: {
+                  formatter: "{value} kg",
+                  align: "center",
+                },
+              },
+              yAxis: {
+                axisLabel: {
+                  formatter: "{value} 元",
+                  align: "center",
+                  position: "right",
+                },
+              },
               series: [
-                { name: "销量", type: "bar", data: [5, 20, 36, 10, 10, 20] },
+                { type: "bar", seriesLayoutBy: "column" },
+                { type: "bar", seriesLayoutBy: "column" },
+                { type: "bar", seriesLayoutBy: "column" },
               ],
             },
           },
+          // {
+          //   id: "3",
+          //   title: "图表名称",
+          //   widget: "bar",
+          //   borderType: "1",
+          //   px: { x: 604, y: 2.5, width: 492, height: 338, z: 999 },
+          //   "%": {
+          //     x: 0.4975288303130148,
+          //     y: 0.0026680896478121665,
+          //     width: 0.4052718286655684,
+          //     height: 0.3607257203842049,
+          //   },
+          //   data: {
+          //     title: { text: "ECharts 入门示例" },
+          //     tooltip: {},
+          //     xAxis: {
+          //       data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
+          //     },
+          //     yAxis: {},
+          //     series: [
+          //       {
+          //         name: "销量",
+          //         type: "bar",
+          //         data: [5, 20, 36, 10, 10, 20],
+          //       },
+          //     ],
+          //   },
+          // },
         ],
       },
-      // chartList: [
-      //   {
-      //     title: "柱形图",
-      //     widget: "bar",
-      //     width: 250,
-      //     height: 180,
-      //     wp: null,
-      //     hp: null,
-      //     x: 0,
-      //     y: 0,
-      //     xp: null,
-      //     yp: null,
-      //     chart: {
-      //       title: {
-      //         text: "ECharts 入门示例",
-      //       },
-      //       tooltip: {},
-      //       xAxis: {
-      //         data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
-      //       },
-      //       yAxis: {},
-      //       series: [
-      //         {
-      //           name: "销量",
-      //           type: "bar",
-      //           data: [5, 20, 36, 10, 10, 20],
-      //         },
-      //       ],
-      //     },
-      //   },
-      //   {
-      //     title: "基础折线图",
-      //     widget: "basicline",
-      //     width: 250,
-      //     height: 180,
-      //     x: 260,
-      //     y: 0,
-      //     chart: {
-      //       xAxis: {
-      //         type: "category",
-      //         data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      //       },
-      //       yAxis: {
-      //         type: "value",
-      //       },
-      //       series: [
-      //         {
-      //           data: [150, 230, 224, 218, 135, 147, 260],
-      //           type: "line",
-      //         },
-      //       ],
-      //     },
-      //   },
-      //   {
-      //     title: "平滑折线图",
-      //     widget: "smootchedline",
-      //     width: 250,
-      //     height: 180,
-      //     x: 520,
-      //     y: 0,
-      //     chart: {
-      //       xAxis: {
-      //         type: "category",
-      //         data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-      //       },
-      //       yAxis: {
-      //         type: "value",
-      //       },
-      //       series: [
-      //         {
-      //           data: [150, 230, 224, 218, 135, 147, 260],
-      //           type: "line",
-      //           smooth: true,
-      //           areaStyle: {
-      //             background: "#f00",
-      //           },
-      //         },
-      //       ],
-      //     },
-      //   },
-      // ],
     };
   },
 };

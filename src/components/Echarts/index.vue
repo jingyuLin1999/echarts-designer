@@ -2,12 +2,15 @@
 图表组件
 数据：
   charts: {
-    unit: 'px', // 单位 px | %
+    title: "图表名称",
     background: "#f00", // 背景颜色
     list: [
         { // 报表数据
               title: "图表名称",
               widget: "bar", // 组件名称
+              border: { // 边框选项
+               type: "1",
+              }, 
               source: [ // 数据源
                 {key:"",value: ""}, // 数据源
                 ....
@@ -32,172 +35,197 @@
   },
 
 
+
 1、子组件请在widget拓展
-    <icon class="el-icon-edit" />
 -->
 <template>
-  <div class="echar-wrapper dnd-drop-wrapper" id="dnd-drop-wrapper">
-    {{ drawEchart[0] }}
-    <template v-for="(item, index) in drawEchart">
-      <Field
-        v-if="unit == '%'"
-        :key="item.id"
+  <div
+    class="echar-wrapper dnd-drop-wrapper"
+    id="dnd-drop-wrapper"
+    :style="{ background: echarts.bgColor }"
+  >
+    <!-- 可拖动放大图表 -->
+    <vue-draggable-resizable
+      :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
+      v-for="(item, index) in echarts.list"
+      :key="item.id"
+      :parent="true"
+      :active="false"
+      :draggable="design"
+      :resizable="design"
+      :x="item.px.x"
+      :y="item.px.y"
+      :z="item.px.z"
+      :w="item.px.width"
+      :h="item.px.height"
+      :snap="true"
+      :isConflictCheck="false"
+      @refLineParams="getRefLineParams"
+      @dragging="onDragging"
+      @resizing="onResize"
+      @activated="onActivated(item)"
+      class-name-dragging="dragging-class"
+    >
+      <div class="tools-wrapper" v-if="design">
+        <span class="delete-echart tool" @click="deleteChart(index)"
+          ><icon class="el-icon-delete"
+        /></span>
+      </div>
+      <Border
         :chartData="item"
         :hooks="hooks"
-        :style="{
-          position: 'absolute',
-          left: item['%'].x + '%',
-          top: item['%'].y + '%',
-          width: item['%'].width + '%',
-          height: item['%'].height + '%',
-        }"
+        :design="design"
+        :echarts="echarts"
       />
-      <vue-draggable-resizable
-        v-else
-        :key="item.id"
-        :parent="true"
-        :active="false"
-        :grid="[10, 10]"
-        :draggable="design"
-        :resizable="design"
-        :x="item.px.x"
-        :y="item.px.y"
-        :z="item.px.z"
-        :w="item.px.width"
-        :h="item.px.height"
-        @dragging="onDragging"
-        @resizing="onResize"
-        @activated="onActivated(item)"
-        class-name-dragging="dragging-class"
-      >
-        <div class="tools-wrapper" v-if="design">
-          <span class="delete-echart tool" @click="deleteChart(index)"
-            ><icon class="el-icon-delete"
-          /></span>
-        </div>
-        <Field :chartData="item" :hooks="hooks" :design="design" />
-      </vue-draggable-resizable>
-    </template>
+    </vue-draggable-resizable>
+    <!--辅助线-->
+    <span
+      class="ref-line v-line"
+      v-for="item in vLine"
+      :key="item.id"
+      v-show="item.display"
+      :style="{
+        left: item.position,
+        top: item.origin,
+        height: item.lineLength,
+      }"
+    />
+    <span
+      class="ref-line h-line"
+      v-for="item in hLine"
+      :key="item.id"
+      v-show="item.display"
+      :style="{
+        top: item.position,
+        left: item.origin,
+        width: item.lineLength,
+      }"
+    />
+    <!-- 画布点击事件 -->
+    <div class="click-canvas" @click="clickCanvas"></div>
   </div>
 </template>
 <script>
-import Field from "./field";
+import Border from "./border";
+import short from "short-uuid";
+import { Icon } from "element-ui";
 import SplitLayout from "../SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
-import { Icon } from "element-ui";
-import VueDraggableResizable from "vue-draggable-resizable";
-import "vue-draggable-resizable/dist/VueDraggableResizable.css";
-import "virtual-ruler/dist/virtual-ruler.css";
-import VirtualRuler from "virtual-ruler";
-import { chartWidgets } from "./meta";
+import hotkeyMixin from "./utils/hotkey.mixin";
+import VueDraggableResizable from "vue-draggable-resizable-gorkys";
+import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
+
 export default {
   name: "echart",
-  components: { Icon, Field, SplitLayout, VirtualRuler, VueDraggableResizable },
-  provide() {
-    return {
-      unit: this.echarts.unit || "px",
-    };
-  },
+  mixins: [hotkeyMixin],
+  components: { Icon, Border, SplitLayout, VueDraggableResizable },
   props: {
-    design: { type: Boolean, default: true }, // 是否是设计模式
+    design: { type: Boolean, default: false }, // 是否是设计模式
     echarts: { type: Object, default: () => ({}) }, // 设计数据
     hooks: { type: Object, default: () => ({}) }, // 钩子
   },
   data() {
     return {
-      dropOptions: {
-        enabled: true,
-        effect: "move",
-        preventDefault: true,
-        selector: [".dnd-drop-wrapper"],
-      },
-      activeLeftTab: "component", // 左侧标签页
+      vLine: [],
+      hLine: [],
       activeChart: {}, // 目前点击的图表
-      drawEchart: [], // 画图表的容器
-      canvas: {
-        // 画布大小
-        width: 0,
-        height: 0,
-        change: false, // 画布大小是否改变
-      },
       beforeActive: {},
-      chartWidgets, // 左侧子组件元数据
     };
   },
-  computed: {
-    unit() {
-      return this.echarts.unit;
-    },
-  },
   mounted() {
-    this.canvasWH();
-    this.drawEchart = JSON.parse(JSON.stringify(this.echarts.list));
+    // 初始化适配不同屏宽
+    this.calcuPctToPx();
   },
   methods: {
-    async canvasWH() {
+    // 画布全局参数
+    clickCanvas() {
+      this.echarts.widget = "canvas";
+      this.$emit("designItem", this.echarts);
+    },
+    // 辅助线回调事件
+    getRefLineParams(params) {
+      if (!this.design) return;
+      const { vLine, hLine } = params;
+      this.uniKey(vLine);
+      this.vLine = vLine;
+      this.uniKey(hLine);
+      this.hLine = hLine;
+    },
+    uniKey(arr) {
+      if (!Array.isArray(arr)) return;
+      arr.map((item) => {
+        item.id = short.generate();
+      });
+    },
+    // 获取画布的宽高
+    async getCanvasWh() {
       await this.$nextTick();
       const canvas = document.getElementById("dnd-drop-wrapper");
       if (!canvas) return;
-      this.canvas.width = canvas.offsetWidth;
-      this.canvas.height = canvas.offsetHeight;
+      const cW = canvas.offsetWidth || 1;
+      const cH = canvas.offsetHeight || 1;
+      return { cW, cH };
     },
-    onDragstart(source, event) {
-      return `${$(source).attr("data")}`;
+    // 计算百分比 percentage：pct
+    async calcuPct(data) {
+      if (!Object.keys(data).length) return;
+      const { cW, cH } = await this.getCanvasWh();
+      let px = data["px"];
+      let pct = data["%"];
+      pct.x = px.x / cW;
+      pct.y = px.y / cH;
+      pct.width = px.width / cW;
+      pct.height = px.height / cH;
     },
-    onString(item) {
-      return JSON.stringify(item);
-    },
-    onDrop(target, data, event) {
-      if (!this.design) return;
-      let chart = JSON.parse(data);
-      let unit = this.echarts.unit;
-      let { offsetX, offsetY } = event;
-      chart.id = Math.random().toString(16).slice(3, 12);
-      this.activeChart = chart;
-      chart[unit].x = offsetX;
-      chart[unit].y = offsetY;
-      this.calcuFlex();
-      this.drawEchart.push(chart);
-    },
-    // 计算百分比
-    calcuFlex() {
-      if (!Object.keys(this.activeChart).length) return;
-      let { width: canvasWidth, height: canvasHeight } = this.canvas;
-      let px = this.activeChart["px"];
-      let percentage = this.activeChart["%"];
-      percentage.x = parseInt((px.x / canvasWidth) * 100);
-      percentage.y = parseInt((px.y / canvasHeight) * 100);
-      percentage.width = parseInt((px.width / canvasWidth) * 100);
-      percentage.height = parseInt((px.height / canvasHeight) * 100);
-    },
+    // 报表选中
     onActivated(item) {
-      if (Object.keys(this.beforeActive).length)
-        this.beforeActive[this.unit].z = 1;
-      item[this.unit].z = 999;
+      if (Object.keys(this.beforeActive).length) this.beforeActive.px.z = 1;
+      item.px.z = 999;
       this.beforeActive = item;
       this.activeChart = item;
+      this.initHotKey(item, this.echarts.list);
+      this.$emit("designItem", item);
     },
+    // 拖拽
     onDragging(x, y) {
       if (!Object.keys(this.activeChart).length) return;
-      this.activeChart[this.unit].x = x;
-      this.activeChart[this.unit].y = y;
-      this.calcuFlex();
+      this.activeChart.px.x = x;
+      this.activeChart.px.y = y;
+      this.calcuPct(this.activeChart);
     },
     onResize(x, y, width, height) {
-      this.activeChart[this.unit].x = x;
-      this.activeChart[this.unit].y = y;
-      this.activeChart[this.unit].width = width;
-      this.activeChart[this.unit].height = height;
-      this.calcuFlex();
+      this.activeChart.px.x = x;
+      this.activeChart.px.y = y;
+      this.activeChart.px.width = width;
+      this.activeChart.px.height = height;
+      this.calcuPct(this.activeChart);
     },
+    // 删除图表
     deleteChart(chartIndex) {
-      this.drawEchart.splice(chartIndex, 1);
+      this.echarts.list.splice(chartIndex, 1);
     },
+    // 根据百分比和画布大小重新计算px
+    async calcuPctToPx() {
+      const { cW, cH } = await this.getCanvasWh();
+      this.echarts.list.map((chartItem) => {
+        let px = chartItem["px"];
+        let pct = chartItem["%"];
+        px.x = pct.x * cW;
+        px.y = pct.y * cH;
+        px.width = pct.width * cW;
+        px.height = pct.height * cH;
+      });
+    },
+    // 响应式适配不同屏宽
     $_resizeHandler() {
-      this.canvasWH();
-      this.calcuFlex();
-      this.hooks.redraw();
+      this.calcuPctToPx();
     },
+  },
+  beforeMount() {
+    window.addEventListener("resize", this.$_resizeHandler);
+  },
+  beforeDestroy() {
+    window.removeEventListener("resize", this.$_resizeHandler);
   },
 };
 </script>
@@ -208,68 +236,35 @@ export default {
   height: 100%;
   position: relative;
   background: #fff;
-  .dragging-class {
-    background-color: red;
-    border: 1px solid black;
-  }
-  .first {
-    // 修复element ui tab的样式
-    .el-tabs__item {
-      width: 110px;
-      text-align: center;
-    }
-    .el-tabs__header {
-      height: 28px;
-    }
-    .tab-pane {
-      width: "120px";
-      height: "100%";
-      .tree-node {
-        font-size: 13px;
-      }
-    }
-  }
-  .center-wrapper {
+  .click-canvas {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 100%;
     height: 100%;
-    display: flex;
-    flex-wrap: wrap;
-    background: #fff;
-    .canvas-header {
-      width: 100%;
-      height: 45px;
-    }
-    .canvas-aside {
-      width: 45px;
-      height: calc(100% - 45px);
-      background: #f00;
-      overflow: hidden;
-      > .column-ruler {
-        // width: 100%;
-        // transform: rotate(90deg);
-        // background: #00f;
-      }
-    }
-    .canvas-body {
-      width: calc(100% - 45px);
-      height: calc(100% - 45px);
-      position: relative;
-      > .dnd-drop-wrapper {
-        width: 100%;
-        height: 100%;
-        background: #0f0;
-      }
-      .tools-wrapper {
-        position: absolute;
-        top: 0;
-        right: 0;
-        z-index: 9999;
-        .tool {
-          font-size: 16px;
-        }
-        .delete-echart {
-          cursor: pointer;
-        }
+    z-index: 0;
+  }
+  .dragging-class {
+    // background-color: #fff;
+    border: 1px solid black;
+  }
+  .clear-design-border {
+    border: 0;
+  }
+  .draggable-wrapper {
+    .tools-wrapper {
+      width: 95%;
+      height: 20px;
+      padding: 0 5px;
+      position: absolute;
+      right: 0;
+      top: 0;
+      z-index: 9999;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      > span {
+        cursor: pointer;
       }
     }
   }

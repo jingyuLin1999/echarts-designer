@@ -1,49 +1,12 @@
 <!--
-图表组件
-数据：
-  charts: {
-    unit: 'px', // 单位 px | %
-    background: "#f00", // 背景颜色
-    list: [
-        { // 报表数据
-              title: "图表名称",
-              widget: "bar", // 组件名称
-              source: [ // 数据源
-                {key:"",value: ""}, // 数据源
-                ....
-              ],
-              codding: {}, // 自定义逻辑
-              px: { // 保存两种坐标，为了适配
-                x: '', // x坐标
-                y: '', // y坐标
-                width: '',  // 图标宽
-                height: '', // 图标高
-              },
-              '%': {
-                x: '',
-                y: '',
-                width: '',
-                height: '',
-              },
-              data: {}, // 图标数据
-        },
-        ....
-    ]
-  },
-
-
-1、子组件请在widget拓展
-    <icon class="el-icon-edit" />
+图表设计器
+数据格式请见echarts组件
 -->
 <template>
-  <div class="echar-wrapper">
+  <div class="echar-design-wrapper">
     <header class="design-header">报表设计器</header>
     <div class="split-layout">
-      <split-layout
-        first-panel-size="220px"
-        last-panel-size="220px"
-        :hasLastPanel="true"
-      >
+      <split-layout first-panel-size="220px" last-panel-size="230px">
         <template slot="first">
           <!-- 左侧报表组件 -->
           <tabs v-model="activeLeftTab">
@@ -68,22 +31,36 @@
           </tabs>
         </template>
         <template slot="center">
-          <Echarts :echarts="echarts" :design="true" :hooks="hooks" />
+          <Echarts
+            :echarts="echarts"
+            :design="design"
+            :hooks="hooks"
+            @designItem="clickedChart"
+          />
         </template>
-        <template slot="last"></template>
+        <!-- 报表属性 -->
+        <template slot="last">
+          <!-- {{ echarts }} -->
+          <RichForm
+            :schema="attrForm.schema"
+            :values="attrForm.values"
+            :form="attrForm.form"
+          />
+        </template>
       </split-layout>
     </div>
   </div>
 </template>
 <script>
-import { chartWidgets } from "./meta";
+import short from "short-uuid";
+import { RichForm } from "richform";
+import { chartWidgets } from "./meta/widgets";
 import Echarts from "@/components/Echarts";
 import DnDMixin from "@/utils/dnd.mixin.js";
 import SplitLayout from "@/components/SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
 import { Tabs, TabPane, Icon, Tree } from "element-ui";
-import VirtualRuler from "virtual-ruler";
-import "virtual-ruler/dist/virtual-ruler.css";
+import { defaultContainer } from "./defaultData";
 
 export default {
   name: "echart",
@@ -94,13 +71,8 @@ export default {
     Tree,
     TabPane,
     Echarts,
+    RichForm,
     SplitLayout,
-    VirtualRuler,
-  },
-  provide() {
-    return {
-      unit: this.echarts.unit || "px",
-    };
   },
   props: {
     design: { type: Boolean, default: true }, // 是否是设计模式
@@ -118,27 +90,30 @@ export default {
         selector: [".dnd-drop-wrapper"],
       },
       activeLeftTab: "component", // 左侧标签页
-      activeChart: {}, // 目前点击的图表
-      drawEchart: [], // 画图表的容器
       canvas: {
         // 画布大小
         width: 0,
         height: 0,
-        change: false, // 画布大小是否改变
       },
-      beforeActive: {},
       chartWidgets, // 左侧子组件元数据
       hooks: {}, // 钩子
+      attrForm: {
+        // 属性表单
+        schema: {},
+        values: {},
+        form: {},
+      },
     };
   },
   computed: {
-    unit() {
-      return this.echarts.unit;
+    drawEchart() {
+      return Object.keys(this.echarts).length
+        ? this.echarts
+        : Object.assign(this.echarts, defaultContainer);
     },
   },
   mounted() {
-    this.canvasWH();
-    this.drawEchart = JSON.parse(JSON.stringify(this.echarts.list));
+    this.getCanvasWh();
     // let echart = {
     //   http: chartApi,
     //   code: `let bbb=await http();`,
@@ -150,7 +125,7 @@ export default {
     //   let result = eval("(async () => {" + code + "})()");
     //   console.log(result);
     // },
-    async canvasWH() {
+    async getCanvasWh() {
       await this.$nextTick();
       const canvas = document.getElementById("dnd-drop-wrapper");
       if (!canvas) return;
@@ -164,49 +139,41 @@ export default {
       return JSON.stringify(item);
     },
     onDrop(target, data, event) {
-      console.log(1346)
       if (!this.design) return;
       let chart = JSON.parse(data);
-      let unit = this.echarts.unit;
       let { offsetX, offsetY } = event;
-      chart.id = Math.random().toString(16).slice(3, 12);
-      this.activeChart = chart;
-      chart[unit].x = offsetX;
-      chart[unit].y = offsetY;
-      this.calcuFlex();
-      this.drawEchart.push(chart);
+      chart.px.x = offsetX - chart.px.width / 2;
+      chart.px.y = offsetY - chart.px.height / 2;
+      chart.id = short.generate();
+      this.calcuPct(chart);
+      this.drawEchart.list.push(chart);
     },
-    // 计算百分比
-    calcuFlex() {
-      if (!Object.keys(this.activeChart).length) return;
-      let { width: canvasWidth, height: canvasHeight } = this.canvas;
-      let px = this.activeChart["px"];
-      let percentage = this.activeChart["%"];
-      percentage.x = parseInt((px.x / canvasWidth) * 100);
-      percentage.y = parseInt((px.y / canvasHeight) * 100);
-      percentage.width = parseInt((px.width / canvasWidth) * 100);
-      percentage.height = parseInt((px.height / canvasHeight) * 100);
+    calcuPct(chart) {
+      let { width: cW, height: cH } = this.canvas;
+      let px = chart["px"];
+      let pct = chart["%"];
+      px.z = 2;
+      pct.x = px.x / cW;
+      pct.y = px.y / cH;
+      pct.width = px.width / cW;
+      pct.height = px.height / cH;
     },
-    onDragging(x, y) {
-      if (!Object.keys(this.activeChart).length) return;
-      this.activeChart[this.unit].x = x;
-      this.activeChart[this.unit].y = y;
-      this.calcuFlex();
-    },
-    onResize(x, y, width, height) {
-      this.activeChart[this.unit].x = x;
-      this.activeChart[this.unit].y = y;
-      this.activeChart[this.unit].width = width;
-      this.activeChart[this.unit].height = height;
-      this.calcuFlex();
-    },
-    deleteChart(chartIndex) {
-      this.drawEchart.splice(chartIndex, 1);
+    clickedChart(item) {
+      try {
+        const { form, schema, values } = require(`./meta/${item.widget}`);
+        Object.assign(item, values);
+        this.$set(this.attrForm, "values", item);
+        this.$set(this.attrForm, "form", JSON.parse(JSON.stringify(form)));
+        this.$set(this.attrForm, "schema", JSON.parse(JSON.stringify(schema)));
+      } catch (e) {
+        this.$set(this.attrForm, "values", {});
+        this.$set(this.attrForm, "form", {});
+        this.$set(this.attrForm, "schema", {});
+        console.warn("获取元数据失败：" + e);
+      }
     },
     $_resizeHandler() {
-      this.canvasWH();
-      this.calcuFlex();
-      this.hooks.redraw();
+      this.getCanvasWh();
     },
   },
   beforeMount() {
@@ -219,7 +186,7 @@ export default {
 </script>
 
 <style lang="scss" >
-.echar-wrapper {
+.echar-design-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
@@ -237,10 +204,6 @@ export default {
   .split-layout {
     position: relative;
     height: 100%;
-    .dragging-class {
-      background-color: red;
-      border: 1px solid black;
-    }
     .first {
       // 修复element ui tab的样式
       .el-tabs__item {
@@ -255,50 +218,6 @@ export default {
         height: "100%";
         .tree-node {
           font-size: 13px;
-        }
-      }
-    }
-    .center-wrapper {
-      width: 100%;
-      height: 100%;
-      display: flex;
-      flex-wrap: wrap;
-      background: #fff;
-      .canvas-header {
-        width: 100%;
-        height: 45px;
-      }
-      .canvas-aside {
-        width: 45px;
-        height: calc(100% - 45px);
-        background: #f00;
-        overflow: hidden;
-        > .column-ruler {
-          // width: 100%;
-          // transform: rotate(90deg);
-          // background: #00f;
-        }
-      }
-      .canvas-body {
-        width: calc(100% - 45px);
-        height: calc(100% - 45px);
-        position: relative;
-        > .dnd-drop-wrapper {
-          width: 100%;
-          height: 100%;
-          background: #0f0;
-        }
-        .tools-wrapper {
-          position: absolute;
-          top: 0;
-          right: 0;
-          z-index: 9999;
-          .tool {
-            font-size: 16px;
-          }
-          .delete-echart {
-            cursor: pointer;
-          }
         }
       }
     }

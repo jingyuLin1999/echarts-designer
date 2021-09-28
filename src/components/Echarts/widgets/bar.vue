@@ -3,21 +3,24 @@
 -->
 <template>
   <div class="bar-wrapper">
-    <Base :chartData="chartData" :hooks="hooks" :design="design" />
+    <Base
+      :chartData="chartData"
+      :hooks="hooks"
+      :design="design"
+      :echarts="echarts"
+    />
   </div>
 </template>
 <script>
-import Base from "./base.vue";
 import BaseMixin from "./base.mixin";
 export default {
   name: "bar",
   mixins: [BaseMixin],
-  components: { Base },
-  data() {
-    return {
-      defaultSchema: {},
-    };
-  }
+  methods: {
+    defaultFieldAttr() {
+      return {};
+    },
+  },
 };
 </script>
 <style lang="scss">
