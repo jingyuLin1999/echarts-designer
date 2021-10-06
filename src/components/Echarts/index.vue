@@ -114,6 +114,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
+import { defaultAuthority } from "./utils/defaultData";
 
 export default {
   name: "echart",
@@ -123,6 +124,7 @@ export default {
     design: { type: Boolean, default: false }, // 是否是设计模式
     echarts: { type: Object, default: () => ({}) }, // 设计数据
     hooks: { type: Object, default: () => ({}) }, // 钩子
+    authority: { type: Object, default: () => ({}) }, // 令牌,服务器交互权限认证
   },
   data() {
     return {
@@ -135,8 +137,15 @@ export default {
   mounted() {
     // 初始化适配不同屏宽
     this.calcuPctToPx();
+    this.onAuthorize();
   },
   methods: {
+    // 权限
+    onAuthorize() {
+      const { key, value } = Object.assign(defaultAuthority, this.authority);
+      sessionStorage.setItem("auth-key", key);
+      sessionStorage.setItem("auth-value", value);
+    },
     // 画布全局参数
     clickCanvas() {
       this.echarts.widget = "canvas";

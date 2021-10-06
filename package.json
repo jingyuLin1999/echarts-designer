@@ -1,11 +1,11 @@
 {
-  "name": "wchart",
+  "name": "echarts-designer",
   "version": "0.0.1",
   "private": true,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "product": "vue-cli-service build --target lib --name wchart src/components/index.js",
+    "product": "vue-cli-service build --target lib --name echarts-designer src/components/index.js",
     "lint": "vue-cli-service lint"
   },
   "dependencies": {
@@ -16,11 +16,14 @@
     "element-ui": "^2.15.6",
     "hotkeys-js": "^3.8.7",
     "jquery": "^3.6.0",
-    "richform": "0.0.6",
+    "monaco-editor": "^0.28.1",
+    "monaco-editor-webpack-plugin": "^4.2.0",
+    "richform": "0.0.9",
     "short-uuid": "^4.1.0",
     "vue": "^2.6.11",
     "vue-draggable-resizable-gorkys": "^2.4.8",
-    "vue-router": "^3.5.1"
+    "vue-router": "^3.5.1",
+    "vxe-table": "^3.3.13"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "~4.5.0",

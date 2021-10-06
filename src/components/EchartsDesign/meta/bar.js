@@ -1,11 +1,12 @@
 
-import { baseForm, baseLayout, baseSchema } from "./base";
+import { baseForm, widgetLayout, baseSchema, coddeButton } from "./base";
 
 export const form = {
     ...baseForm,
+    ...coddeButton,
     layout: [
-        ...baseLayout,
-    
+        ...widgetLayout,
+
     ],
 }
 

@@ -21,27 +21,35 @@ export default {
   },
   mounted() {
     this.createChart();
+    this.hooks.resize = this.resize;
     this.hooks.redraw = this.redraw;
   },
   watch: {
     "chartData.px.width"() {
-      this.redraw();
+      this.resize();
     },
     "chartData.px.height"() {
+      this.resize();
+    },
+    "chartData.data"() {
       this.redraw();
     },
   },
   methods: {
     redraw() {
+      this.chart.setOption(this.chartData.data, true);
+    },
+    resize() {
       this.chart.resize();
     },
-    async createChart() {
-      await this.$nextTick();
-      this.chart = this.$echart.init(
-        document.getElementById(this.uuid),
-        this.echarts.bgColor
-      );
-      this.chart.setOption(this.chartData.data);
+    createChart() {
+      this.$nextTick(() => {
+        this.chart = this.$echart.init(
+          document.getElementById(this.uuid),
+          this.echarts.bgColor
+        );
+        this.chart.setOption(this.chartData.data);
+      });
     },
   },
 };

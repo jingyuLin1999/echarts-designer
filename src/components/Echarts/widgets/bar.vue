@@ -18,7 +18,13 @@ export default {
   mixins: [BaseMixin],
   methods: {
     defaultFieldAttr() {
-      return {};
+      return {
+        title: {
+          // 标题
+          text: "", // 主标题
+          subtext: "", // 副标题
+        },
+      };
     },
   },
 };

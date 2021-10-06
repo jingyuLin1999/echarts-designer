@@ -116,12 +116,3 @@ export default {
   },
 };
 ```
-
-## 运行
-```
-npm run serve 
-
-```
-
-
-

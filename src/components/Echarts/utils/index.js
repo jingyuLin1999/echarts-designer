@@ -1,18 +1,17 @@
 import http from "./http";
-export async function chartApi({ data, config } = {}) {
-    // const { url, method } = config;
-    // const { payload } = await http({
-    //     url: url || "",
-    //     method: method || 'post',
-    //     data
-    // })
-    // return payload;
-    let bb = await new Promise((resolve, reject) => {
-        setTimeout(() => {
-            resolve({ a: 132 })
-        }, 2000)
-    })
-    return bb;
+
+/**
+ * API接口
+ * @param {Object} config 请求参数
+ * @return {Object} 
+ */
+export function chartApi(config = {}) {
+  const { url, method, params } = config;
+  return http({
+    url: url || "",
+    method: method || 'post',
+    [method == 'get' ? "params" : "data"]: params
+  })
 }
 
 /**
@@ -21,14 +20,24 @@ export async function chartApi({ data, config } = {}) {
  * @param {number} delay
  * let debounce = debounce(fn, delay); debounce()
  */
- export function _debounce(fn, delay) {
-    let timer
-    return function () {
-      let context = this
-      let args = arguments
-      clearTimeout(timer)
-      timer = setTimeout(function () {
-        fn.apply(context, args)
-      }, delay)
-    }
+export function _debounce(fn, delay) {
+  let timer
+  return function () {
+    let context = this
+    let args = arguments
+    clearTimeout(timer)
+    timer = setTimeout(function () {
+      fn.apply(context, args)
+    }, delay)
   }
+}
+
+/**
+ * 判断是否是URL
+ * @param {String} url
+ * @return {Boolean} 
+ */
+export function isUrl(url) {
+  let Exp = /^(https?:\/\/)([0-9a-z.]+)(:[0-9]+)?([/0-9a-z.]+)?(\?[0-9a-z&=]+)?(#[0-9-a-z]+)?/i;
+  return Exp.test(url);
+}

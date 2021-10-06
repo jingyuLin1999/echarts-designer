@@ -1,6 +1,12 @@
 <template>
   <div class="design-wrapper">
-    <EchartsDesign :echarts="charts" :design="true" />
+    <EchartsDesign
+      :echarts="charts"
+      :design="true"
+      :authority="{
+        value: 'Vaf16dcf98O7c280d3287448f60o8abb5x28TVZV05179fd16edd177NXT6R',
+      }"
+    />
   </div>
 </template>
 
@@ -19,13 +25,22 @@ export default {
             title: "柱形图",
             widget: "bar",
             borderType: "1",
-            px: { x: 0, y: 3, width: 552, height: 337, z: 2 },
+            px: { x: 0, y: 0, width: 792, height: 337, z: 999 },
             "%": {
               x: 0,
-              y: 0.0032017075773745998,
-              width: 0.4546952224052718,
+              y: 0,
+              width: 0.7880597014925373,
               height: 0.35965848452508004,
             },
+            dataSource: [
+              // 数据源
+              {
+                method: "get",
+                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+              },
+            ],
+            codding: "", // 逻辑
+            responseData: [], // 响应数据
             data: {
               title: {
                 text: "ECharts 入门示例",
@@ -69,34 +84,6 @@ export default {
               ],
             },
           },
-          // {
-          //   id: "3",
-          //   title: "图表名称",
-          //   widget: "bar",
-          //   borderType: "1",
-          //   px: { x: 604, y: 2.5, width: 492, height: 338, z: 999 },
-          //   "%": {
-          //     x: 0.4975288303130148,
-          //     y: 0.0026680896478121665,
-          //     width: 0.4052718286655684,
-          //     height: 0.3607257203842049,
-          //   },
-          //   data: {
-          //     title: { text: "ECharts 入门示例" },
-          //     tooltip: {},
-          //     xAxis: {
-          //       data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
-          //     },
-          //     yAxis: {},
-          //     series: [
-          //       {
-          //         name: "销量",
-          //         type: "bar",
-          //         data: [5, 20, 36, 10, 10, 20],
-          //       },
-          //     ],
-          //   },
-          // },
         ],
       },
     };

@@ -6,7 +6,7 @@
   <div class="echar-design-wrapper">
     <header class="design-header">报表设计器</header>
     <div class="split-layout">
-      <split-layout first-panel-size="220px" last-panel-size="230px">
+      <split-layout first-panel-size="220px" last-panel-size="300px">
         <template slot="first">
           <!-- 左侧报表组件 -->
           <tabs v-model="activeLeftTab">
@@ -35,17 +35,38 @@
             :echarts="echarts"
             :design="design"
             :hooks="hooks"
-            @designItem="clickedChart"
+            :authority="{ value: authority }"
+            @designItem="onClickedChart"
           />
         </template>
         <!-- 报表属性 -->
         <template slot="last">
-          <!-- {{ echarts }} -->
           <RichForm
+            deepValues
             :schema="attrForm.schema"
             :values="attrForm.values"
             :form="attrForm.form"
+            @action="attrActions"
           />
+          <modal
+            v-model="coddingModal"
+            width="95%"
+            height="95%"
+            showFooter
+            resize
+            title="数据源编辑"
+            @close="onCodeEdited"
+          >
+            <div id="monaco-codding" class="codding-echart"></div>
+            <template #footer>
+              <el-button size="small" type="primary" @click="onRunCode"
+                >运行</el-button
+              >
+              <el-button size="small" type="success" @click="onCodeEdited"
+                >确定</el-button
+              >
+            </template>
+          </modal>
         </template>
       </split-layout>
     </div>
@@ -53,23 +74,27 @@
 </template>
 <script>
 import short from "short-uuid";
+import { Modal } from "vxe-table";
+import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
-import { chartWidgets } from "./meta/widgets";
+import MonacoMixin from "./monaco.mixin";
 import Echarts from "@/components/Echarts";
 import DnDMixin from "@/utils/dnd.mixin.js";
+import { chartWidgets } from "./meta/widgets";
 import SplitLayout from "@/components/SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
 import { Tabs, TabPane, Icon, Tree } from "element-ui";
-import { defaultContainer } from "./defaultData";
+import { defaultContainer } from "../Echarts/utils/defaultData";
 
 export default {
   name: "echart",
-  mixins: [DnDMixin],
+  mixins: [DnDMixin, MonacoMixin],
   components: {
     Tabs,
     Icon,
     Tree,
     TabPane,
+    Modal,
     Echarts,
     RichForm,
     SplitLayout,
@@ -77,6 +102,7 @@ export default {
   props: {
     design: { type: Boolean, default: true }, // 是否是设计模式
     echarts: { type: Object, default: () => ({}) }, // 设计数据
+    authority: { type: Object, default: () => ({}) }, // 令牌,服务器交互权限认证
   },
   data() {
     return {
@@ -103,6 +129,8 @@ export default {
         values: {},
         form: {},
       },
+      coddingModal: false, // 打开代码弹窗
+      clickedChart: {},
     };
   },
   computed: {
@@ -113,18 +141,17 @@ export default {
     },
   },
   mounted() {
-    this.getCanvasWh();
-    // let echart = {
-    //   http: chartApi,
-    //   code: `let bbb=await http();`,
-    // };
-    // this.evalCode(echart);
+    this.load();
   },
   methods: {
-    // async evalCode({ http, code } = {}) {
-    //   let result = eval("(async () => {" + code + "})()");
-    //   console.log(result);
-    // },
+    load() {
+      this.getCanvasWh();
+    },
+    onCodeEdited() {
+      this.coddingModal = false;
+      this.clickedChart.codding = this.monacoEditor.getValue();
+      this.destroyEditor();
+    },
     async getCanvasWh() {
       await this.$nextTick();
       const canvas = document.getElementById("dnd-drop-wrapper");
@@ -158,8 +185,9 @@ export default {
       pct.width = px.width / cW;
       pct.height = px.height / cH;
     },
-    clickedChart(item) {
+    onClickedChart(item) {
       try {
+        this.clickedChart = item;
         const { form, schema, values } = require(`./meta/${item.widget}`);
         Object.assign(item, values);
         this.$set(this.attrForm, "values", item);
@@ -172,6 +200,22 @@ export default {
         console.warn("获取元数据失败：" + e);
       }
     },
+    attrActions(evt) {
+      if (evt.name != "codding") return;
+      this.coddingModal = !this.coddingModal;
+      this.initMonaco();
+      let showTemplate = "";
+      let { data, codding } = this.clickedChart;
+      let tips =
+        "// http请求响应数据在responseData中，试试打印：console.log(responseData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n";
+      if (codding.length == 0) {
+        let strData = JSON.stringify(data);
+        strData = strData.replace(/,/g, ",\n");
+        let example = `let defaultData = ${strData};\nreturn defaultData;`;
+        showTemplate = tips + example;
+      } else showTemplate = codding;
+      this.setValue(showTemplate);
+    },
     $_resizeHandler() {
       this.getCanvasWh();
     },
@@ -180,6 +224,7 @@ export default {
     window.addEventListener("resize", this.$_resizeHandler);
   },
   beforeDestroy() {
+    this.monacoEditor.dispose(); // 销毁编辑器
     window.removeEventListener("resize", this.$_resizeHandler);
   },
 };
@@ -219,6 +264,13 @@ export default {
         .tree-node {
           font-size: 13px;
         }
+      }
+    }
+    .last {
+      .codding-echart {
+        width: 100%;
+        height: 98%;
+        border: 1px solid #cccccc;
       }
     }
   }

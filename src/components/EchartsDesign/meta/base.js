@@ -1,14 +1,30 @@
 export const baseForm = {
     border: false, // 显示边框
     grid: false, // 表单内部栅栏
-    labelSuffix: true, // 字段标题后缀内容，默认' : '
+    labelSuffix: ":", // 字段标题后缀内容，默认' : '
     labelWidth: "90px", // 标签宽度,默认50px
     validator: "input", // submit
     labelAlign: "right", // 标签对齐, 默认右对齐, 可选左对齐left
     labelInline: true, // 字段标题显示位置, 默认true左侧left,false显示在top上方
 }
 
-export const baseLayout = [
+// 按钮
+export const coddeButton = {
+    actions: [
+        {
+            name: "codding",
+            type: "", // 按键类型,默认为primary，具体可见element button
+            title: "编辑代码",
+            icon: "",
+            right: false,
+            visible: true,
+            top: false,
+            size: "mini", // medium / small / mini
+        },
+    ],
+}
+
+export const widgetLayout = [
     {
         title: "边框类型", // 优先级小于shema中定义的title
         widget: "select",
@@ -53,7 +69,19 @@ export const baseLayout = [
             },
         ],
     },
-
+    {
+        title: "标题", 
+        widget: "input",
+        name: "data.title.text",
+        size: "small",
+    },
+    {
+        title: "数据接口", 
+        widget: "draggablelist",
+        name: "dataSource",
+        template: { method: "get", url: "http://", params: "" },
+        editKeys: ["method", "url", "params"],
+    },
 ]
 
 export const baseValues = {

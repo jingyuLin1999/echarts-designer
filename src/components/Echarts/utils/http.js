@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { MessageBox, Message } from 'element-ui'
+import { Message } from 'element-ui'
 
 // create an axios instance
 const service = axios.create({
@@ -35,12 +35,10 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   response => {
     const res = response.data
-    if (res.status !== 20000) {
+    if (response.status !== 200) {
       Message({ message: res.msg || 'Error', type: 'error', duration: 5 * 1000 })
       return Promise.reject(new Error(res.msg || 'Error'))
     }
-    if (res.msg !== undefined && res.msg.length > 0)
-      Message({ message: res.msg, type: 'success' })
     return res
   },
   error => {
