@@ -38,7 +38,6 @@ export default {
       deep: true,
     },
     "echarts.theme"() {
-      console.log(13);
       this.chart.dispose();
       this.createChart();
     },

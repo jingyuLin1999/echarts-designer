@@ -14,6 +14,11 @@
   * 再根据保存的图表简单排序组合生成报表，并将结果保存  
   * 报表渲染，直接将报表数据丢给echarts渲染组件
 
+## 预览
+[报表设计器](https://www.shandawang.com/echarts-designer/#/)  
+
+[设计结果](https://www.shandawang.com/echarts-designer/#/echarts)  
+
 ## 文档
 * 若对echarts基础概念不了解，请先阅读[echarts概念篇](https://echarts.apache.org/handbook/zh/concepts/visual-map)
 

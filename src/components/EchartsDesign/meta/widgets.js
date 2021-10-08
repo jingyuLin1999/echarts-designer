@@ -119,8 +119,7 @@ export const chartWidgets = [
                             emphasis: {
                                 itemStyle: {
                                     shadowBlur: 10,
-                                    shadowOffsetX: 0,
-                                    shadowColor: "rgba(0, 0, 0, 0.5)",
+                                    shadowOffsetX: 0
                                 },
                             },
                         },
