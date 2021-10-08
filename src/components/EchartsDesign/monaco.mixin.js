@@ -1,8 +1,9 @@
-import * as monaco from "monaco-editor";
+import * as monaco from 'monaco-editor';
+
 export default {
     data() {
         return {
-            monacoEditor: {}, // 代码编辑器
+            monacoEditor: {},  // 代码编辑器
         }
     },
     mounted() {
@@ -16,6 +17,11 @@ export default {
         initMonaco() {
             this.$nextTick(async () => {
                 // https://www.cnblogs.com/zzsdream/p/14055963.html
+                const mountDom = document.getElementById("monaco-codding");
+                if (!mountDom) {
+                    console.error("无法获取挂载节点")
+                    return;
+                }
                 this.monacoEditor = await monaco.editor.create(document.getElementById("monaco-codding"), {
                     value: "",
                     language: "javascript",
@@ -35,13 +41,14 @@ export default {
         },
         // 销毁编辑器
         destroyEditor() {
-            if (Object.keys(this.monacoEditor).length > 0) this.monacoEditor.dispose();
+            if (Object.keys(this.monacoEditor).length > 0)
+                this.monacoEditor.dispose();
         },
         // 格式化
         formatCode() {
             setTimeout(() => {
                 this.monacoEditor.getAction("editor.action.formatDocument").run();
-            }, 50);
+            }, 100);
         },
         // 运行代码
         onRunCode() {

@@ -40,9 +40,9 @@
 -->
 <template>
   <div
+    :id="chartId"
     class="echar-wrapper dnd-drop-wrapper"
-    id="dnd-drop-wrapper"
-    :style="{ background: echarts.bgColor }"
+    :style="{ background: echarts.theme }"
   >
     <!-- 可拖动放大图表 -->
     <vue-draggable-resizable
@@ -125,6 +125,12 @@ export default {
     echarts: { type: Object, default: () => ({}) }, // 设计数据
     hooks: { type: Object, default: () => ({}) }, // 钩子
     authority: { type: Object, default: () => ({}) }, // 令牌,服务器交互权限认证
+    echartsId: { type: String, default: "" },
+  },
+  computed: {
+    chartId() {
+      return this.echartsId.length ? this.echartsId : this.id;
+    },
   },
   data() {
     return {
@@ -132,6 +138,7 @@ export default {
       hLine: [],
       activeChart: {}, // 目前点击的图表
       beforeActive: {},
+      id: short.generate(),
     };
   },
   mounted() {
@@ -169,7 +176,7 @@ export default {
     // 获取画布的宽高
     async getCanvasWh() {
       await this.$nextTick();
-      const canvas = document.getElementById("dnd-drop-wrapper");
+      const canvas = document.getElementById(this.chartId);
       if (!canvas) return;
       const cW = canvas.offsetWidth || 1;
       const cH = canvas.offsetHeight || 1;

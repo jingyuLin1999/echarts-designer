@@ -25,9 +25,12 @@ export default {
       let widget = this.chartData.widget.toLowerCase();
       if (widget == undefined) widget = "bar";
       return () => ({
-        component: import(`./widgets/${widget}`),
-        delay: 200,
-        timeout: 2000,
+        // to handle bug of after build.
+        component: new Promise(async (resolve) => {
+          resolve(await require(`./widgets/${widget}`));
+        }),
+        delay: 2000,
+        timeout: 3000,
       });
     },
   },

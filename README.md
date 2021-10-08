@@ -18,9 +18,26 @@
 * 若对echarts基础概念不了解，请先阅读[echarts概念篇](https://echarts.apache.org/handbook/zh/concepts/visual-map)
 
 ## 用法
+
+Step1:安装代码编辑器
+```
+npm i monaco-editor-webpack-plugin -S
+```
+
+vue.config.js
+```js
+const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
+plugins: [
+  new MonacoWebpackPlugin({
+    // https://github.com/microsoft/monaco-editor-webpack-plugin/issues/32#issuecomment-419428633
+    languages: ['javascript', 'typescript']
+  }),
+],
+```
+
+Step2: 正式使用
 ```
 npm i echarts-designer -S
-
 ```
 
 ```html
@@ -28,8 +45,7 @@ npm i echarts-designer -S
     <EchartsDesign
         class="design-wrapper"
         :echarts="charts"
-        :design="true"
-        :authority="{ // 用于获取异步数据
+        :authority="{ // token
             value: 'Vaf16dcf98O7c280d3287448f60o8abb5x28TVZV05179fd16edd177NXT6R',
         }"
     />
@@ -39,7 +55,7 @@ npm i echarts-designer -S
 ```js
 import { Echarts, EchartsDesign } from "echarts-designer";
 export default {
-  components: { EchartsDesign },
+  components: {Echarts, EchartsDesign },
   data() {
     return {
       charts: {
@@ -116,6 +132,7 @@ export default {
   },
 };
 ```
+
 
 ## 运行
 ```

@@ -41,11 +41,35 @@ export const widgetLayout = [
             },
             {
                 value: "4",
-                label: "正半开边",
+                label: "正亮开边",
+            },
+            {
+                value: "4reverse",
+                label: "反亮开边",
+            },
+            {
+                value: "5",
+                label: "正灰斜边",
+            },
+            {
+                value: "5reverse",
+                label: "反灰斜边",
+            },
+            {
+                value: "6",
+                label: "灰色边框",
+            },
+            {
+                value: "7",
+                label: "四角暗灰",
             },
             {
                 value: "8",
-                label: "奔跑光束",
+                label: "正奔跑光",
+            },
+            {
+                value: "8reverse",
+                label: "反奔跑光",
             },
             {
                 value: "9",
@@ -70,13 +94,29 @@ export const widgetLayout = [
         ],
     },
     {
-        title: "标题", 
+        title: "标题",
         widget: "input",
         name: "data.title.text",
         size: "small",
     },
     {
-        title: "数据接口", 
+        title: "子标题",
+        widget: "input",
+        name: "data.title.subtext",
+        size: "small",
+    },
+    {
+        title: "图例方向",
+        widget: "select",
+        name: "data.legend.orient",
+        size: "small",
+        options: [
+            { label: "垂直", value: "vertical" },
+            { label: "水平", value: "horizontal" },
+        ]
+    },
+    {
+        title: "数据接口",
         widget: "draggablelist",
         name: "dataSource",
         template: { method: "get", url: "http://", params: "" },

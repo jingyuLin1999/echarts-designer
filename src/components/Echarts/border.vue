@@ -34,9 +34,77 @@
         :design="design"
       />
     </dv-border-box-4>
+    <dv-border-box-4
+      v-else-if="chartData.borderType == '4reverse'"
+      :style="{ width: borderWh.w, height: borderWh.h }"
+    >
+      <Field
+        :chartData="chartData"
+        :echarts="echarts"
+        :hooks="hooks"
+        :design="design"
+      />
+    </dv-border-box-4>
+    <dv-border-box-5
+      v-else-if="chartData.borderType == '5'"
+      :style="{ width: borderWh.w, height: borderWh.h }"
+    >
+      <Field
+        :chartData="chartData"
+        :echarts="echarts"
+        :hooks="hooks"
+        :design="design"
+      />
+    </dv-border-box-5>
+    <dv-border-box-5
+      :reverse="true"
+      v-else-if="chartData.borderType == '5reverse'"
+      :style="{ width: borderWh.w, height: borderWh.h }"
+    >
+      <Field
+        :chartData="chartData"
+        :echarts="echarts"
+        :hooks="hooks"
+        :design="design"
+      />
+    </dv-border-box-5>
+    <dv-border-box-6
+      v-else-if="chartData.borderType == '6'"
+      :style="{ width: borderWh.w, height: borderWh.h }"
+    >
+      <Field
+        :chartData="chartData"
+        :echarts="echarts"
+        :hooks="hooks"
+        :design="design"
+      />
+    </dv-border-box-6>
+    <dv-border-box-7
+      v-else-if="chartData.borderType == '7'"
+      :style="{ width: borderWh.w, height: borderWh.h }"
+    >
+      <Field
+        :chartData="chartData"
+        :echarts="echarts"
+        :hooks="hooks"
+        :design="design"
+      />
+    </dv-border-box-7>
     <dv-border-box-8
       :reverse="true"
       v-else-if="chartData.borderType == '8'"
+      :style="{ width: borderWh.w, height: borderWh.h }"
+    >
+      <Field
+        :chartData="chartData"
+        :echarts="echarts"
+        :hooks="hooks"
+        :design="design"
+      />
+    </dv-border-box-8>
+    <dv-border-box-8
+      :reverse="false"
+      v-else-if="chartData.borderType == '8reverse'"
       :style="{ width: borderWh.w, height: borderWh.h }"
     >
       <Field

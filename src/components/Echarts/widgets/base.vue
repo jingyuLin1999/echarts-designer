@@ -31,8 +31,16 @@ export default {
     "chartData.px.height"() {
       this.resize();
     },
-    "chartData.data"() {
-      this.redraw();
+    "chartData.data": {
+      handler() {
+        if (this.design) this.redraw();
+      },
+      deep: true,
+    },
+    "echarts.theme"() {
+      console.log(13);
+      this.chart.dispose();
+      this.createChart();
     },
   },
   methods: {
@@ -44,9 +52,10 @@ export default {
     },
     createChart() {
       this.$nextTick(() => {
+        const theme = this.echarts.theme;
         this.chart = this.$echart.init(
           document.getElementById(this.uuid),
-          this.echarts.bgColor
+          theme == "#110C2A" ? "dark" : theme
         );
         this.chart.setOption(this.chartData.data);
       });

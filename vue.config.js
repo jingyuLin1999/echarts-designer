@@ -7,7 +7,7 @@ function resolve(dir) {
 }
 
 module.exports = {
-  publicPath: '',
+  publicPath: '/',
   outputDir: 'dist/lib',
   assetsDir: 'static',
   productionSourceMap: false,
@@ -24,7 +24,10 @@ module.exports = {
         $: "jquery",
         "window.jQuery": "jquery"
       }),
-      new MonacoWebpackPlugin(),
+      new MonacoWebpackPlugin({
+        // https://github.com/microsoft/monaco-editor-webpack-plugin/issues/32#issuecomment-419428633
+        languages: ['javascript', 'typescript']
+      }),
     ],
     externals: {
       // "@jiaminghi/data-view": "@jiaminghi/data-view",

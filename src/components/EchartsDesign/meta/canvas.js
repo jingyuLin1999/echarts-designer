@@ -12,7 +12,7 @@ export const form = {
         },
         {
             title: "背景颜色",
-            name: "bgColor",
+            name: "theme",
             widget: "colorpicker",
             predefineColors: ["#110c2a", "#fff"], // 预定义颜色
             disabled: false,
