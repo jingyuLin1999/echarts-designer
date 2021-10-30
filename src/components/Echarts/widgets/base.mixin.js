@@ -1,5 +1,6 @@
 import Base from "./base.vue";
-import { chartApi, isUrl } from "../utils";
+import { chartApi, isUrl, strToObj } from "../utils";
+import { mergeDeepRight } from "ramda";
 export default {
     components: { Base },
     props: {
@@ -26,21 +27,25 @@ export default {
         },
         $setFieldAttr() {
             const defaultFieldAttr = this.defaultFieldAttr();
+            const mergeData = mergeDeepRight(defaultFieldAttr, this.chartData);
+            Object.assign(this.chartData, mergeData)
         },
         async pickAsyncData() {
             const asyncPaths = this.chartData.dataSource;
             if (!asyncPaths.length) return;
             const promiseAll = [];
+            this.chartData.responseData = {};
             asyncPaths.map((pathItem) => {
-                const { method, url } = pathItem;
-                if (method && url && isUrl(url))
-                    promiseAll.push(chartApi(pathItem));
+                const { method, url, params } = pathItem;
+                const queryCondition = Object.assign({ ...pathItem },
+                    { params: strToObj(params), filter: this.echarts.filter });
+                if (method && url) promiseAll.push(chartApi(queryCondition));
             });
             if (promiseAll.length == 0) return;
             await Promise.all(promiseAll)
                 .then((response) => {
-                    this.chartData.responseData = response;
-                    if (response) this.runCode();;
+                    this.chartData.responseData = response.payload || response;
+                    if (response) this.runCode();
                 }).catch((e) => {
                     console.warn(e)
                 });

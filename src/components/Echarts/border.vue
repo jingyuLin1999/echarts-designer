@@ -1,5 +1,5 @@
 <template>
-  <div class="border-wrapper">
+  <div class="border-wrapper" :style="{ background: echarts.theme }">
     <dv-border-box-1
       v-if="chartData.borderType == '1'"
       :style="{ width: borderWh.w, height: borderWh.h }"

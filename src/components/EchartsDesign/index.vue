@@ -4,61 +4,80 @@
 -->
 <template>
   <div class="echar-design-wrapper">
-    <header class="design-header">
+    <header class="design-header" v-if="showHeader">
       <div class="header-left">
         <a
           target="_blank"
           href="https://github.com/jingyuLin1999/echarts-designer"
-          ><img class="header-github-image" :src="githubImg"
-        /></a>
-        <h1 class="title">报表设计器</h1>
+        >
+          <span class="iconfont header-github-image">&#xe628;</span>
+        </a>
+        <h1 class="report-disigner-title">报表设计器</h1>
       </div>
       <div class="tools-right">
         <div><i class="el-icon-document-add">生成JSON</i></div>
-        <div class="tool" @click="design = !design">
+        <div class="tool" @click="preview">
           <i class="el-icon-view" v-if="design">预览</i>
           <i class="el-icon-setting" v-else>设计</i>
         </div>
-        <div>
-          <i class="el-icon-s-promotion" @click="isOpenSubmit = !isOpenSubmit"
-            >保存</i
+        <div
+          :class="[
+            clickTab == 'chartTree' || clickTab == 'reportTree'
+              ? ''
+              : 'disabled-submit',
+          ]"
+        >
+          <i class="el-icon-s-promotion" @click="openSubmitModal"
+            >保存<span class="save-type">{{
+              clickTab == "reportTree" ? "报表" : "图表"
+            }}</span></i
           >
         </div>
       </div>
       <modal
         v-model="isOpenSubmit"
         width="45%"
-        height="40%"
+        height="45%"
         showFooter
         resize
-        title="保存"
+        title="新增&更新"
         :style="{ zIndex: 1000 }"
       >
         <RichForm
+          class="submit-form"
           :schema="submitLayout.schema"
           :values="submitLayout.values"
           :form="submitLayout.form"
           :hooks="submitLayout.hooks"
         />
         <template #footer>
-          <el-button
+          <Button
             size="small"
             type="primary"
             @click="isOpenSubmit = !isOpenSubmit"
-            >取消</el-button
+            >取消</Button
           >
-          <el-button size="small" type="success" @click="onSubmit"
-            >确定</el-button
-          >
+          <Button size="small" type="success" @click="onSubmit">确定</Button>
         </template>
       </modal>
     </header>
     <div class="split-layout">
-      <split-layout first-panel-size="220px" last-panel-size="300px">
+      <split-layout
+        first-panel-size="220px"
+        last-panel-size="300px"
+        :firstPanelCanResize="false"
+      >
         <template slot="first">
           <!-- 左侧报表组件 -->
           <tabs v-model="activeLeftTab" @tab-click="onTabClick">
-            <tab-pane label="图表组件" name="component" class="tab-pane">
+            <tab-pane
+              label="图表组件"
+              name="component"
+              class="tab-pane"
+              :disabled="
+                activeLeftTab == 'chartTree' && activeRightTab == 'reportTree'
+              "
+            >
               <tree :data="chartWidgets" default-expand-all>
                 <span
                   class="tree-node"
@@ -75,17 +94,18 @@
                 </span>
               </tree>
             </tab-pane>
-            <tab-pane label="图表列表" name="chartList">
-              <tree :data="chartList" default-expand-all>
+            <tab-pane label="图表列表" name="chartTree">
+              <tree
+                :data="chartsTree"
+                default-expand-all
+                @node-click="onEidtChart"
+              >
                 <span
                   class="tree-node"
                   :data="onString(data)"
                   slot-scope="{ node, data }"
                 >
-                  <icon
-                    v-if="node.childNodes.length > 0"
-                    :class="[data.icon]"
-                  ></icon>
+                  <icon :class="[data.icon]"></icon>
                   <span class="node-label">
                     {{ data.title || data.label }}
                   </span>
@@ -99,8 +119,8 @@
             :echarts="echarts"
             :design="design"
             :hooks="hooks"
-            :authority="{ value: authority }"
             :echartsId="id"
+            :authorization="authorization"
             @designItem="onClickedChart"
           />
         </template>
@@ -126,26 +146,23 @@
               >
                 <div id="monaco-codding" class="codding-echart"></div>
                 <template #footer>
-                  <el-button size="small" type="primary" @click="onRunCode"
-                    >运行</el-button
+                  <Button size="small" type="primary" @click="onRunCode"
+                    >运行</Button
                   >
-                  <el-button size="small" type="success" @click="onCodeEdited"
-                    >确定</el-button
+                  <Button size="small" type="success" @click="onCodeEdited"
+                    >确定</Button
                   >
                 </template>
               </modal>
             </tab-pane>
-            <tab-pane label="报表设计" name="reportList">
+            <tab-pane label="报表设计" name="reportTree">
               <tree
-                :data="reportList"
+                :data="reportTree"
                 default-expand-all
-                @node-click="onNodeClick"
+                @node-click="clickReportNode"
               >
                 <span slot-scope="{ node, data }">
-                  <icon
-                    v-if="node.childNodes.length > 0"
-                    :class="[data.icon]"
-                  ></icon>
+                  <icon :class="[data.icon]"></icon>
                   <span class="node-label">
                     {{ data.title || data.label }}
                   </span>
@@ -159,18 +176,18 @@
   </div>
 </template>
 <script>
+import { pick } from "ramda";
 import short from "short-uuid";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
 import MonacoMixin from "./monaco.mixin";
 import Echarts from "@/components/Echarts";
-import DnDMixin from "@/utils/dnd.mixin.js";
+import DnDMixin from "../Echarts/utils/dnd.mixin.js";
 import { chartWidgets } from "./meta/widgets";
-import githubImg from "../../assets/github.png";
 import SplitLayout from "@/components/SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
-import { Tabs, TabPane, Icon, Tree } from "element-ui";
+import { Tabs, TabPane, Icon, Tree, Button } from "element-ui";
 import { defaultContainer } from "../Echarts/utils/defaultData";
 import {
   formTemplate,
@@ -190,19 +207,22 @@ export default {
     Tree,
     TabPane,
     Modal,
+    Button,
     Echarts,
     RichForm,
     SplitLayout,
   },
   props: {
+    showHeader: { type: Boolean, default: true },
     echarts: { type: Object, default: () => ({}) }, // 设计数据
-    chartList: { type: Array, default: () => [] }, // 图表列表
-    reportList: { type: Array, default: () => [] }, // 报表列表
+    chartTree: { type: Array, default: () => [] }, // 图表列表
+    reportTree: { type: Array, default: () => [] }, // 报表列表
     chartLayout: { type: Array, default: () => [] },
     chartSchema: { type: Object, default: () => ({}) },
     reportLayout: { type: Array, default: () => [] },
     reportSchema: { type: Object, default: () => ({}) },
-    authority: { type: Object, default: () => ({}) }, // 令牌,服务器交互权限认证
+    hooks: { type: Object, default: () => ({}) }, // 钩子
+    authorization: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -217,7 +237,7 @@ export default {
         preventDefault: true,
         selector: [".dnd-drop-wrapper"],
       },
-      clickTab: "chartList", // 当前点击的tab
+      clickTab: "component", // 当前点击的tab
       activeLeftTab: "component", // 左侧标签页
       activeRightTab: "attribute", // 右侧标签页
       canvas: {
@@ -226,7 +246,6 @@ export default {
         height: 0,
       },
       chartWidgets, // 左侧子组件元数据
-      hooks: {}, // 钩子
       attrForm: {
         // 属性表单
         schema: {},
@@ -243,19 +262,20 @@ export default {
         form: {},
         hooks: {},
       },
-      githubImg,
     };
   },
   computed: {
     drawEchart() {
-      return Object.keys(this.echarts).length
-        ? this.echarts
-        : Object.assign(this.echarts, defaultContainer);
+      return Object.assign(defaultContainer, this.echarts);
     },
     submitLayout() {
       let cloneForm = this.colenJson(formTemplate);
       let cloneSchema = this.colenJson(schemaTemplate);
-      if (this.clickTab == "reportList") {
+      if (this.clickTab == "reportTree") {
+        let treeWidget = defaultReportLayout.find(
+          (item) => item.widget == "tree"
+        );
+        if (treeWidget) treeWidget.options = [...this.reportTree];
         cloneForm.layout =
           this.reportLayout.length > 0
             ? this.reportLayout
@@ -264,7 +284,11 @@ export default {
           Object.keys(this.reportSchema).length > 0
             ? this.reportSchema
             : defaultReportSchema;
-      } else if (this.clickTab == "chartList") {
+      } else {
+        let treeWidget = defaultChartLayout.find(
+          (item) => item.widget == "tree"
+        );
+        if (treeWidget) treeWidget.options = [...this.chartTree];
         cloneForm.layout =
           this.chartLayout.length > 0 ? this.chartLayout : defaultChartLayout;
         cloneSchema.properties =
@@ -276,6 +300,15 @@ export default {
       this.$set(this.submitForm, "form", cloneForm);
       return this.submitForm;
     },
+    chartsTree() {
+      setTimeout(() => {
+        this.dndEnabled();
+      }, 1000);
+      return this.chartTree;
+    },
+  },
+  created() {
+    this.initHook();
   },
   mounted() {
     this.load();
@@ -283,6 +316,17 @@ export default {
   methods: {
     load() {
       this.getCanvasWh();
+    },
+    initHook() {
+      this.hooks.preview = this.preview;
+      this.hooks.openSubmit = this.openSubmitModal;
+      this.hooks.onSubmit = this.onSubmit;
+    },
+    preview() {
+      this.design = !this.design;
+    },
+    openSubmitModal() {
+      this.isOpenSubmit = !this.isOpenSubmit;
     },
     onCodeEdited() {
       this.onRunCode();
@@ -309,10 +353,22 @@ export default {
     onDrop(target, data, event) {
       if (!this.design) return;
       let chart = JSON.parse(data);
+      // 当tab为图表时不允许拖拽
+      if (
+        (this.activeLeftTab == "chartTree" &&
+          this.activeRightTab != "reportTree") ||
+        (this.echarts.list.length > 0 && this.activeRightTab != "reportTree")
+      )
+        return;
+      // 兼容
+      if (chart.meta) {
+        let meta = JSON.parse(chart.meta);
+        meta.id = chart.id;
+        chart = meta;
+      } else chart.id = short.generate();
       let { offsetX, offsetY } = event;
       chart.px.x = offsetX - chart.px.width / 2;
       chart.px.y = offsetY - chart.px.height / 2;
-      chart.id = short.generate();
       this.calcuPct(chart);
       this.drawEchart.list.push(chart);
     },
@@ -358,16 +414,39 @@ export default {
     $_resizeHandler() {
       this.getCanvasWh();
     },
-    onNodeClick(data, node) {
+    clickReportNode(data, node) {
+      this.pickFormValues(data);
       this.$emit("reportNode", data, node);
     },
     onTabClick(data) {
+      if (data.name == "reportTree") {
+        this.activeLeftTab = "chartTree";
+        this.submitForm.values = {};
+      }
+      if (data.name == "component") this.echarts.list = [];
       this.clickTab = data.name;
+    },
+    onEidtChart(data) {
+      if (!data.meta || this.clickTab == "reportTree") return;
+      this.echarts.list = [];
+      let meta = JSON.parse(data.meta);
+      this.echarts.list.push(meta);
+      this.pickFormValues(data);
+    },
+    pickFormValues(data) {
+      let pickValue = pick(
+        ["id", "icon", "description", "parentid", "title"],
+        data
+      );
+      this.$set(this.submitForm, "values", pickValue);
     },
     async onSubmit() {
       if (!this.submitForm.hooks.validate()) return;
       this.isOpenSubmit = !this.isOpenSubmit;
-      this.$emit("actions", "submit", this.submitLayout.values);
+      if (!this.submitLayout.values.parentid)
+        this.submitLayout.values.parentid = null;
+      this.$emit("actions", this.clickTab, { ...this.submitLayout.values });
+      this.submitLayout.values = {};
     },
   },
   beforeMount() {
@@ -380,7 +459,22 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
+@font-face {
+  font-family: "iconfont"; /* Project id 2900933 */
+  src: url("./iconfont/iconfont.woff2?t=1635472525124") format("woff2"),
+    url("./iconfont/iconfont.woff?t=1635472525124") format("woff"),
+    url("./iconfont/iconfont.ttf?t=1635472525124") format("truetype");
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 .echar-design-wrapper {
   width: 100%;
   height: 100%;
@@ -399,17 +493,37 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 15px;
-    .title {
+    .disabled-submit {
+      position: relative;
+    }
+    .disabled-submit::after {
+      content: "";
+      width: 100%;
+      height: 100%;
+      position: absolute;
+      left: 0;
+      top: 0;
+      z-index: 99;
+      cursor: not-allowed;
+    }
+    .report-disigner-title {
       margin: 0;
       padding: 0;
       font-size: 19px;
       height: 55px;
       line-height: 55px;
     }
+    .submit-form {
+      font-weight: 500;
+      font-size: 13px;
+      .title {
+        font-size: 12px;
+      }
+    }
     .header-left {
       .header-github-image {
-        width: 25px;
-        height: 25px;
+        color: #000;
+        font-size: 28px;
         margin-right: 12px;
       }
     }
@@ -440,7 +554,7 @@ export default {
         width: "120px";
         height: "100%";
         .tree-node {
-          font-size: 13px;
+          font-size: 14px;
         }
       }
     }

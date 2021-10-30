@@ -17,12 +17,12 @@ export default {
         onKeyDown() {
             document.addEventListener('keydown', (event) => {
                 let activeItem = this.activeItem;
-                switch (event.key) {
-                    case "ArrowLeft": activeItem.px.x -= 1; break;
-                    case "ArrowRight": activeItem.px.x += 1; break;
-                    case "ArrowUp": activeItem.px.y -= 1; break;
-                    case "ArrowDown": activeItem.px.y += 1; break;
-                }
+                // switch (event.key) {
+                //     case "ArrowLeft": activeItem.px.x -= 1; break;
+                //     case "ArrowRight": activeItem.px.x += 1; break;
+                //     case "ArrowUp": activeItem.px.y -= 1; break;
+                //     case "ArrowDown": activeItem.px.y += 1; break;
+                // }
             });
         },
         onKeyUp(activeItem) {

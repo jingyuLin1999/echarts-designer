@@ -6,14 +6,15 @@ const service = axios.create({
   // headers: {
   //   'Content-Type': 'application/json;charset=UTF-8' // application/x-www-form-urlencoded
   // },
+  baseURL: sessionStorage.getItem("report-baseUrl"),
   timeout: 5000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(
   config => {
-    const authKey = sessionStorage.getItem("auth-key");
-    const authValue = sessionStorage.getItem("auth-value");
+    const authKey = sessionStorage.getItem("report-key");
+    const authValue = sessionStorage.getItem("report-value");
     if (authKey == "" || authValue == "") {
       Message({
         message: '无法请求数据，token未定义',

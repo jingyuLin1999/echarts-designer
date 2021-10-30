@@ -10,7 +10,7 @@
   },
   "dependencies": {
     "@jiaminghi/data-view": "^2.10.0",
-    "axios": "^0.21.1",
+    "axios": "^0.21.4",
     "core-js": "^3.6.5",
     "echarts": "^5.2.1",
     "element-ui": "^2.15.6",
@@ -18,7 +18,8 @@
     "jquery": "^3.6.0",
     "monaco-editor": "^0.28.1",
     "monaco-editor-webpack-plugin": "^4.2.0",
-    "richform": "^0.1.0",
+    "ramda": "^0.27.1",
+    "richform": "^0.2.1",
     "short-uuid": "^4.1.0",
     "vue": "^2.6.11",
     "vue-draggable-resizable-gorkys": "^2.4.8",

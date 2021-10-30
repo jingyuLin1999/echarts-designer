@@ -3,7 +3,10 @@
 数据：
   charts: {
     title: "图表名称",
-    background: "#f00", // 背景颜色
+    background: "#F9F6F6", // 背景颜色
+    theme: "#fff", // 面板主题颜色
+    height: 1200, // 设计模式画布高度可调
+    filter: null, // 全局过滤条件
     list: [
         { // 报表数据
               title: "图表名称",
@@ -28,7 +31,7 @@
                 width: '',
                 height: '',
               },
-              data: {}, // 图标数据
+              data: {}, [] // data 有两种格式，array和obj。 图标数据
         },
         ....
     ]
@@ -42,7 +45,7 @@
   <div
     :id="chartId"
     class="echar-wrapper dnd-drop-wrapper"
-    :style="{ background: echarts.theme }"
+    :style="{ background: echarts.background }"
   >
     <!-- 可拖动放大图表 -->
     <vue-draggable-resizable
@@ -102,7 +105,14 @@
       }"
     />
     <!-- 画布点击事件 -->
-    <div class="click-canvas" @click="clickCanvas"></div>
+    <div
+      :style="{
+        background: echarts.background,
+        height: design ? echarts.height + 'px' : '100%',
+      }"
+      class="click-canvas"
+      @click="clickCanvas"
+    ></div>
   </div>
 </template>
 <script>
@@ -114,7 +124,7 @@ import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
-import { defaultAuthority } from "./utils/defaultData";
+import { defaultAuthorization } from "./utils/defaultData";
 
 export default {
   name: "echart",
@@ -124,8 +134,8 @@ export default {
     design: { type: Boolean, default: false }, // 是否是设计模式
     echarts: { type: Object, default: () => ({}) }, // 设计数据
     hooks: { type: Object, default: () => ({}) }, // 钩子
-    authority: { type: Object, default: () => ({}) }, // 令牌,服务器交互权限认证
     echartsId: { type: String, default: "" },
+    authorization: { type: Object, default: () => ({}) },
   },
   computed: {
     chartId() {
@@ -142,21 +152,26 @@ export default {
     };
   },
   mounted() {
+    this.onAuthorize();
     // 初始化适配不同屏宽
     this.calcuPctToPx();
-    this.onAuthorize();
   },
   methods: {
-    // 权限
-    onAuthorize() {
-      const { key, value } = Object.assign(defaultAuthority, this.authority);
-      sessionStorage.setItem("auth-key", key);
-      sessionStorage.setItem("auth-value", value);
-    },
     // 画布全局参数
     clickCanvas() {
       this.echarts.widget = "canvas";
       this.$emit("designItem", this.echarts);
+    },
+    // 设置请求权限
+    onAuthorize() {
+      if (Object.keys(this.authorization).length == 0) return;
+      const { key, value, baseUrl } = Object.assign(
+        defaultAuthorization,
+        this.authorization
+      );
+      sessionStorage.setItem("report-key", key);
+      sessionStorage.setItem("report-value", value);
+      sessionStorage.setItem("report-baseUrl", baseUrl);
     },
     // 辅助线回调事件
     getRefLineParams(params) {

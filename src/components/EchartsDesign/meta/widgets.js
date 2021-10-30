@@ -6,6 +6,48 @@ export const chartWidgets = [
         icon: "el-icon-pie-chart",
         children: [
             {
+                id: "card",
+                title: "卡片图",
+                widget: "card",
+                borderType: "",
+                titleColor: "#8c8c8c",
+                valueColor: "#333",
+                titleSize: "15px",
+                valueSize: "23px",
+                distance: 10,
+                "px": { "x": 2, "width": 1001, "y": 40.5, "z": 999, "height": 113 },
+                "%": { "x": 0.0018181818181818182, "width": 0.91, "y": 0.0432230522945571, "height": 0.12059765208110992 },
+                dataSource: [],
+                codding: "", // 逻辑
+                responseData: [], // 响应数据
+                data: [
+                    {
+                        title: "登入次数",
+                        icon: "el-icon-video-camera-solid",
+                        iconColor: "#4FCAC6",
+                        value: 65621,
+                    },
+                    {
+                        title: "用户数",
+                        icon: "el-icon-user-solid",
+                        iconColor: "#48A4F6",
+                        value: 555,
+                    },
+                    {
+                        title: "设备数",
+                        icon: "el-icon-s-platform",
+                        iconColor: "#EF4C6D",
+                        value: 85621,
+                    },
+                    {
+                        title: "刀具数",
+                        icon: "el-icon-knife-fork",
+                        iconColor: "#43C0A3",
+                        value: 955,
+                    },
+                ],
+            },
+            {
                 // 报表数据
                 title: "柱形图",
                 widget: "bar", // 组件名称
@@ -15,7 +57,7 @@ export const chartWidgets = [
                 dataSource: [],
                 codding: "", // 逻辑
                 responseData: [], // 响应数据
-                data: {
+                data: { // 图标数据
                     title: {
                         text: "ECharts 入门示例",
                     },
@@ -31,7 +73,7 @@ export const chartWidgets = [
                             data: [5, 20, 36, 10, 10, 20],
                         },
                     ],
-                }, // 图标数据
+                },
             },
             {
                 id: "2",
@@ -46,14 +88,13 @@ export const chartWidgets = [
                     height: 0.35965848452508004,
                 },
                 dataSource: [
-                    // 数据源
                     {
                         method: "get",
                         url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
                     },
                 ],
-                codding: "", // 逻辑
-                responseData: [], // 响应数据
+                codding: "",
+                responseData: [],
                 data: {
                     xAxis: {
                         type: "category",
@@ -83,14 +124,13 @@ export const chartWidgets = [
                     height: 0.35965848452508004,
                 },
                 dataSource: [
-                    // 数据源
                     {
                         method: "get",
                         url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
                     },
                 ],
-                codding: "", // 逻辑
-                responseData: [], // 响应数据
+                codding: "",
+                responseData: [],
                 data: {
                     title: {
                         text: "Referer of a Website",

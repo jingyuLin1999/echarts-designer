@@ -2,10 +2,12 @@
   <div class="design-wrapper">
     <EchartsDesign
       :echarts="charts"
-      :chartList="chartList"
-      :reportList="reportList"
-      :authority="{
-        value: 'Vaf16dcf98O7c280d3287448f60o8abb5x28TVZV05179fd16edd177NXT6R',
+      :chartTree="chartTree"
+      :reportTree="reportTree"
+      :hooks="hooks"
+      :authorization="{
+        value: 'U5f16dcf98o33760d32vP448f4d08abb0fkxGjA2b7179fd16edd173Y9M62',
+        baseUrl: 'http://192.168.100.11:8080',
       }"
       @reportNode="onReportNode"
       @actions="designActions"
@@ -14,374 +16,322 @@
 </template>
 
 <script>
+import {
+  getChartTree,
+  getReportTree,
+  submitCharts,
+  submitReport,
+  getReportList,
+} from "../api/echarts-designer";
 import EchartsDesign from "../components/EchartsDesign";
 export default {
   components: { EchartsDesign },
+  mounted() {
+    this.load();
+  },
   methods: {
+    async load() {
+      // 加载图表和报表树
+      const [chartTree, reportTree] = await Promise.all([
+        getChartTree(),
+        getReportTree(),
+      ]);
+      this.chartTree = chartTree.payload;
+      this.reportTree = reportTree.payload;
+    },
+    // 根据报表节点去加载该报表
     async onReportNode(data, node) {
-      console.log(data, node);
+      const reportId = data.id;
+      if (!reportId) return;
+      const { payload: chartTree } = await getReportList({ reportId });
+      this.charts.list = [];
+      chartTree.map((chartItem) => {
+        const Meta = JSON.parse(chartItem.meta);
+        Meta["px"] = JSON.parse(chartItem.pxunit);
+        Meta["%"] = JSON.parse(chartItem.flexunit);
+        this.charts.list.push(Meta);
+      });
     },
     designActions(action, value) {
-      console.log(action, value);
+      if (!value.parentid) value.parentid = "0";
+      switch (action) {
+        case "chartTree":
+          this.submitCharts(value);
+          break;
+        case "reportTree":
+          this.submitReport(value);
+          break;
+      }
+    },
+    async submitCharts(value) {
+      try {
+        const meta = this.charts.list[0] || "";
+        meta.responseData = []; // 响应数据
+        const { payload } = await submitCharts({ ...value, meta });
+        this.charts.list = [];
+        this.chartTree = payload;
+      } catch (e) {
+        console.warn(`表单提交失败`, e);
+      }
+    },
+    async submitReport(value) {
+      try {
+        const chartUReport = [];
+        this.charts.list.map((item) => {
+          chartUReport.push({
+            reportid: value.id,
+            chartid: item.id,
+            pxunit: item["px"],
+            flexunit: item["%"],
+          });
+        });
+        const { payload } = await submitReport({
+          chartUReport,
+          report: { ...value },
+        });
+        this.reportTree = payload;
+      } catch (e) {
+        console.warn(`报表提交失败`, e);
+      }
     },
   },
   data() {
     return {
+      hooks: {},
+      chartTree: [], // http请求列表
+      reportTree: [],
       charts: {
         title: "图表名称",
+        background: "#F9F6F6",
         theme: "#fff",
+        height: 1200,
+        filter: {global: "global"},
         list: [
-          {
-            id: "1",
-            title: "柱形图",
-            widget: "bar",
-            borderType: "1",
-            px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
-            "%": {
-              x: 0,
-              y: 0,
-              width: 0.5614161849710982,
-              height: 0.35965848452508004,
-            },
-            dataSource: [
-              // 数据源
-              {
-                method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-              },
-            ],
-            codding: "", // 逻辑
-            responseData: [], // 响应数据
-            data: {
-              title: {
-                text: "IPQC白班良率统计",
-                left: "left", // center/right
-                textStyle: {
-                  fontStyle: "normal",
-                  color: "#f00",
-                },
-                subtext: "",
-              },
-              legend: {
-                orient: "horizontal", // vertical/horizontal
-                // left: 0,
-                right: 10,
-                top: 0,
-                bottom: 0,
-              },
-              tooltip: {},
-              dataset: {
-                dimensions: ["product", "2015", "2016", "2017"],
-                source: [
-                  ["Matcha Latte", 43.3, 85.8, 93.7],
-                  ["Milk Tea", 83.1, 73.4, 55.1],
-                  ["Cheese Cocoa", 86.4, 65.2, 82.5],
-                  ["Walnut Brownie", 72.4, 53.9, 39.1],
-                ],
-              },
-              // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
-              xAxis: {
-                type: "category",
-                axisLabel: {
-                  formatter: "{value}",
-                  align: "center",
-                },
-              },
-              yAxis: {
-                name: "数量",
-                axisLabel: {
-                  formatter: "{value} 件",
-                  align: "center",
-                  position: "left",
-                  margin: 28,
-                },
-              },
-              series: [
-                { type: "bar", seriesLayoutBy: "column" },
-                { type: "bar", seriesLayoutBy: "column" },
-                { type: "line", seriesLayoutBy: "column" },
-              ],
-            },
-          },
-          {
-            id: "2",
-            title: "折线图",
-            widget: "line",
-            borderType: "8",
-            px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
-            "%": {
-              x: 0,
-              y: 0.45,
-              width: 0.5614161849710982,
-              height: 0.35965848452508004,
-            },
-            dataSource: [
-              // 数据源
-              {
-                method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-              },
-            ],
-            codding: "", // 逻辑
-            responseData: [], // 响应数据
-            data: {
-              title: {
-                text: "Referer of a Website",
-                subtext: "Fake Data",
-                left: "center",
-              },
-              xAxis: {
-                type: "category",
-                data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-              },
-              yAxis: {
-                type: "value",
-              },
-              series: [
-                {
-                  data: [150, 230, 224, 218, 135, 147, 260],
-                  type: "line",
-                },
-              ],
-            },
-          },
-          {
-            id: "3",
-            title: "饼图",
-            widget: "bar",
-            borderType: "8",
-            px: { x: 0, y: 0, width: 350, height: 337, z: 999 },
-            "%": {
-              x: 0.6,
-              y: 0,
-              width: 0.3614161849710982,
-              height: 0.35965848452508004,
-            },
-            dataSource: [
-              // 数据源
-              {
-                method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-              },
-            ],
-            codding: "", // 逻辑
-            responseData: [], // 响应数据
-            data: {
-              title: {
-                text: "Referer of a Website",
-                subtext: "Fake Data",
-                left: "center",
-              },
-              tooltip: {
-                trigger: "item",
-              },
-              legend: {
-                orient: "vertical",
-                left: "left",
-              },
-              series: [
-                {
-                  name: "Access From",
-                  type: "pie",
-                  radius: "50%",
-                  data: [
-                    { value: 1048, name: "Search Engine" },
-                    { value: 735, name: "Direct" },
-                    { value: 580, name: "Email" },
-                    { value: 484, name: "Union Ads" },
-                    { value: 300, name: "Video Ads" },
-                  ],
-                  emphasis: {
-                    itemStyle: {
-                      shadowBlur: 10,
-                      shadowOffsetX: 0,
-                    },
-                  },
-                },
-              ],
-            },
-          },
+          // {
+          //   id: "card",
+          //   title: "卡片",
+          //   widget: "card",
+          //   borderType: "",
+          //   titleColor: "#8c8c8c",
+          //   valueColor: "#333",
+          //   distance: 10,
+          //   titleSize: "15px",
+          //   valueSize: "23px",
+          //   px: { x: 0, y: 0, width: 380, height: 113, z: 999 },
+          //   "%": {
+          //     x: 0,
+          //     y: 0,
+          //     width: 1,
+          //     height: 0.12,
+          //   },
+          //   dataSource: [
+          //     // 数据源
+          //     {
+          //       method: "get",
+          //       url: "http://127.0.0.1:8080/manage/report/getDashboard.do",
+          //     },
+          //   ],
+          //   codding: "", // 逻辑
+          //   responseData: [], // 响应数据
+          //   data: [
+          //     {
+          //       title: "登入次数",
+          //       icon: "el-icon-s-check",
+          //       iconColor: "#4FCAC6",
+          //       value: 65621,
+          //     },
+          //     {
+          //       title: "用户数",
+          //       icon: "el-icon-user-solid",
+          //       iconColor: "#4FCAC6",
+          //       value: 555,
+          //     },
+          //     {
+          //       title: "设备数",
+          //       icon: "el-icon-user-solid",
+          //       iconColor: "#4FCAC6",
+          //       value: 85621,
+          //     },
+          //     {
+          //       title: "刀具数",
+          //       icon: "el-icon-knife-fork",
+          //       iconColor: "#4FCAC6",
+          //       value: 955,
+          //     },
+          //   ],
+          // },
+          // {
+          //   id: "1",
+          //   title: "柱形图",
+          //   widget: "bar",
+          //   borderType: "1",
+          //   px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
+          //   "%": {
+          //     x: 0,
+          //     y: 0,
+          //     width: 0.5614161849710982,
+          //     height: 0.35965848452508004,
+          //   },
+          //   dataSource: [
+          //     // 数据源
+          //     {
+          //       method: "get",
+          //       url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+          //     },
+          //   ],
+          //   codding: "", // 逻辑
+          //   responseData: [], // 响应数据
+          //   data: {
+          //     title: {
+          //       text: "IPQC白班良率统计",
+          //       left: "left", // center/right
+          //       textStyle: {
+          //         fontStyle: "normal",
+          //         color: "#f00",
+          //       },
+          //       subtext: "",
+          //     },
+          //     legend: {
+          //       orient: "horizontal", // vertical/horizontal
+          //       // left: 0,
+          //       right: 10,
+          //       top: 0,
+          //       bottom: 0,
+          //     },
+          //     tooltip: {},
+          //     dataset: {
+          //       dimensions: ["product", "2015", "2016", "2017"],
+          //       source: [
+          //         ["Matcha Latte", 43.3, 85.8, 93.7],
+          //         ["Milk Tea", 83.1, 73.4, 55.1],
+          //         ["Cheese Cocoa", 86.4, 65.2, 82.5],
+          //         ["Walnut Brownie", 72.4, 53.9, 39.1],
+          //       ],
+          //     },
+          //     // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
+          //     xAxis: {
+          //       type: "category",
+          //       axisLabel: {
+          //         formatter: "{value}",
+          //         align: "center",
+          //       },
+          //     },
+          //     yAxis: {
+          //       name: "数量",
+          //       axisLabel: {
+          //         formatter: "{value} 件",
+          //         align: "center",
+          //         position: "left",
+          //         margin: 28,
+          //       },
+          //     },
+          //     series: [
+          //       { type: "bar", seriesLayoutBy: "column" },
+          //       { type: "bar", seriesLayoutBy: "column" },
+          //       { type: "line", seriesLayoutBy: "column" },
+          //     ],
+          //   },
+          // },
+          // {
+          //   id: "2",
+          //   title: "折线图",
+          //   widget: "line",
+          //   borderType: "8",
+          //   px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
+          //   "%": {
+          //     x: 0,
+          //     y: 0.45,
+          //     width: 0.5614161849710982,
+          //     height: 0.35965848452508004,
+          //   },
+          //   dataSource: [
+          //     // 数据源
+          //     {
+          //       method: "get",
+          //       url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+          //     },
+          //   ],
+          //   codding: "", // 逻辑
+          //   responseData: [], // 响应数据
+          //   data: {
+          //     title: {
+          //       text: "Referer of a Website",
+          //       subtext: "Fake Data",
+          //       left: "center",
+          //     },
+          //     xAxis: {
+          //       type: "category",
+          //       data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+          //     },
+          //     yAxis: {
+          //       type: "value",
+          //     },
+          //     series: [
+          //       {
+          //         data: [150, 230, 224, 218, 135, 147, 260],
+          //         type: "line",
+          //       },
+          //     ],
+          //   },
+          // },
+          // {
+          //   id: "3",
+          //   title: "饼图",
+          //   widget: "bar",
+          //   borderType: "8",
+          //   px: { x: 0, y: 0, width: 350, height: 337, z: 999 },
+          //   "%": {
+          //     x: 0.6,
+          //     y: 0,
+          //     width: 0.3614161849710982,
+          //     height: 0.35965848452508004,
+          //   },
+          //   dataSource: [
+          //     // 数据源
+          //     {
+          //       method: "get",
+          //       url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+          //     },
+          //   ],
+          //   codding: "", // 逻辑
+          //   responseData: [], // 响应数据
+          //   data: {
+          //     title: {
+          //       text: "Referer of a Website",
+          //       subtext: "Fake Data",
+          //       left: "center",
+          //     },
+          //     tooltip: {
+          //       trigger: "item",
+          //     },
+          //     legend: {
+          //       orient: "vertical",
+          //       left: "left",
+          //     },
+          //     series: [
+          //       {
+          //         name: "Access From",
+          //         type: "pie",
+          //         radius: "50%",
+          //         data: [
+          //           { value: 1048, name: "Search Engine" },
+          //           { value: 735, name: "Direct" },
+          //           { value: 580, name: "Email" },
+          //           { value: 484, name: "Union Ads" },
+          //           { value: 300, name: "Video Ads" },
+          //         ],
+          //         emphasis: {
+          //           itemStyle: {
+          //             shadowBlur: 10,
+          //             shadowOffsetX: 0,
+          //           },
+          //         },
+          //       },
+          //     ],
+          //   },
+          // },
         ],
       },
-      chartList: [
-        // http请求列表
-        {
-          id: "1",
-          title: "富士康工厂图表",
-          icon: "el-icon-pie-chart",
-          children: [
-            {
-              // 报表数据
-              title: "IPQC良率柱形图",
-              widget: "bar", // 组件名称
-              borderType: "1",
-              px: { x: 255, y: 389, width: 379, height: 231, z: 999 },
-              "%": {
-                x: 0.1842485549132948,
-                y: 0.4151547491995731,
-                width: 0.2738439306358382,
-                height: 0.24653148345784417,
-              },
-              dataSource: [],
-              codding: "", // 逻辑
-              responseData: [], // 响应数据
-              data: {
-                title: {
-                  text: "ECharts 入门示例",
-                },
-                tooltip: {},
-                xAxis: {
-                  data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
-                },
-                yAxis: {},
-                series: [
-                  {
-                    name: "销量",
-                    type: "bar",
-                    data: [5, 20, 36, 10, 10, 20],
-                  },
-                ],
-              }, // 图标数据
-            },
-            {
-              id: "2",
-              title: "不良缺陷折线图",
-              widget: "bar",
-              borderType: "8",
-              px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
-              "%": {
-                x: 0,
-                y: 0.45,
-                width: 0.5614161849710982,
-                height: 0.35965848452508004,
-              },
-              dataSource: [
-                // 数据源
-                {
-                  method: "get",
-                  url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-                },
-              ],
-              codding: "", // 逻辑
-              responseData: [], // 响应数据
-              data: {
-                xAxis: {
-                  type: "category",
-                  data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
-                },
-                yAxis: {
-                  type: "value",
-                },
-                series: [
-                  {
-                    data: [150, 230, 224, 218, 135, 147, 260],
-                    type: "line",
-                  },
-                ],
-              },
-            },
-            {
-              id: "3",
-              title: "机台不良项饼图",
-              widget: "pie",
-              borderType: "8",
-              px: { x: 0, y: 0, width: 350, height: 337, z: 999 },
-              "%": {
-                x: 0.6,
-                y: 0,
-                width: 0.3614161849710982,
-                height: 0.35965848452508004,
-              },
-              dataSource: [
-                // 数据源
-                {
-                  method: "get",
-                  url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-                },
-              ],
-              codding: "", // 逻辑
-              responseData: [], // 响应数据
-              data: {
-                title: {
-                  text: "Referer of a Website",
-                  subtext: "Fake Data",
-                  left: "center",
-                },
-                tooltip: {
-                  trigger: "item",
-                },
-                legend: {
-                  orient: "vertical",
-                  left: "left",
-                },
-                series: [
-                  {
-                    name: "Access From",
-                    type: "pie",
-                    radius: "50%",
-                    data: [
-                      { value: 1048, name: "Search Engine" },
-                      { value: 735, name: "Direct" },
-                      { value: 580, name: "Email" },
-                      { value: 484, name: "Union Ads" },
-                      { value: 300, name: "Video Ads" },
-                    ],
-                    emphasis: {
-                      itemStyle: {
-                        shadowBlur: 10,
-                        shadowOffsetX: 0,
-                      },
-                    },
-                  },
-                ],
-              },
-            },
-          ],
-        },
-      ],
-      reportList: [
-        // http请求列表
-        {
-          id: "1",
-          title: "展厅报表",
-          icon: "el-icon-pie-chart",
-          children: [
-            {
-              // 报表数据
-              title: "IPQC良率柱形图",
-              widget: "bar", // 组件名称
-              borderType: "1",
-              px: { x: 255, y: 389, width: 379, height: 231, z: 999 },
-              "%": {
-                x: 0.1842485549132948,
-                y: 0.4151547491995731,
-                width: 0.2738439306358382,
-                height: 0.24653148345784417,
-              },
-              dataSource: [],
-              codding: "", // 逻辑
-              responseData: [], // 响应数据
-              data: {
-                title: {
-                  text: "ECharts 入门示例",
-                },
-                tooltip: {},
-                xAxis: {
-                  data: ["衬衫", "羊毛衫", "雪纺衫", "裤子", "高跟鞋", "袜子"],
-                },
-                yAxis: {},
-                series: [
-                  {
-                    name: "销量",
-                    type: "bar",
-                    data: [5, 20, 36, 10, 10, 20],
-                  },
-                ],
-              }, // 图标数据
-            },
-          ],
-        },
-      ],
     };
   },
 };

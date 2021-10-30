@@ -9,7 +9,7 @@ export const defaultChartSchema = {
         type: "string",
         minLength: 1,
         require: true,
-    }
+    },
 }
 
 export const defaultChartLayout = [
@@ -27,13 +27,26 @@ export const defaultChartLayout = [
         size: "samll",
     },
     {
+        title: "父节点",
+        widget: "tree",
+        name: "parentid",
+        isShowCheckbox: false,
+        onlyCheckedKeys: true,
+        nodeKey: "id",
+        defaultProps: {
+            // 字段对应关系
+            label: "title",
+        },
+        options: [],
+    },
+    {
         title: "描述",
         name: "description",
         widget: "input",
         type: "textarea",
         size: "mini",
         rows: 3,
-    }
+    },
 ]
 
 // 提交报表
@@ -42,7 +55,12 @@ export const defaultReportSchema = {
         type: "string",
         minLength: 1,
         require: true,
-    }
+    },
+    // parentid: {
+    //     type: "string",
+    //     minLength: 1,
+    //     require: true,
+    // },
 }
 
 export const defaultReportLayout = [
@@ -58,6 +76,19 @@ export const defaultReportLayout = [
         name: "icon",
         widget: "input",
         size: "samll",
+    },
+    {
+        title: "父节点",
+        widget: "tree",
+        name: "parentid",
+        isShowCheckbox: false,
+        onlyCheckedKeys: true,
+        nodeKey: "id",
+        defaultProps: {
+            // 字段对应关系
+            label: "title",
+        },
+        options: [],
     },
     {
         title: "描述",

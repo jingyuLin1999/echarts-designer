@@ -6,11 +6,11 @@ import http from "./http";
  * @return {Object} 
  */
 export function chartApi(config = {}) {
-  const { url, method, params } = config;
+  const { url, method, params, filter } = config;
   return http({
     url: url || "",
     method: method || 'post',
-    [method == 'get' ? "params" : "data"]: params
+    [method == 'get' ? "params" : "data"]: { params, filter }
   })
 }
 
@@ -40,4 +40,13 @@ export function _debounce(fn, delay) {
 export function isUrl(url) {
   let Exp = /^(https?:\/\/)([0-9a-z.]+)(:[0-9]+)?([/0-9a-z.]+)?(\?[0-9a-z&=]+)?(#[0-9-a-z]+)?/i;
   return Exp.test(url);
+}
+
+// 将字符串转成对象,若转失败则直接返回源字符串
+export function strToObj(str) {
+  try {
+    return /^{.*}$/.test(str) || /^\[.*\]$/.test(str) ? JSON.parse(str) : str;
+  } catch {
+    return str
+  }
 }
