@@ -45,12 +45,15 @@
   <div
     :id="chartId"
     class="echar-wrapper dnd-drop-wrapper"
-    :style="{ background: echarts.background }"
+    :style="{
+      background: echarts.background,
+      height: design ? echarts.height + 'px' : '100%',
+    }"
   >
     <!-- 可拖动放大图表 -->
     <vue-draggable-resizable
       :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
-      v-for="(item, index) in echarts.list"
+      v-for="(item, index) in echartsList"
       :key="item.id"
       :parent="true"
       :active="false"
@@ -105,14 +108,7 @@
       }"
     />
     <!-- 画布点击事件 -->
-    <div
-      :style="{
-        background: echarts.background,
-        height: design ? echarts.height + 'px' : '100%',
-      }"
-      class="click-canvas"
-      @click="clickCanvas"
-    ></div>
+    <div class="click-canvas" @click="clickCanvas"></div>
   </div>
 </template>
 <script>
@@ -125,6 +121,7 @@ import hotkeyMixin from "./utils/hotkey.mixin";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
 import { defaultAuthorization } from "./utils/defaultData";
+import elementResizeDetectorMaker from "element-resize-detector";
 
 export default {
   name: "echart",
@@ -141,6 +138,12 @@ export default {
     chartId() {
       return this.echartsId.length ? this.echartsId : this.id;
     },
+    echartsList() {
+      // 适配不同屏宽
+      // 异步加载数据延迟需要监听并重新计算
+      this.calcuPctToPx();
+      return this.echarts.list;
+    },
   },
   data() {
     return {
@@ -149,12 +152,17 @@ export default {
       activeChart: {}, // 目前点击的图表
       beforeActive: {},
       id: short.generate(),
+      erd: elementResizeDetectorMaker(),
     };
   },
   mounted() {
     this.onAuthorize();
-    // 初始化适配不同屏宽
-    this.calcuPctToPx();
+    const canvasDom = document.getElementById(this.chartId);
+    this.erd.listenTo(canvasDom, (element) => {
+      this.calcuPctToPx();
+      // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
+      window.dispatchEvent(new Event("resize"));
+    });
   },
   methods: {
     // 画布全局参数
@@ -253,10 +261,12 @@ export default {
     },
   },
   beforeMount() {
-    window.addEventListener("resize", this.$_resizeHandler);
+    // window.addEventListener("resize", this.$_resizeHandler);
   },
   beforeDestroy() {
-    window.removeEventListener("resize", this.$_resizeHandler);
+    // window.removeEventListener("resize", this.$_resizeHandler);
+    const canvasDom = document.getElementById(this.chartId);
+    if (this.erd && canvasDom) this.erd.uninstall(canvasDom);
   },
 };
 </script>

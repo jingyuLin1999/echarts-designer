@@ -43,7 +43,11 @@
             fontSize: chartData.valueSize,
           }"
         >
-          {{ cardItem.value }}
+          <count-to
+            :startVal="0"
+            :endVal="cardItem.value"
+            :duration="2000"
+          ></count-to>
         </div>
       </div>
     </div>
@@ -51,9 +55,11 @@
 </template>
 <script>
 import BaseMixin from "./base.mixin";
+import countTo from "vue-count-to";
 export default {
   name: "card",
   mixins: [BaseMixin],
+  components: { countTo },
   data() {
     return {
       cardIdx: -1,

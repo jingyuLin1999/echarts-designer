@@ -39,11 +39,30 @@ module.exports = {
       // "monaco-editor": "monaco-editor",
       // "monaco-editor-webpack-plugin": "monaco-editor-webpack-plugin",
       // "richform": "richform",
+      // "ramda": "ramda",
       // "short-uuid": "short-uuid",
       // "vue-draggable-resizable-gorkys": "vue-draggable-resizable-gorkys",
       // "vue": "vue",
       // "vue-router": "vue-router",
-      // "vxe-table": "vxe-table"
+      // "vxe-table": "vxe-table",
+      // "vue-count-to": "vue-count-to",
+      // "element-resize-detector": "element-resize-detector",
     }
   },
+  // to handle element icon error in build. 
+  chainWebpack: config => {
+    config.module
+      .rule("fonts")
+      .test(/.(ttf|otf|eot|woff|woff2)$/)
+      .use("url-loader")
+      .loader("url-loader")
+      .tap(options => {
+        options = {
+          // limit: 10000,
+          name: '/static/fonts/[name].[ext]',
+        }
+        return options
+      })
+      .end()
+  }
 }

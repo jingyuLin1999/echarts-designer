@@ -6,8 +6,14 @@
       :reportTree="reportTree"
       :hooks="hooks"
       :authorization="{
-        value: 'U5f16dcf98o33760d32vP448f4d08abb0fkxGjA2b7179fd16edd173Y9M62',
-        baseUrl: 'http://192.168.100.11:8080',
+        value: 'GZf16dcf98T2q670d3256448f9678abb8ydHLaBtca179fd16edd17Lp1571',
+        baseUrl: 'http://127.0.0.1:8080',
+      }"
+      :chartDelConfig="{
+        url: '/manage/report/deleteCharts.do',
+      }"
+      :reportDelConfig="{
+        url: '/manage/report/deleteReport.do',
       }"
       @reportNode="onReportNode"
       @actions="designActions"
@@ -43,9 +49,12 @@ export default {
     async onReportNode(data, node) {
       const reportId = data.id;
       if (!reportId) return;
-      const { payload: chartTree } = await getReportList({ reportId });
+      const {
+        payload: { attribute, chartList },
+      } = await getReportList({ reportId });
+      if (attribute) Object.assign(this.charts, JSON.parse(attribute) || {});
       this.charts.list = [];
-      chartTree.map((chartItem) => {
+      chartList.map((chartItem) => {
         const Meta = JSON.parse(chartItem.meta);
         Meta["px"] = JSON.parse(chartItem.pxunit);
         Meta["%"] = JSON.parse(chartItem.flexunit);
@@ -63,32 +72,18 @@ export default {
           break;
       }
     },
-    async submitCharts(value) {
+    async submitCharts(data) {
       try {
-        const meta = this.charts.list[0] || "";
-        meta.responseData = []; // 响应数据
-        const { payload } = await submitCharts({ ...value, meta });
+        const { payload } = await submitCharts(data.form);
         this.charts.list = [];
         this.chartTree = payload;
       } catch (e) {
         console.warn(`表单提交失败`, e);
       }
     },
-    async submitReport(value) {
+    async submitReport(data) {
       try {
-        const chartUReport = [];
-        this.charts.list.map((item) => {
-          chartUReport.push({
-            reportid: value.id,
-            chartid: item.id,
-            pxunit: item["px"],
-            flexunit: item["%"],
-          });
-        });
-        const { payload } = await submitReport({
-          chartUReport,
-          report: { ...value },
-        });
+        const { payload } = await submitReport(data);
         this.reportTree = payload;
       } catch (e) {
         console.warn(`报表提交失败`, e);
@@ -101,11 +96,12 @@ export default {
       chartTree: [], // http请求列表
       reportTree: [],
       charts: {
+        id: "",
         title: "图表名称",
         background: "#F9F6F6",
         theme: "#fff",
         height: 1200,
-        filter: {global: "global"},
+        filter: { global: "global" },
         list: [
           // {
           //   id: "card",

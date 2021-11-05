@@ -65,6 +65,7 @@
       <split-layout
         first-panel-size="220px"
         last-panel-size="300px"
+        :lastPanelCanResize="false"
         :firstPanelCanResize="false"
       >
         <template slot="first">
@@ -83,6 +84,7 @@
                   class="tree-node"
                   :data="onString(data)"
                   slot-scope="{ node, data }"
+                  :style="{ fontSize: '13px' }"
                 >
                   <icon
                     v-if="node.childNodes.length > 0"
@@ -94,35 +96,41 @@
                 </span>
               </tree>
             </tab-pane>
-            <tab-pane label="图表列表" name="chartTree">
-              <tree
-                :data="chartsTree"
-                default-expand-all
-                @node-click="onEidtChart"
-              >
-                <span
-                  class="tree-node"
+            <tab-pane label="图表设计" name="chartTree">
+              <tree :data="chartsTree" default-expand-all>
+                <div
+                  class="tree-node designer-tree-node"
                   :data="onString(data)"
                   slot-scope="{ node, data }"
                 >
-                  <icon :class="[data.icon]"></icon>
-                  <span class="node-label">
-                    {{ data.title || data.label }}
-                  </span>
-                </span>
+                  <div class="node-title" @click="onEidtChart(data)">
+                    <icon :class="[data.icon]"></icon>
+                    <span class="node-label">
+                      {{ data.title || data.label }}
+                    </span>
+                  </div>
+                  <div class="node-tools">
+                    <i
+                      class="tool el-icon-delete"
+                      @click="onDelete(data, 'chart')"
+                    ></i>
+                  </div>
+                </div>
               </tree>
             </tab-pane>
           </tabs>
         </template>
         <template slot="center">
-          <Echarts
-            :echarts="echarts"
-            :design="design"
-            :hooks="hooks"
-            :echartsId="id"
-            :authorization="authorization"
-            @designItem="onClickedChart"
-          />
+          <PerfectScrollbar>
+            <Echarts
+              :echarts="echarts"
+              :design="design"
+              :hooks="hooks"
+              :echartsId="id"
+              :authorization="authorization"
+              @designItem="onClickedChart"
+            />
+          </PerfectScrollbar>
         </template>
         <!-- 报表属性 -->
         <template slot="last">
@@ -155,19 +163,23 @@
                 </template>
               </modal>
             </tab-pane>
-            <tab-pane label="报表设计" name="reportTree">
-              <tree
-                :data="reportTree"
-                default-expand-all
-                @node-click="clickReportNode"
-              >
-                <span slot-scope="{ node, data }">
-                  <icon :class="[data.icon]"></icon>
-                  <span class="node-label">
-                    {{ data.title || data.label }}
-                  </span>
-                </span></tree
-              >
+            <tab-pane label="报表排版" name="reportTree">
+              <tree :data="reportTree" default-expand-all>
+                <div slot-scope="{ node, data }" class="designer-tree-node">
+                  <div class="node-title" @click="clickReportNode(data)">
+                    <icon :class="[data.icon]"></icon>
+                    <span class="node-label">
+                      {{ data.title || data.label }}
+                    </span>
+                  </div>
+                  <div class="node-tools">
+                    <i
+                      class="tool el-icon-delete"
+                      @click="onDelete(data, 'report')"
+                    ></i>
+                  </div>
+                </div>
+              </tree>
             </tab-pane>
           </tabs>
         </template>
@@ -183,11 +195,21 @@ import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
 import MonacoMixin from "./monaco.mixin";
 import Echarts from "@/components/Echarts";
-import DnDMixin from "../Echarts/utils/dnd.mixin.js";
+import { deleteApi } from "../Echarts/utils";
 import { chartWidgets } from "./meta/widgets";
+import DnDMixin from "../Echarts/utils/dnd.mixin.js";
 import SplitLayout from "@/components/SplitLayout";
+import { PerfectScrollbar } from "vue2-perfect-scrollbar";
 import "element-ui/lib/theme-chalk/index.css";
-import { Tabs, TabPane, Icon, Tree, Button } from "element-ui";
+import {
+  Tabs,
+  TabPane,
+  Icon,
+  Tree,
+  Button,
+  MessageBox,
+  Message,
+} from "element-ui";
 import { defaultContainer } from "../Echarts/utils/defaultData";
 import {
   formTemplate,
@@ -208,21 +230,26 @@ export default {
     TabPane,
     Modal,
     Button,
+    Message,
+    MessageBox,
     Echarts,
     RichForm,
     SplitLayout,
+    PerfectScrollbar,
   },
   props: {
     showHeader: { type: Boolean, default: true },
     echarts: { type: Object, default: () => ({}) }, // 设计数据
     chartTree: { type: Array, default: () => [] }, // 图表列表
     reportTree: { type: Array, default: () => [] }, // 报表列表
+    hooks: { type: Object, default: () => ({}) }, // 钩子
+    authorization: { type: Object, default: () => ({}) },
     chartLayout: { type: Array, default: () => [] },
     chartSchema: { type: Object, default: () => ({}) },
     reportLayout: { type: Array, default: () => [] },
     reportSchema: { type: Object, default: () => ({}) },
-    hooks: { type: Object, default: () => ({}) }, // 钩子
-    authorization: { type: Object, default: () => ({}) },
+    chartDelConfig: { type: Object, default: () => ({}) },
+    reportDelConfig: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -350,16 +377,23 @@ export default {
     colenJson(obj) {
       return JSON.parse(this.onString(obj));
     },
-    onDrop(target, data, event) {
-      if (!this.design) return;
-      let chart = JSON.parse(data);
+    dropFilter(chart) {
       // 当tab为图表时不允许拖拽
       if (
         (this.activeLeftTab == "chartTree" &&
           this.activeRightTab != "reportTree") ||
-        (this.echarts.list.length > 0 && this.activeRightTab != "reportTree")
+        (this.echarts.list.length > 0 && this.activeRightTab != "reportTree") ||
+        !this.design
       )
-        return;
+        return true;
+      let hasChart = this.echarts.list.find((item) => item.id == chart.id);
+      if (hasChart) return true;
+      return false;
+    },
+    onDrop(target, data, event) {
+      let chart = JSON.parse(data);
+      if (this.dropFilter(chart)) return;
+
       // 兼容
       if (chart.meta) {
         let meta = JSON.parse(chart.meta);
@@ -386,6 +420,8 @@ export default {
       try {
         if (!this.design) return;
         this.clickedChart = item;
+        if (this.clickTab == "reportTree" && item.widget == "canvas")
+          this.activeRightTab = "attribute";
         const { form, schema, values } = require(`./meta/${item.widget}`);
         this.$set(this.attrForm, "values", item);
         this.$set(this.attrForm, "form", JSON.parse(JSON.stringify(form)));
@@ -421,7 +457,7 @@ export default {
     onTabClick(data) {
       if (data.name == "reportTree") {
         this.activeLeftTab = "chartTree";
-        this.submitForm.values = {};
+        // this.submitForm.values = {};
       }
       if (data.name == "component") this.echarts.list = [];
       this.clickTab = data.name;
@@ -443,10 +479,65 @@ export default {
     async onSubmit() {
       if (!this.submitForm.hooks.validate()) return;
       this.isOpenSubmit = !this.isOpenSubmit;
+      const emitData = {
+        form: this.submitLayout.values,
+        chartUReport: [],
+      };
       if (!this.submitLayout.values.parentid)
         this.submitLayout.values.parentid = null;
-      this.$emit("actions", this.clickTab, { ...this.submitLayout.values });
+      // 组装数据
+      if (this.clickTab == "chartTree") {
+        const meta = this.echarts.list[0] || {};
+        meta.responseData = []; // 响应数据
+        emitData.form.meta = meta;
+      } else if (this.clickTab == "reportTree") {
+        this.echarts.list.map((item) => {
+          emitData.chartUReport.push({
+            reportid: emitData.form.id,
+            chartid: item.id,
+            pxunit: item["px"],
+            flexunit: item["%"],
+          });
+        });
+        emitData.form.attributes = pick(
+          ["title", "background", "theme", "height", "filter"],
+          this.echarts
+        );
+      }
+      this.$emit("actions", this.clickTab, emitData);
       this.submitLayout.values = {};
+    },
+    onDelete(data, type) {
+      try {
+        if (
+          (type == "chart" && Object.keys(this.chartDelConfig).length == 0) ||
+          (type == "report" && Object.keys(this.reportDelConfig).length == 0)
+        )
+          return;
+        MessageBox.confirm("此操作将永久删除, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+          .then(async () => {
+            let deleteConfig =
+              type == "chart" ? this.chartDelConfig : this.reportDelConfig;
+            const { payload, status, msg } = await deleteApi({
+              ...deleteConfig,
+              query: { deleteIds: [data.id] },
+            });
+            if (status != 200) Message({ type: "warning", message: msg });
+            (type == "chart" ? this.chartTree : this.reportTree).splice(
+              0,
+              this.chartTree.length,
+              ...payload
+            );
+            this.echarts.list = [];
+          })
+          .catch(() => {});
+      } catch (e) {
+        console.warn("删除失败", e);
+      }
     },
   },
   beforeMount() {
@@ -473,6 +564,10 @@ export default {
   font-style: normal;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.center-test {
+  background: #f00;
+  height: 1200px;
 }
 
 .echar-design-wrapper {
@@ -539,8 +634,25 @@ export default {
     }
   }
   .split-layout {
-    position: relative;
     height: 100%;
+    position: relative;
+    .designer-tree-node {
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      .node-title {
+        width: 100%;
+        font-size: 13px;
+      }
+      .node-tools {
+        display: none;
+        margin-right: 10px;
+      }
+    }
+    .designer-tree-node:hover > .node-tools {
+      display: block;
+    }
     .first {
       // 修复element ui tab的样式
       .el-tabs__item {
@@ -553,9 +665,6 @@ export default {
       .tab-pane {
         width: "120px";
         height: "100%";
-        .tree-node {
-          font-size: 14px;
-        }
       }
     }
     .last {
@@ -575,9 +684,6 @@ export default {
       .tab-pane {
         width: 100%;
         height: "100%";
-        .tree-node {
-          font-size: 13px;
-        }
       }
     }
   }

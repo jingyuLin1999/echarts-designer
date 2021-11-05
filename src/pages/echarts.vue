@@ -1,5 +1,8 @@
 <template>
   <div class="echarts-demo-page">
+    <div class="left">
+      <button @click="close" :style="{ width: width }">textStyle</button>
+    </div>
     <Echarts :echarts="charts" />
   </div>
 </template>
@@ -8,8 +11,14 @@
 import Echarts from "@/components/Echarts";
 export default {
   components: { Echarts },
+  methods: {
+    close() {
+      this.width = this.width == "200px" ? "0px" : "200px";
+    },
+  },
   data() {
     return {
+      width: "200px",
       charts: {
         title: "图表名称",
         theme: "#110C2A",
@@ -196,6 +205,17 @@ export default {
 .echarts-demo-page {
   width: 100%;
   height: 100%;
+  display: flex;
+  justify-content: space-between;
+  .left {
+    height: 100%;
+    background: #f00;
+  }
+  .right {
+    width: 100%;
+    height: 100%;
+    background: #0f0;
+  }
 }
 </style>
 

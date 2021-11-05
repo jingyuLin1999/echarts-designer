@@ -14,6 +14,15 @@ export function chartApi(config = {}) {
   })
 }
 
+export function deleteApi(config = {}) {
+  const { url, method, query } = config;
+  return http({
+    url: url || "",
+    method: method || 'post',
+    [method == 'get' ? "params" : "data"]: query
+  })
+}
+
 /**
  * 防抖函数
  * @param {function} fn

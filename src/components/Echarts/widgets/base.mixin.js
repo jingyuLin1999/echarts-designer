@@ -23,7 +23,6 @@ export default {
     methods: {
         load() {
             this.$setFieldAttr();
-            this.pickAsyncData();
         },
         $setFieldAttr() {
             const defaultFieldAttr = this.defaultFieldAttr();
@@ -31,13 +30,14 @@ export default {
             Object.assign(this.chartData, mergeData)
         },
         async pickAsyncData() {
-            const asyncPaths = this.chartData.dataSource;
+            let asyncPaths = this.chartData.dataSource;
             if (!asyncPaths.length) return;
-            const promiseAll = [];
+            let promiseAll = [];
             this.chartData.responseData = {};
             asyncPaths.map((pathItem) => {
-                const { method, url, params } = pathItem;
-                const queryCondition = Object.assign({ ...pathItem },
+                let { method, url, params } = pathItem;
+                // if (!isUrl(url)) pathItem.url = sessionStorage.getItem("report-baseUrl") + url;
+                let queryCondition = Object.assign({ ...pathItem },
                     { params: strToObj(params), filter: this.echarts.filter });
                 if (method && url) promiseAll.push(chartApi(queryCondition));
             });
@@ -47,7 +47,7 @@ export default {
                     this.chartData.responseData = response.payload || response;
                     if (response) this.runCode();
                 }).catch((e) => {
-                    console.warn(e)
+                    console.warn("url获取异步数据失败",e)
                 });
         },
         runCode() {
@@ -55,7 +55,7 @@ export default {
             if (codding.length > 0) {
                 codding = codding.replace(/return/g, "")
                 const result = eval(codding);
-                if (result && this.checkEchartField(result))
+                if (result) // && this.checkEchartField(result)
                     this.chartData.data = result;
             } else if (this.checkEchartField(responseData))
                 this.chartData.data = result;
