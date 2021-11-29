@@ -152,7 +152,7 @@
                 title="数据源编辑"
                 @close="onCodeEdited"
               >
-                <div id="monaco-codding" class="codding-echart"></div>
+                <textarea id="code-textarea" v-model="code"></textarea>
                 <template #footer>
                   <Button size="small" type="primary" @click="onRunCode"
                     >运行</Button
@@ -193,7 +193,7 @@ import short from "short-uuid";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
-import MonacoMixin from "./monaco.mixin";
+import MonacoMixin from "./codeMirror.mixin";
 import Echarts from "@/components/Echarts";
 import { deleteApi } from "../Echarts/utils";
 import { chartWidgets } from "./meta/widgets";
@@ -355,12 +355,6 @@ export default {
     openSubmitModal() {
       this.isOpenSubmit = !this.isOpenSubmit;
     },
-    onCodeEdited() {
-      this.onRunCode();
-      this.clickedChart.codding = this.monacoEditor.getValue();
-      this.destroyEditor();
-      this.coddingModal = false;
-    },
     async getCanvasWh() {
       await this.$nextTick();
       const canvas = document.getElementById(this.id);
@@ -433,10 +427,10 @@ export default {
         console.warn("获取元数据失败：" + e);
       }
     },
+    // 初始化编辑器
     attrActions(evt) {
       if (evt.name != "codding") return;
       this.coddingModal = !this.coddingModal;
-      this.initMonaco();
       let showTemplate = "";
       let { data } = this.clickedChart;
       let tips =
@@ -445,7 +439,14 @@ export default {
       strData = strData.replace(/,/g, ",\n");
       let example = `let defaultData = ${strData};\nreturn defaultData;`;
       showTemplate = tips + example;
-      this.setValue(showTemplate);
+      this.code = showTemplate;
+      this.initCodemirror();
+    },
+    // 关闭编辑器
+    onCodeEdited() {
+      this.clickedChart.codding = this.editorInstance.getValue();
+      this.coddingModal = false;
+      this.onRunCode();
     },
     $_resizeHandler() {
       this.getCanvasWh();
@@ -457,7 +458,6 @@ export default {
     onTabClick(data) {
       if (data.name == "reportTree") {
         this.activeLeftTab = "chartTree";
-        // this.submitForm.values = {};
       }
       if (data.name == "component") this.echarts.list = [];
       this.clickTab = data.name;
@@ -544,7 +544,6 @@ export default {
     window.addEventListener("resize", this.$_resizeHandler);
   },
   beforeDestroy() {
-    this.destroyEditor();
     window.removeEventListener("resize", this.$_resizeHandler);
   },
 };
@@ -668,11 +667,6 @@ export default {
       }
     }
     .last {
-      .codding-echart {
-        width: 100%;
-        height: 98%;
-        border: 1px solid #cccccc;
-      }
       // 修复element ui tab的样式
       .el-tabs__item {
         width: 150px;
@@ -684,6 +678,10 @@ export default {
       .tab-pane {
         width: 100%;
         height: "100%";
+      }
+      .cm-s-default {
+        width: 100%;
+        height: 99%;
       }
     }
   }

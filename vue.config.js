@@ -1,6 +1,5 @@
 const webpack = require("webpack");
 const path = require('path');
-const MonacoWebpackPlugin = require('monaco-editor-webpack-plugin');
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -24,10 +23,6 @@ module.exports = {
         $: "jquery",
         "window.jQuery": "jquery"
       }),
-      new MonacoWebpackPlugin({
-        // https://github.com/microsoft/monaco-editor-webpack-plugin/issues/32#issuecomment-419428633
-        languages: ['javascript', 'typescript']
-      }),
     ],
     externals: {
       // "@jiaminghi/data-view": "@jiaminghi/data-view",
@@ -36,8 +31,8 @@ module.exports = {
       // "element-ui": "element-ui",
       // "hotkeys-js": "hotkeys-js",
       // "jquery": "jquery",
-      // "monaco-editor": "monaco-editor",
-      // "monaco-editor-webpack-plugin": "monaco-editor-webpack-plugin",
+      // "codemirror": "codemirror",
+      // "prettier": "prettier",
       // "richform": "richform",
       // "ramda": "ramda",
       // "short-uuid": "short-uuid",
@@ -51,6 +46,7 @@ module.exports = {
   },
   // to handle element icon error in build. 
   chainWebpack: config => {
+    // it can improve the speed of the first screen, it is recommended to turn on preload
     config.module
       .rule("fonts")
       .test(/.(ttf|otf|eot|woff|woff2)$/)
