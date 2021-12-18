@@ -1,5 +1,5 @@
-import Base from "./base.vue";
-import { chartApi, isUrl, strToObj } from "../utils";
+import Base from "../widgets/base.vue";
+import { chartApi, isUrl, strToObj } from ".";
 import { mergeDeepRight } from "ramda";
 export default {
     components: { Base },

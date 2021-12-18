@@ -37,96 +37,128 @@
     ]
   },
 
-
-
 1、子组件请在widget拓展
 -->
 <template>
   <div
     :id="chartId"
-    class="echar-wrapper dnd-drop-wrapper"
+    :class="[
+      'echar-wrapper',
+      'dnd-drop-wrapper',
+      design ? 'echarts--grid' : 'echarts--background',
+    ]"
     :style="{
-      background: echarts.background,
-      height: design ? echarts.height + 'px' : '100%',
+      '--gridW': `10px`,
+      '--gridH': `10px`,
+      '--background': echarts.background,
     }"
   >
-    <!-- 可拖动放大图表 -->
-    <vue-draggable-resizable
-      :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
-      v-for="(item, index) in echartsList"
-      :key="item.id"
-      :parent="true"
-      :active="false"
-      :draggable="design"
-      :resizable="design"
-      :x="item.px.x"
-      :y="item.px.y"
-      :z="item.px.z"
-      :w="item.px.width"
-      :h="item.px.height"
-      :snap="true"
-      :isConflictCheck="false"
-      @refLineParams="getRefLineParams"
-      @dragging="onDragging"
-      @resizing="onResize"
-      @activated="onActivated(item)"
-      class-name-dragging="dragging-class"
-    >
-      <div class="tools-wrapper" v-if="design">
-        <span class="delete-echart tool" @click="deleteChart(index)"
-          ><icon class="el-icon-delete"
-        /></span>
+    <PerfectScrollbar :style="{ height: cH + 'px' }">
+      <!-- 移动端 只显示，不做设计 -->
+      <div class="mobile-wrapper" v-if="isMobile && !design">
+        <Field
+          class="chart-unit"
+          v-for="item in echartsList"
+          :key="item.id"
+          :chartData="item"
+          :hooks="hooks"
+          :design="design"
+          :echarts="echarts"
+        >
+        </Field>
       </div>
-      <Border
-        :chartData="item"
-        :hooks="hooks"
-        :design="design"
-        :echarts="echarts"
-      />
-    </vue-draggable-resizable>
-    <!--辅助线-->
-    <span
-      class="ref-line v-line"
-      v-for="item in vLine"
-      :key="item.id"
-      v-show="item.display"
-      :style="{
-        left: item.position,
-        top: item.origin,
-        height: item.lineLength,
-      }"
-    />
-    <span
-      class="ref-line h-line"
-      v-for="item in hLine"
-      :key="item.id"
-      v-show="item.display"
-      :style="{
-        top: item.position,
-        left: item.origin,
-        width: item.lineLength,
-      }"
-    />
-    <!-- 画布点击事件 -->
-    <div class="click-canvas" @click="clickCanvas"></div>
+      <!-- PC端布局 可拖动放大图表 -->
+      <div
+        class="personal-computer"
+        v-else
+        :style="{ height: design ? echarts.height + 'px' : '100%' }"
+      >
+        <vue-draggable-resizable
+          :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
+          v-for="(item, index) in echartsList"
+          :key="item.id"
+          :parent="design"
+          :active="false"
+          :draggable="design"
+          :resizable="design"
+          :x="item.px.x"
+          :y="item.px.y"
+          :z="item.px.z"
+          :w="item.px.width"
+          :h="item.px.height"
+          :snap="true"
+          :grid="[10, 10]"
+          :isConflictCheck="false"
+          @refLineParams="getRefLineParams"
+          @dragging="onDragging"
+          @resizing="onResize"
+          @activated="onActivated(item)"
+          class-name-dragging="dragging-class"
+        >
+          <div class="tools-wrapper" v-if="design">
+            <span class="delete-echart tool" @click="deleteChart(index)"
+              ><icon class="el-icon-delete"
+            /></span>
+          </div>
+          <Field
+            :chartData="item"
+            :hooks="hooks"
+            :design="design"
+            :echarts="echarts"
+          />
+        </vue-draggable-resizable>
+        <!--辅助线-->
+        <span
+          class="ref-line v-line"
+          v-for="item in vLine"
+          :key="item.id"
+          v-show="item.display"
+          :style="{
+            left: item.position,
+            top: item.origin,
+            height: item.lineLength,
+          }"
+        />
+        <span
+          class="ref-line h-line"
+          v-for="item in hLine"
+          :key="item.id"
+          v-show="item.display"
+          :style="{
+            top: item.position,
+            left: item.origin,
+            width: item.lineLength,
+          }"
+        />
+        <!-- 画布点击事件 -->
+        <div class="click-canvas" @click="clickCanvas"></div>
+      </div>
+    </PerfectScrollbar>
   </div>
 </template>
 <script>
-import Border from "./border";
+import Field from "./field";
 import short from "short-uuid";
 import { Icon } from "element-ui";
 import SplitLayout from "../SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
+import { defaultAuthorization } from "./utils/defaultData";
+import { PerfectScrollbar } from "vue2-perfect-scrollbar";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
-import { defaultAuthorization } from "./utils/defaultData";
 import elementResizeDetectorMaker from "element-resize-detector";
 
 export default {
   name: "echart",
   mixins: [hotkeyMixin],
-  components: { Icon, Border, SplitLayout, VueDraggableResizable },
+  components: {
+    Icon,
+    Field,
+    SplitLayout,
+    VueDraggableResizable,
+    PerfectScrollbar,
+  },
   props: {
     design: { type: Boolean, default: false }, // 是否是设计模式
     echarts: { type: Object, default: () => ({}) }, // 设计数据
@@ -141,30 +173,58 @@ export default {
     echartsList() {
       // 适配不同屏宽
       // 异步加载数据延迟需要监听并重新计算
-      this.calcuPctToPx();
+      if (this.isMobile && !this.design) this.calcuMobileWh();
+      else this.calcuPctToPx();
       return this.echarts.list;
     },
   },
   data() {
     return {
-      vLine: [],
-      hLine: [],
+      cW: 1, // client宽
+      cH: 1, // client高
+      vLine: [], // x辅助线
+      hLine: [], // y辅助线
       activeChart: {}, // 目前点击的图表
       beforeActive: {},
-      id: short.generate(),
-      erd: elementResizeDetectorMaker(),
+      isMobile: false, // 是否是移动端
+      id: short.generate(), // id
+      erd: elementResizeDetectorMaker(), // 监听dom变化
     };
   },
   mounted() {
-    this.onAuthorize();
-    const canvasDom = document.getElementById(this.chartId);
-    this.erd.listenTo(canvasDom, (element) => {
-      this.calcuPctToPx();
-      // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
-      window.dispatchEvent(new Event("resize"));
-    });
+    this.init();
   },
   methods: {
+    init() {
+      this.onAuthorize();
+      const canvasDom = document.getElementById(this.chartId);
+      this.erd.listenTo(canvasDom, () => {
+        this.calcuMobileWidth();
+        if (this.isMobile && !this.design) {
+          this.calcuMobileWh();
+        } else {
+          this.calcuPctToPx();
+          // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
+          window.dispatchEvent(new Event("resize"));
+        }
+      });
+    },
+    calcuMobileWh() {
+      let baseWidth = 350,
+        baseHeight = 340;
+      this.echarts.list.map((chartItem) => {
+        let px = chartItem["px"];
+        let takeUpNum = Math.floor((this.cW - 5) / (baseWidth + 5)) || 1;
+        let unitWidth = (this.cW - 5 * takeUpNum - 5) / takeUpNum;
+        px.width = unitWidth;
+        px.height = baseHeight;
+      });
+    },
+    // 根据屏宽判断是否移动端
+    async calcuMobileWidth() {
+      await this.getCanvasWh();
+      this.isMobile = this.cW < 940;
+    },
     // 画布全局参数
     clickCanvas() {
       this.echarts.widget = "canvas";
@@ -201,20 +261,19 @@ export default {
       await this.$nextTick();
       const canvas = document.getElementById(this.chartId);
       if (!canvas) return;
-      const cW = canvas.offsetWidth || 1;
-      const cH = canvas.offsetHeight || 1;
-      return { cW, cH };
+      this.cW = canvas.offsetWidth || 1;
+      this.cH = canvas.offsetHeight || 1;
     },
     // 计算百分比 percentage：pct
     async calcuPct(data) {
       if (!Object.keys(data).length) return;
-      const { cW, cH } = await this.getCanvasWh();
+      await this.getCanvasWh();
       let px = data["px"];
       let pct = data["%"];
-      pct.x = px.x / cW;
-      pct.y = px.y / cH;
-      pct.width = px.width / cW;
-      pct.height = px.height / cH;
+      pct.x = px.x / this.cW;
+      pct.y = px.y / this.cH;
+      pct.width = px.width / this.cW;
+      pct.height = px.height / this.cH;
     },
     // 报表选中
     onActivated(item) {
@@ -245,26 +304,18 @@ export default {
     },
     // 根据百分比和画布大小重新计算px
     async calcuPctToPx() {
-      const { cW, cH } = await this.getCanvasWh();
+      await this.getCanvasWh();
       this.echarts.list.map((chartItem) => {
         let px = chartItem["px"];
         let pct = chartItem["%"];
-        px.x = pct.x * cW;
-        px.y = pct.y * cH;
-        px.width = pct.width * cW;
-        px.height = pct.height * cH;
+        px.x = pct.x * this.cW;
+        px.y = pct.y * this.cH;
+        px.width = pct.width * this.cW;
+        px.height = pct.height * this.cH;
       });
     },
-    // 响应式适配不同屏宽
-    $_resizeHandler() {
-      this.calcuPctToPx();
-    },
-  },
-  beforeMount() {
-    // window.addEventListener("resize", this.$_resizeHandler);
   },
   beforeDestroy() {
-    // window.removeEventListener("resize", this.$_resizeHandler);
     const canvasDom = document.getElementById(this.chartId);
     if (this.erd && canvasDom) this.erd.uninstall(canvasDom);
   },
@@ -276,7 +327,16 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
-  background: #fff;
+  &.echarts--grid {
+    background: linear-gradient(-90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px)
+        0% 0% / var(--gridW) var(--gridH),
+      linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px) 0% 0% /
+        var(--gridW) var(--gridH),
+      var(--background);
+  }
+  &.echarts--background {
+    background: var(--background);
+  }
   .click-canvas {
     position: absolute;
     left: 0;
@@ -286,27 +346,42 @@ export default {
     z-index: 0;
   }
   .dragging-class {
-    // background-color: #fff;
     border: 1px solid black;
   }
   .clear-design-border {
     border: 0;
   }
-  .draggable-wrapper {
-    .tools-wrapper {
-      width: 95%;
-      height: 20px;
-      padding: 0 5px;
-      position: absolute;
-      right: 0;
-      top: 0;
-      z-index: 9999;
-      display: flex;
-      justify-content: flex-end;
-      align-items: center;
-      > span {
-        cursor: pointer;
+  // PC端
+  .personal-computer {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    .draggable-wrapper {
+      .tools-wrapper {
+        width: 95%;
+        height: 20px;
+        padding: 0 5px;
+        position: absolute;
+        right: 0;
+        top: 0;
+        z-index: 9999;
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+        > span {
+          cursor: pointer;
+        }
       }
+    }
+  }
+  // 移动端
+  .mobile-wrapper {
+    display: flex;
+    flex-wrap: wrap;
+    padding-left: 5px;
+    .chart-unit {
+      margin-right: 5px;
+      margin-bottom: 5px;
     }
   }
 }

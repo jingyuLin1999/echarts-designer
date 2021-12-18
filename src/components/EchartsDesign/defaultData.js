@@ -1,101 +1,108 @@
 import { baseForm, baseSchema } from "./meta/base";
-
-export const formTemplate = baseForm;
-export const schemaTemplate = baseSchema;
-
-// 提交图表
-export const defaultChartSchema = {
-    title: {
-        type: "string",
-        minLength: 1,
-        require: true,
+// 图表
+export const chartSchema = {
+    ...baseSchema,
+    properties: {
+        title: {
+            type: "string",
+            minLength: 1,
+            require: true,
+        },
     },
 }
 
-export const defaultChartLayout = [
-    {
-        title: "图表名称",
-        name: "title",
-        widget: "input",
-        size: "samll",
-    },
-    {
-        title: "图标",
-        description: "element icon",
-        name: "icon",
-        widget: "input",
-        size: "samll",
-    },
-    {
-        title: "父节点",
-        widget: "tree",
-        name: "parentid",
-        isShowCheckbox: false,
-        onlyCheckedKeys: true,
-        nodeKey: "id",
-        defaultProps: {
-            // 字段对应关系
-            label: "title",
+export const chartForm = {
+    ...baseForm,
+    grid: true,
+    layout: [
+        {
+            title: "图表名称",
+            name: "title",
+            widget: "input",
+            size: "small",
         },
-        options: [],
-    },
-    {
-        title: "描述",
-        name: "description",
-        widget: "input",
-        type: "textarea",
-        size: "mini",
-        rows: 3,
-    },
-]
-
-// 提交报表
-export const defaultReportSchema = {
-    title: {
-        type: "string",
-        minLength: 1,
-        require: true,
-    },
-    // parentid: {
-    //     type: "string",
-    //     minLength: 1,
-    //     require: true,
-    // },
+        {
+            title: "图标",
+            description: "element icon",
+            name: "icon",
+            widget: "input",
+            size: "small",
+        },
+        {
+            title: "父节点",
+            widget: "tree",
+            name: "parentid",
+            isShowCheckbox: false,
+            onlyCheckedKeys: true,
+            nodeKey: "id",
+            defaultProps: {
+                // 字段对应关系
+                label: "title",
+            },
+            options: [],
+        },
+        {
+            title: "描述",
+            name: "description",
+            widget: "input",
+            type: "textarea",
+            size: "mini",
+            rows: 3,
+        },
+    ]
 }
 
-export const defaultReportLayout = [
-    {
-        title: "报表名称",
-        name: "title",
-        widget: "input",
-        size: "samll",
-    },
-    {
-        title: "图标",
-        description: "element icon",
-        name: "icon",
-        widget: "input",
-        size: "samll",
-    },
-    {
-        title: "父节点",
-        widget: "tree",
-        name: "parentid",
-        isShowCheckbox: false,
-        onlyCheckedKeys: true,
-        nodeKey: "id",
-        defaultProps: {
-            // 字段对应关系
-            label: "title",
+
+// 报表
+export const reportSchema = {
+    ...baseSchema,
+    properties: {
+        title: {
+            type: "string",
+            minLength: 1,
+            require: true,
         },
-        options: [],
-    },
-    {
-        title: "描述",
-        name: "description",
-        widget: "input",
-        type: "textarea",
-        size: "mini",
-        rows: 3,
     }
-]
+}
+
+export const reportForm = {
+    ...baseForm,
+    grid: true,
+    layout: [
+        {
+            title: "报表名称",
+            name: "title",
+            widget: "input",
+            size: "small",
+        },
+        {
+            title: "图标",
+            description: "element icon",
+            name: "icon",
+            widget: "input",
+            size: "small",
+        },
+        {
+            title: "父节点",
+            widget: "tree",
+            name: "parentid",
+            isShowCheckbox: false,
+            onlyCheckedKeys: true,
+            nodeKey: "id",
+            defaultProps: {
+                // 字段对应关系
+                label: "title",
+            },
+            options: [],
+        },
+        {
+            title: "描述",
+            name: "description",
+            widget: "input",
+            type: "textarea",
+            size: "mini",
+            rows: 3,
+        }
+    ]
+
+}

@@ -1,5 +1,5 @@
 <!-- 
-    pie chart
+    饼图
 -->
 <template>
   <div class="pie-wrapper">
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "./base.mixin";
+import BaseMixin from "../utils/base.mixin";
 export default {
   name: "basicline",
   mixins: [BaseMixin],

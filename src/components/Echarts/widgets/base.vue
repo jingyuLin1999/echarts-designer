@@ -43,12 +43,6 @@ export default {
     },
   },
   methods: {
-    redraw() {
-      this.chart.setOption(this.chartData.data, true);
-    },
-    resize() {
-      this.chart.resize();
-    },
     createChart() {
       this.$nextTick(() => {
         const theme = this.echarts.theme;
@@ -58,6 +52,12 @@ export default {
         );
         this.chart.setOption(this.chartData.data);
       });
+    },
+    redraw() {
+      this.chart.setOption(this.chartData.data, true);
+    },
+    resize() {
+      this.chart.resize();
     },
   },
 };

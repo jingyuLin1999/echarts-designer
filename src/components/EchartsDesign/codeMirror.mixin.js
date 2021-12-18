@@ -13,6 +13,7 @@ export default {
             if (this.editorInstance) { this.toFormate(); return; }
             if (!this.editorInstance) await new Promise(resolve => (setTimeout(() => (resolve()), 200)))
             const editTextarea = document.getElementById("code-textarea");
+            if(!editTextarea) return;
             this.editorInstance = CodeMirror.fromTextArea(editTextarea, {
                 value: this.code,
                 mode: "javascript"

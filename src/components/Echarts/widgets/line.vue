@@ -1,5 +1,5 @@
 <!-- 
-    line chart
+    折线图
 -->
 <template>
   <div class="line-wrapper">
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "./base.mixin";
+import BaseMixin from "../utils/base.mixin";
 export default {
   name: "basicline",
   mixins: [BaseMixin],

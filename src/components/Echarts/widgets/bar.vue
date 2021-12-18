@@ -1,6 +1,4 @@
-<!-- 
-    bar chart
--->
+<!--  柱形图 -->
 <template>
   <div class="bar-wrapper">
     <Base
@@ -12,7 +10,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "./base.mixin";
+import BaseMixin from "../utils/base.mixin";
 export default {
   name: "bar",
   mixins: [BaseMixin],

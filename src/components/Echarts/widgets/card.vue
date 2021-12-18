@@ -54,7 +54,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "./base.mixin";
+import BaseMixin from "../utils/base.mixin";
 import countTo from "vue-count-to";
 export default {
   name: "card",

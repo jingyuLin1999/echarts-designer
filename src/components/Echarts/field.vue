@@ -1,5 +1,5 @@
 <template>
-  <div class="field-wrapper">
+  <perfectBorder :item="chartData">
     <component
       class="async-component"
       :hooks="hooks"
@@ -8,12 +8,14 @@
       :chartData="chartData"
       :echarts="echarts"
     />
-  </div>
+  </perfectBorder>
 </template>
 
 <script>
+import perfectBorder from "./pefectBorder.vue";
 export default {
   name: "field",
+  components: { perfectBorder },
   props: {
     design: { type: Boolean, default: false },
     hooks: { type: Object, default: () => ({}) },
@@ -41,8 +43,5 @@ export default {
 .async-component {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
 }
 </style>

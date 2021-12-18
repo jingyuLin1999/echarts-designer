@@ -4,6 +4,16 @@
 -->
 <template>
   <div class="echar-design-wrapper">
+    <modal
+      v-model="viewJson"
+      width="45%"
+      height="40%"
+      resize
+      title="查看JSON"
+      :showFooter="false"
+    >
+      {{ echarts.list }}
+    </modal>
     <header class="design-header" v-if="showHeader">
       <div class="header-left">
         <a
@@ -15,49 +25,46 @@
         <h1 class="report-disigner-title">报表设计器</h1>
       </div>
       <div class="tools-right">
-        <div><i class="el-icon-document-add">生成JSON</i></div>
+        <div>
+          <i class="el-icon-document-add" @click="viewJson = true">生成JSON</i>
+        </div>
         <div class="tool" @click="preview">
           <i class="el-icon-view" v-if="design">预览</i>
           <i class="el-icon-setting" v-else>设计</i>
         </div>
-        <div
-          :class="[
-            clickTab == 'chartTree' || clickTab == 'reportTree'
-              ? ''
-              : 'disabled-submit',
-          ]"
-        >
-          <i class="el-icon-s-promotion" @click="openSubmitModal"
-            >保存<span class="save-type">{{
-              clickTab == "reportTree" ? "报表" : "图表"
-            }}</span></i
+        <div>
+          <i class="el-icon-pie-chart" @click="openSubmitModalModal('chart')"
+            >保存图表</i
+          >
+        </div>
+        <div :class="[false ? '' : 'disabled-submit']">
+          <i class="el-icon-s-promotion" @click="openSubmitModalModal('report')"
+            >保存报表</i
           >
         </div>
       </div>
       <modal
-        v-model="isOpenSubmit"
+        v-model="openSubmitModal"
         width="45%"
-        height="45%"
-        showFooter
+        height="40%"
         resize
-        title="新增&更新"
+        showFooter
+        :title="modalType == 'chart' ? '保存图表' : '保存报表'"
         :style="{ zIndex: 1000 }"
+        @close="closeSubmitModal"
       >
         <RichForm
           class="submit-form"
-          :schema="submitLayout.schema"
-          :values="submitLayout.values"
-          :form="submitLayout.form"
-          :hooks="submitLayout.hooks"
+          :form="submitForm"
+          :hooks="submitHooks"
+          :schema="submitSchema"
+          :values="submitValues"
         />
         <template #footer>
-          <Button
-            size="small"
-            type="primary"
-            @click="isOpenSubmit = !isOpenSubmit"
+          <Button size="small" type="success" @click="sureSubmit">确定</Button>
+          <Button size="small" @click="openSubmitModal = !openSubmitModal"
             >取消</Button
           >
-          <Button size="small" type="success" @click="onSubmit">确定</Button>
         </template>
       </modal>
     </header>
@@ -70,7 +77,7 @@
       >
         <template slot="first">
           <!-- 左侧报表组件 -->
-          <tabs v-model="activeLeftTab" @tab-click="onTabClick">
+          <tabs v-model="activeLeftTab">
             <tab-pane
               label="图表组件"
               name="component"
@@ -100,10 +107,10 @@
               <tree :data="chartsTree" default-expand-all>
                 <div
                   class="tree-node designer-tree-node"
-                  :data="onString(data)"
                   slot-scope="{ node, data }"
+                  :data="onString(data)"
                 >
-                  <div class="node-title" @click="onEidtChart(data)">
+                  <div class="node-title" @click="clickChartNode(data)">
                     <icon :class="[data.icon]"></icon>
                     <span class="node-label">
                       {{ data.title || data.label }}
@@ -121,26 +128,24 @@
           </tabs>
         </template>
         <template slot="center">
-          <PerfectScrollbar>
-            <Echarts
-              :echarts="echarts"
-              :design="design"
-              :hooks="hooks"
-              :echartsId="id"
-              :authorization="authorization"
-              @designItem="onClickedChart"
-            />
-          </PerfectScrollbar>
+          <Echarts
+            :echarts="echarts"
+            :design="design"
+            :hooks="hooks"
+            :echartsId="id"
+            :authorization="authorization"
+            @designItem="onClickedChart"
+          />
         </template>
         <!-- 报表属性 -->
         <template slot="last">
-          <tabs v-model="activeRightTab" @tab-click="onTabClick">
+          <tabs v-model="activeRightTab">
             <tab-pane label="属性配置" name="attribute" class="tab-pane">
               <RichForm
                 deepValues
-                :schema="attrForm.schema"
-                :values="attrForm.values"
-                :form="attrForm.form"
+                :form="attrForm"
+                :schema="attrSchema"
+                :values="attrValues"
                 @action="attrActions"
               />
               <modal
@@ -188,7 +193,6 @@
   </div>
 </template>
 <script>
-import { pick } from "ramda";
 import short from "short-uuid";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
@@ -199,7 +203,14 @@ import { deleteApi } from "../Echarts/utils";
 import { chartWidgets } from "./meta/widgets";
 import DnDMixin from "../Echarts/utils/dnd.mixin.js";
 import SplitLayout from "@/components/SplitLayout";
-import { PerfectScrollbar } from "vue2-perfect-scrollbar";
+
+import { defaultContainer } from "../Echarts/utils/defaultData";
+import {
+  chartSchema,
+  chartForm,
+  reportSchema,
+  reportForm,
+} from "./defaultData";
 import "element-ui/lib/theme-chalk/index.css";
 import {
   Tabs,
@@ -210,15 +221,6 @@ import {
   MessageBox,
   Message,
 } from "element-ui";
-import { defaultContainer } from "../Echarts/utils/defaultData";
-import {
-  formTemplate,
-  schemaTemplate,
-  defaultChartSchema,
-  defaultChartLayout,
-  defaultReportSchema,
-  defaultReportLayout,
-} from "./defaultData";
 
 export default {
   name: "echart",
@@ -235,7 +237,6 @@ export default {
     Echarts,
     RichForm,
     SplitLayout,
-    PerfectScrollbar,
   },
   props: {
     showHeader: { type: Boolean, default: true },
@@ -243,18 +244,20 @@ export default {
     chartTree: { type: Array, default: () => [] }, // 图表列表
     reportTree: { type: Array, default: () => [] }, // 报表列表
     hooks: { type: Object, default: () => ({}) }, // 钩子
-    authorization: { type: Object, default: () => ({}) },
-    chartLayout: { type: Array, default: () => [] },
-    chartSchema: { type: Object, default: () => ({}) },
-    reportLayout: { type: Array, default: () => [] },
-    reportSchema: { type: Object, default: () => ({}) },
-    chartDelConfig: { type: Object, default: () => ({}) },
-    reportDelConfig: { type: Object, default: () => ({}) },
+    authorization: { type: Object, default: () => ({}) }, // 权限
+    // chartLayout: { type: Array, default: () => [] },
+    // chartSchema: { type: Object, default: () => ({}) },
+    // reportLayout: { type: Array, default: () => [] },
+    // reportSchema: { type: Object, default: () => ({}) },
+    // chartDelConfig: { type: Object, default: () => ({}) },
+    // reportDelConfig: { type: Object, default: () => ({}) },
   },
   data() {
     return {
       id: short.generate(),
       design: true,
+      coddingModal: false, // 打开代码弹窗
+      viewJson: false, // 查看json
       dragOptions: {
         selector: ".tree-node",
       },
@@ -264,6 +267,7 @@ export default {
         preventDefault: true,
         selector: [".dnd-drop-wrapper"],
       },
+      // 标签
       clickTab: "component", // 当前点击的tab
       activeLeftTab: "component", // 左侧标签页
       activeRightTab: "attribute", // 右侧标签页
@@ -273,127 +277,60 @@ export default {
         height: 0,
       },
       chartWidgets, // 左侧子组件元数据
-      attrForm: {
-        // 属性表单
-        schema: {},
-        values: {},
-        form: {},
-      },
-      coddingModal: false, // 打开代码弹窗
-      isOpenSubmit: false, // 打开提交窗口
+      // 属性表单
+      attrSchema: {},
+      attrValues: {},
+      attrForm: {},
+      // 弹窗表单
+      submitValues: {},
+      submitSchema: {},
+      submitForm: {},
+      submitHooks: {},
+      // 弹窗
+      modalType: "", // 弹窗类型
+      openSubmitModal: false, // 打开提交窗口
+
       clickedChart: {}, // 点击的图表数据
-      submitForm: {
-        // 提交的表单
-        values: {},
-        schema: {},
-        form: {},
-        hooks: {},
-      },
     };
   },
   computed: {
     drawEchart() {
       return Object.assign(defaultContainer, this.echarts);
     },
-    submitLayout() {
-      let cloneForm = this.colenJson(formTemplate);
-      let cloneSchema = this.colenJson(schemaTemplate);
-      if (this.clickTab == "reportTree") {
-        let treeWidget = defaultReportLayout.find(
-          (item) => item.widget == "tree"
-        );
-        if (treeWidget) treeWidget.options = [...this.reportTree];
-        cloneForm.layout =
-          this.reportLayout.length > 0
-            ? this.reportLayout
-            : defaultReportLayout;
-        cloneSchema.properties =
-          Object.keys(this.reportSchema).length > 0
-            ? this.reportSchema
-            : defaultReportSchema;
-      } else {
-        let treeWidget = defaultChartLayout.find(
-          (item) => item.widget == "tree"
-        );
-        if (treeWidget) treeWidget.options = [...this.chartTree];
-        cloneForm.layout =
-          this.chartLayout.length > 0 ? this.chartLayout : defaultChartLayout;
-        cloneSchema.properties =
-          Object.keys(this.chartSchema).length > 0
-            ? this.chartSchema
-            : defaultChartSchema;
-      }
-      this.$set(this.submitForm, "schema", cloneSchema);
-      this.$set(this.submitForm, "form", cloneForm);
-      return this.submitForm;
-    },
     chartsTree() {
       setTimeout(() => {
         this.dndEnabled();
-      }, 1000);
+      }, 800);
       return this.chartTree;
     },
-  },
-  created() {
-    this.initHook();
   },
   mounted() {
     this.load();
   },
   methods: {
     load() {
+      this.initHook();
       this.getCanvasWh();
     },
     initHook() {
       this.hooks.preview = this.preview;
-      this.hooks.openSubmit = this.openSubmitModal;
-      this.hooks.onSubmit = this.onSubmit;
+      this.hooks.sureSubmit = this.sureSubmit;
     },
     preview() {
       this.design = !this.design;
     },
-    openSubmitModal() {
-      this.isOpenSubmit = !this.isOpenSubmit;
+    onString(item) {
+      return JSON.stringify(item);
     },
-    async getCanvasWh() {
-      await this.$nextTick();
-      const canvas = document.getElementById(this.id);
-      if (!canvas) return;
-      this.canvas.width = canvas.offsetWidth;
-      this.canvas.height = canvas.offsetHeight;
+    cloneJson(obj) {
+      return JSON.parse(this.onString(obj));
     },
     onDragstart(source, event) {
       return `${$(source).attr("data")}`;
     },
-    onString(item) {
-      return JSON.stringify(item);
-    },
-    colenJson(obj) {
-      return JSON.parse(this.onString(obj));
-    },
-    dropFilter(chart) {
-      // 当tab为图表时不允许拖拽
-      if (
-        (this.activeLeftTab == "chartTree" &&
-          this.activeRightTab != "reportTree") ||
-        (this.echarts.list.length > 0 && this.activeRightTab != "reportTree") ||
-        !this.design
-      )
-        return true;
-      let hasChart = this.echarts.list.find((item) => item.id == chart.id);
-      if (hasChart) return true;
-      return false;
-    },
     onDrop(target, data, event) {
       let chart = JSON.parse(data);
-      if (this.dropFilter(chart)) return;
-
-      // 兼容
-      if (chart.meta) {
-        let meta = JSON.parse(chart.meta);
-        meta.id = chart.id;
-        chart = meta;
-      } else chart.id = short.generate();
+      chart.id = short.generate();
       let { offsetX, offsetY } = event;
       chart.px.x = offsetX - chart.px.width / 2;
       chart.px.y = offsetY - chart.px.height / 2;
@@ -409,23 +346,6 @@ export default {
       pct.y = px.y / cH;
       pct.width = px.width / cW;
       pct.height = px.height / cH;
-    },
-    onClickedChart(item) {
-      try {
-        if (!this.design) return;
-        this.clickedChart = item;
-        if (this.clickTab == "reportTree" && item.widget == "canvas")
-          this.activeRightTab = "attribute";
-        const { form, schema, values } = require(`./meta/${item.widget}`);
-        this.$set(this.attrForm, "values", item);
-        this.$set(this.attrForm, "form", JSON.parse(JSON.stringify(form)));
-        this.$set(this.attrForm, "schema", JSON.parse(JSON.stringify(schema)));
-      } catch (e) {
-        this.$set(this.attrForm, "values", {});
-        this.$set(this.attrForm, "form", {});
-        this.$set(this.attrForm, "schema", {});
-        console.warn("获取元数据失败：" + e);
-      }
     },
     // 初始化编辑器
     attrActions(evt) {
@@ -445,99 +365,87 @@ export default {
     // 关闭编辑器
     onCodeEdited() {
       this.clickedChart.codding = this.editorInstance.getValue();
-      this.coddingModal = false;
       this.onRunCode();
+      this.coddingModal = false;
     },
+    // 监听DOM是否变化
     $_resizeHandler() {
       this.getCanvasWh();
     },
-    clickReportNode(data, node) {
-      this.pickFormValues(data);
-      this.$emit("reportNode", data, node);
+    async getCanvasWh() {
+      await this.$nextTick();
+      const canvas = document.getElementById(this.id);
+      if (!canvas) return;
+      this.canvas.width = canvas.offsetWidth;
+      this.canvas.height = canvas.offsetHeight;
     },
-    onTabClick(data) {
-      if (data.name == "reportTree") {
-        this.activeLeftTab = "chartTree";
+    // 加载元数据
+    onClickedChart(item) {
+      try {
+        if (!this.design) return;
+        this.clickedChart = item;
+        const { form, schema, values } = require(`./meta/${item.widget}`);
+        this.attrValues = item;
+        this.attrForm = this.cloneJson(form);
+        this.attrSchema = this.cloneJson(schema);
+      } catch (e) {
+        this.attrSchema = {};
+        this.attrForm = {};
+        this.attrValues = {};
+        console.warn("获取元数据失败：" + e);
       }
-      if (data.name == "component") this.echarts.list = [];
-      this.clickTab = data.name;
     },
-    onEidtChart(data) {
-      if (!data.meta || this.clickTab == "reportTree") return;
-      this.echarts.list = [];
-      let meta = JSON.parse(data.meta);
-      this.echarts.list.push(meta);
-      this.pickFormValues(data);
+    clickReportNode(data) {
+      this.$emit("reportNode", data);
     },
-    pickFormValues(data) {
-      let pickValue = pick(
-        ["id", "icon", "description", "parentid", "title"],
-        data
-      );
-      this.$set(this.submitForm, "values", pickValue);
+    clickChartNode(data) {
+      this.$emit("chartNode", data);
     },
-    async onSubmit() {
-      if (!this.submitForm.hooks.validate()) return;
-      this.isOpenSubmit = !this.isOpenSubmit;
-      const emitData = {
-        form: this.submitLayout.values,
-        chartUReport: [],
-      };
-      if (!this.submitLayout.values.parentid)
-        this.submitLayout.values.parentid = null;
-      // 组装数据
-      if (this.clickTab == "chartTree") {
-        const meta = this.echarts.list[0] || {};
-        meta.responseData = []; // 响应数据
-        emitData.form.meta = meta;
-      } else if (this.clickTab == "reportTree") {
-        this.echarts.list.map((item) => {
-          emitData.chartUReport.push({
-            reportid: emitData.form.id,
-            chartid: item.id,
-            pxunit: item["px"],
-            flexunit: item["%"],
-          });
-        });
-        emitData.form.attributes = pick(
-          ["title", "background", "theme", "height", "filter"],
-          this.echarts
-        );
-      }
-      this.$emit("actions", this.clickTab, emitData);
-      this.submitLayout.values = {};
+    // ====================以下可能有问题====================
+    closeSubmitModal() {
+      console.log(123);
+    },
+    openSubmitModalModal(type) {
+      this.modalType = type;
+      this.submitSchema = type == "chart" ? chartSchema : reportSchema;
+      this.submitForm = type == "chart" ? chartForm : reportForm;
+      this.openSubmitModal = !this.openSubmitModal;
+    },
+    sureSubmit() {
+      if (!this.submitHooks.validate()) return; // 校验
+      this.$emit("submitValues", this.submitValues);
     },
     onDelete(data, type) {
-      try {
-        if (
-          (type == "chart" && Object.keys(this.chartDelConfig).length == 0) ||
-          (type == "report" && Object.keys(this.reportDelConfig).length == 0)
-        )
-          return;
-        MessageBox.confirm("此操作将永久删除, 是否继续?", "提示", {
-          confirmButtonText: "确定",
-          cancelButtonText: "取消",
-          type: "warning",
-        })
-          .then(async () => {
-            let deleteConfig =
-              type == "chart" ? this.chartDelConfig : this.reportDelConfig;
-            const { payload, status, msg } = await deleteApi({
-              ...deleteConfig,
-              query: { deleteIds: [data.id] },
-            });
-            if (status != 200) Message({ type: "warning", message: msg });
-            (type == "chart" ? this.chartTree : this.reportTree).splice(
-              0,
-              this.chartTree.length,
-              ...payload
-            );
-            this.echarts.list = [];
-          })
-          .catch(() => {});
-      } catch (e) {
-        console.warn("删除失败", e);
-      }
+      // try {
+      //   if (
+      //     (type == "chart" && Object.keys(this.chartDelConfig).length == 0) ||
+      //     (type == "report" && Object.keys(this.reportDelConfig).length == 0)
+      //   )
+      //     return;
+      //   MessageBox.confirm("此操作将永久删除, 是否继续?", "提示", {
+      //     confirmButtonText: "确定",
+      //     cancelButtonText: "取消",
+      //     type: "warning",
+      //   })
+      //     .then(async () => {
+      //       let deleteConfig =
+      //         type == "chart" ? this.chartDelConfig : this.reportDelConfig;
+      //       const { payload, status, msg } = await deleteApi({
+      //         ...deleteConfig,
+      //         query: { deleteIds: [data.id] },
+      //       });
+      //       if (status != 200) Message({ type: "warning", message: msg });
+      //       (type == "chart" ? this.chartTree : this.reportTree).splice(
+      //         0,
+      //         this.chartTree.length,
+      //         ...payload
+      //       );
+      //       this.echarts.list = [];
+      //     })
+      //     .catch(() => {});
+      // } catch (e) {
+      //   console.warn("删除失败", e);
+      // }
     },
   },
   beforeMount() {
@@ -556,7 +464,6 @@ export default {
     url("./iconfont/iconfont.woff?t=1635472525124") format("woff"),
     url("./iconfont/iconfont.ttf?t=1635472525124") format("truetype");
 }
-
 .iconfont {
   font-family: "iconfont" !important;
   font-size: 16px;
@@ -564,11 +471,6 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-.center-test {
-  background: #f00;
-  height: 1200px;
-}
-
 .echar-design-wrapper {
   width: 100%;
   height: 100%;
@@ -665,6 +567,9 @@ export default {
         width: "120px";
         height: "100%";
       }
+    }
+    .center {
+      position: relative;
     }
     .last {
       // 修复element ui tab的样式
