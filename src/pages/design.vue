@@ -127,8 +127,8 @@ export default {
             valueSize: "23px",
             distance: 10,
             border: {
-              type: "0",
-              reverse: false,
+              type: "7",
+              reverse: true,
               color: [],
             },
             px: {

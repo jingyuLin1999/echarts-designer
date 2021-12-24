@@ -27,7 +27,7 @@ export default {
             valueSize: "23px",
             distance: 10,
             border: {
-              type: "8",
+              type: "7",
               reverse: false,
               color: [],
             },

@@ -40,19 +40,15 @@ export const borderLayout = {
         },
         {
             value: "6",
-            label: "灰色边框",
+            label: "间断边框",
         },
         {
             value: "7",
-            label: "四角亮光",
+            label: "直角亮光",
         },
         {
             value: "8",
             label: "正奔跑光",
-        },
-        {
-            value: "8reverse",
-            label: "反奔跑光",
         },
         {
             value: "9",
@@ -65,6 +61,10 @@ export const borderLayout = {
         {
             value: "12",
             label: "四角弯曲",
+        },
+        {
+            value: "13",
+            label: "左上凸起",
         },
         {
             value: "0",

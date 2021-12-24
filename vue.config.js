@@ -17,13 +17,7 @@ module.exports = {
         '@': resolve('src')
       }
     },
-    plugins: [
-      new webpack.ProvidePlugin({
-        jQuery: "jquery",
-        $: "jquery",
-        "window.jQuery": "jquery"
-      }),
-    ],
+    plugins: [],
     externals: {
       // "@jiaminghi/data-view": "@jiaminghi/data-view",
       // "axios": "axios",

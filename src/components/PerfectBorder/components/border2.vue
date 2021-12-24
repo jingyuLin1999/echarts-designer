@@ -56,7 +56,7 @@ export default {
     return {
       ref: "border-box-2",
 
-      defaultColor: ["#235fa7", "#4fd2dd"],
+      defaultColor: ["#235fa7", "#235fa7"],
 
       mergedColor: [],
     };
