@@ -1,5 +1,5 @@
 <template>
-  <perfectBorder :item="chartData">
+  <PerfectBorder :border="chartData.border">
     <component
       class="async-component"
       :hooks="hooks"
@@ -8,14 +8,14 @@
       :chartData="chartData"
       :echarts="echarts"
     />
-  </perfectBorder>
+  </PerfectBorder>
 </template>
 
 <script>
-import perfectBorder from "./pefectBorder.vue";
+import PerfectBorder from "../PerfectBorder";
 export default {
   name: "field",
-  components: { perfectBorder },
+  components: { PerfectBorder },
   props: {
     design: { type: Boolean, default: false },
     hooks: { type: Object, default: () => ({}) },
@@ -27,7 +27,6 @@ export default {
       let widget = this.chartData.widget.toLowerCase();
       if (widget == undefined) widget = "bar";
       return () => ({
-        // to handle bug of after build.
         component: new Promise(async (resolve) => {
           resolve(await require(`./widgets/${widget}`));
         }),

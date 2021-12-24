@@ -13,7 +13,7 @@ export default {
             if (this.editorInstance) { this.toFormate(); return; }
             if (!this.editorInstance) await new Promise(resolve => (setTimeout(() => (resolve()), 200)))
             const editTextarea = document.getElementById("code-textarea");
-            if(!editTextarea) return;
+            if (!editTextarea) return;
             this.editorInstance = CodeMirror.fromTextArea(editTextarea, {
                 value: this.code,
                 mode: "javascript"
@@ -29,12 +29,12 @@ export default {
             this.editorInstance.setValue(formatCode);
         },
         onRunCode() {
-            let { responseData } = this.clickedChart;
+            let responseData = this.hooks.responseData[this.clickedChart.id];
             let codeStr = this.editorInstance.getValue();
             codeStr = codeStr.replace(/return/g, "")
             let runResult = eval(codeStr);
             this.clickedChart.data = runResult;
-            // this.toFormate();
+            this.toFormate();
         }
     },
     data() {

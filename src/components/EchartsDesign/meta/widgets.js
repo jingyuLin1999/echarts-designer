@@ -9,17 +9,20 @@ export const chartWidgets = [
                 id: "card",
                 title: "卡片图",
                 widget: "card",
-                borderType: "",
                 titleColor: "#8c8c8c",
                 valueColor: "#333",
                 titleSize: "15px",
                 valueSize: "23px",
                 distance: 10,
+                border: {
+                    type: "0",
+                    reverse: false,
+                    color: [],
+                },
                 "px": { "x": 2, "width": 1001, "y": 40.5, "z": 999, "height": 113 },
                 "%": { "x": 0.0018181818181818182, "width": 0.91, "y": 0.0432230522945571, "height": 0.12059765208110992 },
                 dataSource: [],
                 codding: "", // 逻辑
-                responseData: [], // 响应数据
                 data: [
                     {
                         title: "登入次数",
@@ -51,15 +54,41 @@ export const chartWidgets = [
                 // 报表数据
                 title: "柱形图",
                 widget: "bar", // 组件名称
-                borderType: "1",
-                px: { "x": 255, "y": 389, "width": 379, "height": 231, "z": 999 },
-                "%": { "x": 0.1842485549132948, "y": 0.4151547491995731, "width": 0.2738439306358382, "height": 0.24653148345784417 },
+                border: {
+                    type: "1",
+                    reverse: false,
+                    color: [],
+                },
+                "px": {
+                    "x": -1130,
+                    "width": 1126.450867052023,
+                    "y": -117,
+                    "z": 999,
+                    "height": 114
+                },
+                "%": {
+                    "x": -0.9973521624007061,
+                    "width": 0.9942196531791907,
+                    "y": -0.1248665955176094,
+                    "height": 0.12166488794023479
+                },
                 dataSource: [],
                 codding: "", // 逻辑
-                responseData: [], // 响应数据
                 data: { // 图标数据
                     title: {
                         text: "ECharts 入门示例",
+                        left: "left",
+                        textStyle: {
+                            fontStyle: "normal",
+                            color: "#f00",
+                        },
+                        subtext: "",
+                    },
+                    legend: {
+                        orient: "horizontal",
+                        right: 10,
+                        top: 0,
+                        bottom: 0,
                     },
                     tooltip: {},
                     xAxis: {
@@ -79,7 +108,11 @@ export const chartWidgets = [
                 id: "2",
                 title: "折线图",
                 widget: "bar",
-                borderType: "8",
+                border: {
+                    type: "8",
+                    reverse: false,
+                    color: [],
+                },
                 px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
                 "%": {
                     x: 0,
@@ -94,8 +127,22 @@ export const chartWidgets = [
                     },
                 ],
                 codding: "",
-                responseData: [],
                 data: {
+                    title: {
+                        text: "折线图",
+                        left: "left",
+                        textStyle: {
+                            fontStyle: "normal",
+                            color: "",
+                        },
+                        subtext: "",
+                    },
+                    legend: {
+                        orient: "horizontal",
+                        right: 10,
+                        top: 0,
+                        bottom: 0,
+                    },
                     xAxis: {
                         type: "category",
                         data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -115,7 +162,11 @@ export const chartWidgets = [
                 id: "3",
                 title: "饼状图",
                 widget: "pie",
-                borderType: "8",
+                border: {
+                    type: "8",
+                    reverse: false,
+                    color: [],
+                },
                 px: { x: 0, y: 0, width: 350, height: 337, z: 999 },
                 "%": {
                     x: 0.6,
@@ -130,7 +181,6 @@ export const chartWidgets = [
                     },
                 ],
                 codding: "",
-                responseData: [],
                 data: {
                     title: {
                         text: "Referer of a Website",

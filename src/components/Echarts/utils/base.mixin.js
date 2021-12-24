@@ -9,6 +9,7 @@ export default {
         hooks: { type: Object, default: () => ({}) },
         echarts: { type: Object, default: () => ({}) },
     },
+    inject: ["responseData"],
     watch: {
         "chartData.dataSource": {
             handler(newVal, oldVal) {
@@ -23,6 +24,7 @@ export default {
     methods: {
         load() {
             this.$setFieldAttr();
+            this.pickAsyncData();
         },
         $setFieldAttr() {
             const defaultFieldAttr = this.defaultFieldAttr();
@@ -31,9 +33,9 @@ export default {
         },
         async pickAsyncData() {
             let asyncPaths = this.chartData.dataSource;
-            if (!asyncPaths.length) return;
+            if (asyncPaths.length == 0) return;
             let promiseAll = [];
-            this.chartData.responseData = {};
+            if (!this.responseData[this.chartData.id]) this.responseData[this.chartData.id] = {};
             asyncPaths.map((pathItem) => {
                 let { method, url, params } = pathItem;
                 // if (!isUrl(url)) pathItem.url = sessionStorage.getItem("report-baseUrl") + url;
@@ -44,21 +46,21 @@ export default {
             if (promiseAll.length == 0) return;
             await Promise.all(promiseAll)
                 .then((response) => {
-                    this.chartData.responseData = response.payload || response;
+                    this.responseData[this.chartData.id] = response.payload || response;
                     if (response) this.runCode();
                 }).catch((e) => {
-                    console.warn("url获取异步数据失败",e)
+                    // console.warn("url获取异步数据失败", e)
                 });
         },
         runCode() {
-            let { codding, responseData } = this.chartData;
+            let { codding, id } = this.chartData;
+            let responseData = this.responseData[id];
             if (codding.length > 0) {
                 codding = codding.replace(/return/g, "")
                 const result = eval(codding);
-                if (result) // && this.checkEchartField(result)
-                    this.chartData.data = result;
-            } else if (this.checkEchartField(responseData))
-                this.chartData.data = result;
+                if (result) this.chartData.data = result;
+            }
+            // else this.chartData.data = responseData;
         },
         checkEchartField(fields) {
             // TODO 需要对responseData格式进行校验，符合echarts标准数据格式才能赋值，否则报错

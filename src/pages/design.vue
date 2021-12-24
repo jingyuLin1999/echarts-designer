@@ -9,12 +9,6 @@
         value: 'GZf16dcf98T2q670d3256448f9678abb8ydHLaBtca179fd16edd17Lp1571',
         baseUrl: 'http://127.0.0.1:8080',
       }"
-      :chartDelConfig="{
-        url: '/manage/report/deleteCharts.do',
-      }"
-      :reportDelConfig="{
-        url: '/manage/report/deleteReport.do',
-      }"
     />
   </div>
 </template>
@@ -107,7 +101,14 @@ export default {
           ],
         },
       ], // http请求列表
-      reportTree: [],
+      reportTree: [
+        {
+          id: 1,
+          label: "一楼展厅",
+          icon: "el-icon-pie-chart",
+          children: [],
+        },
+      ],
       charts: {
         id: "",
         title: "图表名称",
@@ -117,30 +118,101 @@ export default {
         filter: { global: "global" },
         list: [
           {
+            id: "0",
+            title: "卡片图",
+            widget: "card",
+            titleColor: "#8c8c8c",
+            valueColor: "#333",
+            titleSize: "15px",
+            valueSize: "23px",
+            distance: 10,
+            border: {
+              type: "0",
+              reverse: false,
+              color: [],
+            },
+            px: {
+              x: 0,
+              width: 1376,
+              y: 11,
+              z: 999,
+              height: 114,
+            },
+            "%": {
+              x: 0,
+              width: 0.9942196531791907,
+              y: 0.011739594450373533,
+              height: 0.12166488794023479,
+            },
+            dataSource: [
+              {
+                method: "get",
+                url: "http://",
+                params: "",
+                id: "2",
+              },
+            ],
+            codding: "",
+            data: [
+              {
+                title: "登入次数",
+                icon: "el-icon-video-camera-solid",
+                iconColor: "#4FCAC6",
+                value: 65621,
+              },
+              {
+                title: "用户数",
+                icon: "el-icon-user-solid",
+                iconColor: "#48A4F6",
+                value: 555,
+              },
+              {
+                title: "设备数",
+                icon: "el-icon-s-platform",
+                iconColor: "#EF4C6D",
+                value: 85621,
+              },
+              {
+                title: "刀具数",
+                icon: "el-icon-knife-fork",
+                iconColor: "#43C0A3",
+                value: 955,
+              },
+            ],
+          },
+          {
             id: "1",
             title: "柱形图",
             widget: "bar",
-            borderType: "1",
-            px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
+            border: {
+              type: "12",
+              reverse: false,
+              color: [],
+            },
+            px: {
+              x: 0,
+              y: 143,
+              width: 429,
+              height: 337,
+              z: 1,
+            },
             "%": {
               x: 0,
-              y: 0,
-              width: 0.5614161849710982,
+              y: 0.1526147278548559,
+              width: 0.309971098265896,
               height: 0.35965848452508004,
             },
             dataSource: [
-              // 数据源
               {
                 method: "get",
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "", // 逻辑
-            responseData: [], // 响应数据
+            codding: "",
             data: {
               title: {
                 text: "IPQC白班良率统计",
-                left: "left", // center/right
+                left: "left",
                 textStyle: {
                   fontStyle: "normal",
                   color: "#f00",
@@ -148,8 +220,7 @@ export default {
                 subtext: "",
               },
               legend: {
-                orient: "horizontal", // vertical/horizontal
-                // left: 0,
+                orient: "horizontal",
                 right: 10,
                 top: 0,
                 bottom: 0,
@@ -164,7 +235,6 @@ export default {
                   ["Walnut Brownie", 72.4, 53.9, 39.1],
                 ],
               },
-              // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
               xAxis: {
                 type: "category",
                 axisLabel: {
@@ -182,9 +252,18 @@ export default {
                 },
               },
               series: [
-                { type: "bar", seriesLayoutBy: "column" },
-                { type: "bar", seriesLayoutBy: "column" },
-                { type: "line", seriesLayoutBy: "column" },
+                {
+                  type: "bar",
+                  seriesLayoutBy: "column",
+                },
+                {
+                  type: "bar",
+                  seriesLayoutBy: "column",
+                },
+                {
+                  type: "line",
+                  seriesLayoutBy: "column",
+                },
               ],
             },
           },
@@ -192,33 +271,35 @@ export default {
             id: "2",
             title: "折线图",
             widget: "line",
-            borderType: "8reverse",
+            border: {
+              type: "8",
+              reverse: true,
+              color: [],
+            },
             px: {
-              x: 0,
-              y: 373.5,
-              width: 540,
+              x: 451,
+              y: 143,
+              width: 539,
               height: 337,
-              z: 999,
+              z: 1,
             },
             "%": {
-              x: 0,
-              y: 0.39861259338313765,
-              width: 0.5648535564853556,
+              x: 0.3258670520231214,
+              y: 0.1526147278548559,
+              width: 0.38945086705202314,
               height: 0.35965848452508004,
             },
             dataSource: [
-              // 数据源
               {
                 method: "get",
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "", // 逻辑
-            responseData: [], // 响应数据
+            codding: "",
             data: {
               title: {
-                text: "Referer of a Website",
-                subtext: "Fake Data",
+                text: "一周出勤人数",
+                subtext: "",
                 left: "center",
               },
               xAxis: {
@@ -240,23 +321,31 @@ export default {
             id: "3",
             title: "饼图",
             widget: "bar",
-            borderType: "8",
-            px: { x: 0, y: 0, width: 350, height: 337, z: 999 },
+            border: {
+              type: "8",
+              reverse: false,
+              color: [],
+            },
+            px: {
+              x: 1009,
+              y: 143,
+              width: 366,
+              height: 337,
+              z: 1,
+            },
             "%": {
-              x: 0.6,
-              y: 0,
-              width: 0.3614161849710982,
+              x: 0.7290462427745664,
+              y: 0.1526147278548559,
+              width: 0.26445086705202314,
               height: 0.35965848452508004,
             },
             dataSource: [
-              // 数据源
               {
                 method: "get",
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "", // 逻辑
-            responseData: [], // 响应数据
+            codding: "",
             data: {
               title: {
                 text: "Referer of a Website",
@@ -276,11 +365,106 @@ export default {
                   type: "pie",
                   radius: "50%",
                   data: [
-                    { value: 1048, name: "Search Engine" },
-                    { value: 735, name: "Direct" },
-                    { value: 580, name: "Email" },
-                    { value: 484, name: "Union Ads" },
-                    { value: 300, name: "Video Ads" },
+                    {
+                      value: 1048,
+                      name: "Search Engine",
+                    },
+                    {
+                      value: 735,
+                      name: "Direct",
+                    },
+                    {
+                      value: 580,
+                      name: "Email",
+                    },
+                    {
+                      value: 484,
+                      name: "Union Ads",
+                    },
+                    {
+                      value: 300,
+                      name: "Video Ads",
+                    },
+                  ],
+                  emphasis: {
+                    itemStyle: {
+                      shadowBlur: 10,
+                      shadowOffsetX: 0,
+                    },
+                  },
+                },
+              ],
+            },
+          },
+          {
+            id: "echarts-designer4Da3zEQ9VmjjuhLGGncnma",
+            title: "饼状图",
+            widget: "pie",
+            border: {
+              type: "8",
+              reverse: true,
+              color: [],
+            },
+            px: {
+              x: 0,
+              y: 503.5,
+              width: 429,
+              height: 337,
+              z: 1,
+            },
+            "%": {
+              x: 0,
+              y: 0.5373532550693704,
+              width: 0.309971098265896,
+              height: 0.35965848452508004,
+            },
+            dataSource: [
+              {
+                method: "get",
+                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+              },
+            ],
+            codding: "",
+            responseData: [],
+            data: {
+              title: {
+                text: "Referer of a Website",
+                subtext: "Fake Data",
+                left: "center",
+              },
+              tooltip: {
+                trigger: "item",
+              },
+              legend: {
+                orient: "vertical",
+                left: "left",
+              },
+              series: [
+                {
+                  name: "Access From",
+                  type: "pie",
+                  radius: "50%",
+                  data: [
+                    {
+                      value: 1048,
+                      name: "Search Engine",
+                    },
+                    {
+                      value: 735,
+                      name: "Direct",
+                    },
+                    {
+                      value: 580,
+                      name: "Email",
+                    },
+                    {
+                      value: 484,
+                      name: "Union Ads",
+                    },
+                    {
+                      value: 300,
+                      name: "Video Ads",
+                    },
                   ],
                   emphasis: {
                     itemStyle: {

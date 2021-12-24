@@ -12,6 +12,11 @@ const routes = [
         path: '/',
         name: 'design',
         component: () => import('@/pages/design')
+    },
+    {
+        path: '/border',
+        name: 'border',
+        component: () => import('@/pages/border')
     }
 ]
 

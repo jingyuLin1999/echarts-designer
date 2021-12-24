@@ -64,6 +64,10 @@
           :hooks="hooks"
           :design="design"
           :echarts="echarts"
+          :style="{
+            width: item.px.width + 'px',
+            height: item.px.height + 'px',
+          }"
         >
         </Field>
       </div>
@@ -166,6 +170,11 @@ export default {
     echartsId: { type: String, default: "" },
     authorization: { type: Object, default: () => ({}) },
   },
+  provide() {
+    return {
+      responseData: this.responseData,
+    };
+  },
   computed: {
     chartId() {
       return this.echartsId.length ? this.echartsId : this.id;
@@ -186,9 +195,10 @@ export default {
       hLine: [], // y辅助线
       activeChart: {}, // 目前点击的图表
       beforeActive: {},
-      isMobile: false, // 是否是移动端
+      isMobile: true, // 是否是移动端
       id: short.generate(), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
+      responseData: {}, // 相应数据
     };
   },
   mounted() {
@@ -208,16 +218,15 @@ export default {
           window.dispatchEvent(new Event("resize"));
         }
       });
+      this.hooks.responseData = this.responseData;
     },
     calcuMobileWh() {
-      let baseWidth = 350,
-        baseHeight = 340;
+      let baseWidth = 350;
       this.echarts.list.map((chartItem) => {
         let px = chartItem["px"];
         let takeUpNum = Math.floor((this.cW - 5) / (baseWidth + 5)) || 1;
         let unitWidth = (this.cW - 5 * takeUpNum - 5) / takeUpNum;
         px.width = unitWidth;
-        px.height = baseHeight;
       });
     },
     // 根据屏宽判断是否移动端

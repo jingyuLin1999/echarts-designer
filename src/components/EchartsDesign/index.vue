@@ -32,13 +32,18 @@
           <i class="el-icon-view" v-if="design">预览</i>
           <i class="el-icon-setting" v-else>设计</i>
         </div>
-        <div>
-          <i class="el-icon-pie-chart" @click="openSubmitModalModal('chart')"
+
+        <div
+          :class="[
+            Object.keys(clickedChart).length == 0 ? 'disabled-submit' : '',
+          ]"
+        >
+          <i class="el-icon-pie-chart" @click="onOpenSubmitModal('chart')"
             >保存图表</i
           >
         </div>
         <div :class="[false ? '' : 'disabled-submit']">
-          <i class="el-icon-s-promotion" @click="openSubmitModalModal('report')"
+          <i class="el-icon-s-promotion" @click="onOpenSubmitModal('report')"
             >保存报表</i
           >
         </div>
@@ -51,7 +56,7 @@
         showFooter
         :title="modalType == 'chart' ? '保存图表' : '保存报表'"
         :style="{ zIndex: 1000 }"
-        @close="closeSubmitModal"
+        :before-hide-method="closeSubmitModal"
       >
         <RichForm
           class="submit-form"
@@ -78,14 +83,7 @@
         <template slot="first">
           <!-- 左侧报表组件 -->
           <tabs v-model="activeLeftTab">
-            <tab-pane
-              label="图表组件"
-              name="component"
-              class="tab-pane"
-              :disabled="
-                activeLeftTab == 'chartTree' && activeRightTab == 'reportTree'
-              "
-            >
+            <tab-pane label="图表组件" name="component" class="tab-pane">
               <tree :data="chartWidgets" default-expand-all>
                 <span
                   class="tree-node"
@@ -199,7 +197,6 @@ import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
 import MonacoMixin from "./codeMirror.mixin";
 import Echarts from "@/components/Echarts";
-import { deleteApi } from "../Echarts/utils";
 import { chartWidgets } from "./meta/widgets";
 import DnDMixin from "../Echarts/utils/dnd.mixin.js";
 import SplitLayout from "@/components/SplitLayout";
@@ -245,12 +242,6 @@ export default {
     reportTree: { type: Array, default: () => [] }, // 报表列表
     hooks: { type: Object, default: () => ({}) }, // 钩子
     authorization: { type: Object, default: () => ({}) }, // 权限
-    // chartLayout: { type: Array, default: () => [] },
-    // chartSchema: { type: Object, default: () => ({}) },
-    // reportLayout: { type: Array, default: () => [] },
-    // reportSchema: { type: Object, default: () => ({}) },
-    // chartDelConfig: { type: Object, default: () => ({}) },
-    // reportDelConfig: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -289,8 +280,10 @@ export default {
       // 弹窗
       modalType: "", // 弹窗类型
       openSubmitModal: false, // 打开提交窗口
-
       clickedChart: {}, // 点击的图表数据
+      // 代码编辑器提示语
+      codeTips:
+        "// http请求响应数据在responseData中，试试打印：console.log(responseData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
     };
   },
   computed: {
@@ -329,8 +322,9 @@ export default {
       return `${$(source).attr("data")}`;
     },
     onDrop(target, data, event) {
+      if (!this.design) return;
       let chart = JSON.parse(data);
-      chart.id = short.generate();
+      chart.id = "echarts-designer" + short.generate();
       let { offsetX, offsetY } = event;
       chart.px.x = offsetX - chart.px.width / 2;
       chart.px.y = offsetY - chart.px.height / 2;
@@ -353,18 +347,17 @@ export default {
       this.coddingModal = !this.coddingModal;
       let showTemplate = "";
       let { data } = this.clickedChart;
-      let tips =
-        "// http请求响应数据在responseData中，试试打印：console.log(responseData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n";
       let strData = JSON.stringify(data);
-      strData = strData.replace(/,/g, ",\n");
       let example = `let defaultData = ${strData};\nreturn defaultData;`;
-      showTemplate = tips + example;
+      showTemplate = this.codeTips + example;
       this.code = showTemplate;
       this.initCodemirror();
     },
     // 关闭编辑器
     onCodeEdited() {
-      this.clickedChart.codding = this.editorInstance.getValue();
+      let codding = this.editorInstance.getValue();
+      codding = codding.replace(this.codeTips, "");
+      this.clickedChart.codding = codding;
       this.onRunCode();
       this.coddingModal = false;
     },
@@ -401,51 +394,34 @@ export default {
     clickChartNode(data) {
       this.$emit("chartNode", data);
     },
-    // ====================以下可能有问题====================
-    closeSubmitModal() {
-      console.log(123);
+    onDelete(data, type) {
+      console.log(data, type);
+      this.$emit("delete", { data, type });
     },
-    openSubmitModalModal(type) {
+    closeSubmitModal() {
+      this.submitValues = {};
+    },
+    onOpenSubmitModal(type) {
       this.modalType = type;
       this.submitSchema = type == "chart" ? chartSchema : reportSchema;
-      this.submitForm = type == "chart" ? chartForm : reportForm;
+      if (type == "chart") {
+        let chartParent = chartForm.layout.find(
+          (item) => item.name == "parentid"
+        );
+        if (chartParent) chartParent.options = this.chartTree;
+        this.submitForm = chartForm;
+      } else if (type == "report") {
+        let reportParent = reportForm.layout.find(
+          (item) => item.name == "parentid"
+        );
+        if (reportParent) reportParent.options = this.reportTree;
+        this.submitForm = chartForm;
+      }
       this.openSubmitModal = !this.openSubmitModal;
     },
     sureSubmit() {
       if (!this.submitHooks.validate()) return; // 校验
       this.$emit("submitValues", this.submitValues);
-    },
-    onDelete(data, type) {
-      // try {
-      //   if (
-      //     (type == "chart" && Object.keys(this.chartDelConfig).length == 0) ||
-      //     (type == "report" && Object.keys(this.reportDelConfig).length == 0)
-      //   )
-      //     return;
-      //   MessageBox.confirm("此操作将永久删除, 是否继续?", "提示", {
-      //     confirmButtonText: "确定",
-      //     cancelButtonText: "取消",
-      //     type: "warning",
-      //   })
-      //     .then(async () => {
-      //       let deleteConfig =
-      //         type == "chart" ? this.chartDelConfig : this.reportDelConfig;
-      //       const { payload, status, msg } = await deleteApi({
-      //         ...deleteConfig,
-      //         query: { deleteIds: [data.id] },
-      //       });
-      //       if (status != 200) Message({ type: "warning", message: msg });
-      //       (type == "chart" ? this.chartTree : this.reportTree).splice(
-      //         0,
-      //         this.chartTree.length,
-      //         ...payload
-      //       );
-      //       this.echarts.list = [];
-      //     })
-      //     .catch(() => {});
-      // } catch (e) {
-      //   console.warn("删除失败", e);
-      // }
     },
   },
   beforeMount() {

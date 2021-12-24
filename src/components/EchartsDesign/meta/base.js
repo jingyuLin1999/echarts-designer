@@ -27,7 +27,7 @@ export const coddeButton = {
 export const borderLayout = {
     title: "边框类型", // 优先级小于shema中定义的title
     widget: "select",
-    name: "borderType",
+    name: "border.type",
     size: "small",
     options: [
         {
@@ -35,24 +35,8 @@ export const borderLayout = {
             label: "四角闪烁",
         },
         {
-            value: "3",
-            label: "多线边框",
-        },
-        {
-            value: "4",
-            label: "正亮开边",
-        },
-        {
-            value: "4reverse",
-            label: "反亮开边",
-        },
-        {
-            value: "5",
-            label: "正灰斜边",
-        },
-        {
-            value: "5reverse",
-            label: "反灰斜边",
+            value: "2",
+            label: "双线边框",
         },
         {
             value: "6",
@@ -60,7 +44,7 @@ export const borderLayout = {
         },
         {
             value: "7",
-            label: "四角暗灰",
+            label: "四角亮光",
         },
         {
             value: "8",
@@ -79,15 +63,11 @@ export const borderLayout = {
             label: "四边光晕",
         },
         {
-            value: "11",
-            label: "边带标题",
-        },
-        {
             value: "12",
             label: "四角发亮",
         },
         {
-            value: "1110",
+            value: "0",
             label: "无边框",
         },
     ],
