@@ -53,7 +53,7 @@
       '--background': echarts.background,
     }"
   >
-    <PerfectScrollbar :style="{ height: cH + 'px' }">
+    <div class="scrollbar" :style="{ height: cH + 'px' }">
       <!-- 移动端 只显示，不做设计 -->
       <div class="mobile-wrapper" v-if="isMobile && !design">
         <Field
@@ -81,7 +81,7 @@
           :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
           v-for="(item, index) in echartsList"
           :key="item.id"
-          :parent="design"
+          :parent="false"
           :active="false"
           :draggable="design"
           :resizable="design"
@@ -91,7 +91,7 @@
           :w="item.px.width"
           :h="item.px.height"
           :snap="true"
-          :grid="[10, 10]"
+          :grid="[2, 2]"
           :isConflictCheck="false"
           @refLineParams="getRefLineParams"
           @dragging="onDragging"
@@ -137,7 +137,7 @@
         <!-- 画布点击事件 -->
         <div class="click-canvas" @click="clickCanvas"></div>
       </div>
-    </PerfectScrollbar>
+    </div>
   </div>
 </template>
 <script>
@@ -148,7 +148,6 @@ import SplitLayout from "../SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
 import { defaultAuthorization } from "./utils/defaultData";
-import { PerfectScrollbar } from "vue2-perfect-scrollbar";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
 import elementResizeDetectorMaker from "element-resize-detector";
@@ -161,7 +160,6 @@ export default {
     Field,
     SplitLayout,
     VueDraggableResizable,
-    PerfectScrollbar,
   },
   props: {
     design: { type: Boolean, default: false }, // 是否是设计模式
@@ -345,6 +343,22 @@ export default {
   }
   &.echarts--background {
     background: var(--background);
+  }
+  .scrollbar {
+    overflow-y: auto;
+    overflow-x: hidden;
+    &::-webkit-scrollbar {
+      width: 0px;
+      height: 10px;
+    }
+    &::-moz-scrollbar {
+      width: 0px;
+      height: 10px;
+    }
+    &::-ms-scrollbar {
+      width: 0px;
+      height: 10px;
+    }
   }
   .click-canvas {
     position: absolute;

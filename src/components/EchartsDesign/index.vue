@@ -319,7 +319,7 @@ export default {
       return JSON.parse(this.onString(obj));
     },
     onDragstart(source, event) {
-      return `${$(source).attr("data")}`;
+      return source.getAttribute("data");
     },
     onDrop(target, data, event) {
       if (!this.design) return;

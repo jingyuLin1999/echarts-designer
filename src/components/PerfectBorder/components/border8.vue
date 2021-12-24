@@ -20,12 +20,12 @@
         </mask>
       </defs>
 
-      <polygon
+      <!-- <polygon
         :fill="backgroundColor"
         :points="`5, 5 ${width - 5}, 5 ${width - 5} ${height - 5} 5, ${
           height - 5
         }`"
-      />
+      /> -->
 
       <use :stroke="mergedColor[0]" stroke-width="1" :xlink:href="`#${path}`" />
 
@@ -104,13 +104,13 @@ export default {
       const { reverse, width, height } = this;
 
       if (reverse)
-        return `M 2.5, 2.5 L 2.5, ${height - 2.5} L ${width - 2.5}, ${
-          height - 2.5
-        } L ${width - 2.5}, 2.5 L 2.5, 2.5`;
+        return `M 1, 1 L 1, ${height - 1} L ${width - 1}, ${
+          height - 1
+        } L ${width - 1}, 1 L 1, 1`;
 
-      return `M2.5, 2.5 L${width - 2.5}, 2.5 L${width - 2.5}, ${
-        height - 2.5
-      } L2.5, ${height - 2.5} L2.5, 2.5`;
+      return `M1, 1 L${width - 1}, 1 L${width - 1}, ${
+        height - 1
+      } L1, ${height - 1} L1, 1`;
     },
   },
   watch: {
@@ -159,6 +159,7 @@ export default {
       width: 100%;
       height: 100%;
       overflow: hidden;
+      // background: #f00;
     }
   }
 }
