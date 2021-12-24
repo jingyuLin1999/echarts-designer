@@ -64,7 +64,7 @@ export const borderLayout = {
         },
         {
             value: "12",
-            label: "四角发亮",
+            label: "四角弯曲",
         },
         {
             value: "0",

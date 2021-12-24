@@ -1,6 +1,6 @@
 <template>
   <div class="border-demo">
-    <PerfectBorder :border="{ type: '12', color: [], reverse: false }">
+    <PerfectBorder :border="{ type: '7', color: [], reverse: false }">
       <span
         >sadfaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa</span
       >

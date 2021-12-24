@@ -141,7 +141,7 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    padding: 4px;
+    padding: 2px;
     box-sizing: border-box;
     .perfect-border {
       width: 100%;
