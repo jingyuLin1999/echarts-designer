@@ -322,9 +322,15 @@ export default {
       return source.getAttribute("data");
     },
     onDrop(target, data, event) {
-      if (!this.design) return;
       let chart = JSON.parse(data);
-      chart.id = "echarts-designer" + short.generate();
+      if (!this.design || chart.parentid == "0") return;
+      let hasExit = this.echarts.list.find((item) => item.id == chart.id);
+      if (hasExit) {
+        Message({ type: "error", message: "该图表已存在画布中，不允许重复" });
+        return;
+      }
+      if (chart.id.indexOf("echarts-designer") > -1)
+        chart.id = "echarts-designer" + short.generate();
       let { offsetX, offsetY } = event;
       chart.px.x = offsetX - chart.px.width / 2;
       chart.px.y = offsetY - chart.px.height / 2;

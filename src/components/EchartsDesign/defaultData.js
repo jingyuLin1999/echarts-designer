@@ -35,11 +35,13 @@ export const chartForm = {
             isShowCheckbox: false,
             onlyCheckedKeys: true,
             nodeKey: "id",
+            default: "0",
             defaultProps: {
                 // 字段对应关系
                 label: "title",
             },
             options: [],
+            description: "若没选择默认为根节点",
         },
         {
             title: "描述",
@@ -89,11 +91,13 @@ export const reportForm = {
             isShowCheckbox: false,
             onlyCheckedKeys: true,
             nodeKey: "id",
+            default: "0",
             defaultProps: {
                 // 字段对应关系
                 label: "title",
             },
             options: [],
+            description: "若没选择默认为根节点",
         },
         {
             title: "描述",

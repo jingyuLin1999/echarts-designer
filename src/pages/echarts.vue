@@ -38,7 +38,7 @@ export default {
               z: 1,
               height: 114,
             },
-            "pct": {
+            pct: {
               x: 0,
               width: 0.9971098265895953,
               y: 0.011739594450373533,
@@ -58,7 +58,7 @@ export default {
                 title: "登入次数",
                 icon: "el-icon-video-camera-solid",
                 iconColor: "#4FCAC6",
-                value: 65621,
+                value: 6521,
               },
               {
                 title: "用户数",
@@ -70,7 +70,7 @@ export default {
                 title: "设备数",
                 icon: "el-icon-s-platform",
                 iconColor: "#EF4C6D",
-                value: 85621,
+                value: 8521,
               },
               {
                 title: "刀具数",

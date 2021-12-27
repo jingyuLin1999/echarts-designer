@@ -32,12 +32,12 @@ export default {
       hooks: {},
       chartTree: [
         {
-          id: 1,
+          id: "as0",
           title: "一楼展厅",
           icon: "el-icon-pie-chart",
           children: [
             {
-              id: "2",
+              id: "as2",
               title: "柱形图",
               widget: "bar",
               px: {
@@ -47,7 +47,7 @@ export default {
                 height: 250,
                 z: 1,
               },
-              "pct": {
+              pct: {
                 x: 0,
                 y: 0.1526147278548559,
                 width: 0.309971098265896,
@@ -122,12 +122,12 @@ export default {
       ], // http请求列表
       reportTree: [
         {
-          id: 1,
+          id: "as1",
           title: "一楼展厅",
           icon: "el-icon-pie-chart",
           children: [
             {
-              id: 2,
+              id: "as2",
               title: "产量",
               icon: "",
             },
@@ -135,7 +135,7 @@ export default {
         },
       ],
       charts: {
-        id: "",
+        id: "-1",
         title: "图表名称",
         background: "#F9F6F6",
         theme: "#fff",
@@ -163,7 +163,7 @@ export default {
               z: 1,
               height: 114,
             },
-            "pct": {
+            pct: {
               x: 0,
               width: 0.9971098265895953,
               y: 0.011739594450373533,
@@ -221,7 +221,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "pct": {
+            pct: {
               x: 0,
               y: 0.1526147278548559,
               width: 0.309971098265896,
@@ -308,7 +308,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "pct": {
+            pct: {
               x: 0.3258670520231214,
               y: 0.1526147278548559,
               width: 0.38945086705202314,
@@ -358,7 +358,7 @@ export default {
               height: 337,
               z: 999,
             },
-            "pct": {
+            pct: {
               x: 0.7283236994219653,
               y: 0.1526147278548559,
               width: 0.26878612716763006,
@@ -437,7 +437,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "pct": {
+            pct: {
               x: 0,
               y: 0.5373532550693704,
               width: 0.309971098265896,
