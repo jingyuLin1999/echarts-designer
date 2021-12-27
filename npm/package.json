@@ -1,6 +1,6 @@
 {
   "name": "echarts-designer",
-  "version": "0.0.6",
+  "version": "0.1.6",
   "description": "基于echarts的图表设计器",
   "main": "lib/echarts-designer.umd.min.js",
   "directories": {

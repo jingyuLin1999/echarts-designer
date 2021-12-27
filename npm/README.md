@@ -5,7 +5,7 @@
   * 基于百度echarts的图表渲染器，widgets下可自定义图表子组件    
   * 自适应不同屏宽 
   * 提供多种图表边框 
-* 基于echarts的图表设计器
+* 基于echarts的图表设计器。旨在让开发者只管报表数据逻辑
   * 动态设计图表，放大、缩小
   * 配置异步数据，并配有代码编辑器，可对异步数据进行简单的逻辑处理 
   * 图表自由组合生成报表
@@ -35,14 +35,33 @@ npm i echarts-designer -S
       :authority="{ // token
           value: 'Vaf16dcf98O7c280d3287448f60o8abb5x28TVZV05179fd16edd177NXT6R',
       }"
+      @chartNode="onChartNode"
+      @reportNode="onReportNode"
+      @delete="onDelete"
+      @submitValues="onSubmit"
+      @clickedChart="onClickedChart"
   />
 </template>
 ```
+
 
 ```js
 import { Echarts, EchartsDesign } from "echarts-designer";
 export default {
   components: { Echarts, EchartsDesign },
+  methods: {
+    onClickedChart(data) {
+      console.log("clickedChart", data);
+    },
+    onSubmit({ type, data }) {
+      console.log(type, data);
+    },
+    onChartNode(){},
+    onReportNode(){},
+    onDelete({ data, type }){
+      console.log(type, data);
+    },
+  },
   data() {
     return {
       charts: {
@@ -53,13 +72,17 @@ export default {
             id: "1",
             title: "柱形图",
             widget: "bar",
-            borderType: "1",
             px: { x: 0, y: 0, width: 792, height: 337, z: 999 },
-            "%": {
+            pct: {
               x: 0,
               y: 0,
               width: 0.7880597014925373,
               height: 0.35965848452508004,
+            },
+            border: {
+              type: "1",
+              reverse: true,
+              color: [],
             },
             dataSource: [
               // 数据源
@@ -69,7 +92,6 @@ export default {
               },
             ],
             codding: "", // 逻辑
-            responseData: [], // 响应数据
             data: {
               title: {
                 text: "ECharts 入门示例",

@@ -32,20 +32,20 @@
           <i class="el-icon-view" v-if="design">预览</i>
           <i class="el-icon-setting" v-else>设计</i>
         </div>
-
-        <div
+        <!--      
           :class="[
             Object.keys(clickedChart).length == 0 ? 'disabled-submit' : '',
           ]"
-        >
-          <i class="el-icon-pie-chart" @click="onOpenSubmitModal('chart')"
-            >保存图表</i
-          >
+        -->
+        <div>
+          <i class="el-icon-pie-chart" @click="onOpenSubmitModal('chart')">
+            {{ Object.keys(clickedChart).length == 0 ? "新建" : "保存" }}图表
+          </i>
         </div>
-        <div :class="[false ? '' : 'disabled-submit']">
-          <i class="el-icon-s-promotion" @click="onOpenSubmitModal('report')"
-            >保存报表</i
-          >
+        <div>
+          <i class="el-icon-s-promotion" @click="onOpenSubmitModal('report')">
+            {{ echarts.list.length == 0 ? "新建" : "保存" }}报表
+          </i>
         </div>
       </div>
       <modal
@@ -169,7 +169,7 @@
             <tab-pane label="报表排版" name="reportTree">
               <tree :data="reportTree" default-expand-all>
                 <div slot-scope="{ node, data }" class="designer-tree-node">
-                  <div class="node-title" @click="clickReportNode(data)">
+                  <div class="node-title" @click="onClickReportNode(data)">
                     <icon :class="[data.icon]"></icon>
                     <span class="node-label">
                       {{ data.title || data.label }}
@@ -259,7 +259,6 @@ export default {
         selector: [".dnd-drop-wrapper"],
       },
       // 标签
-      clickTab: "component", // 当前点击的tab
       activeLeftTab: "component", // 左侧标签页
       activeRightTab: "attribute", // 右侧标签页
       canvas: {
@@ -281,6 +280,7 @@ export default {
       modalType: "", // 弹窗类型
       openSubmitModal: false, // 打开提交窗口
       clickedChart: {}, // 点击的图表数据
+      clickReportNode: {}, // 点击报表节点
       // 代码编辑器提示语
       codeTips:
         "// http请求响应数据在responseData中，试试打印：console.log(responseData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
@@ -334,7 +334,7 @@ export default {
     calcuPct(chart) {
       let { width: cW, height: cH } = this.canvas;
       let px = chart["px"];
-      let pct = chart["%"];
+      let pct = chart["pct"];
       px.z = 2;
       pct.x = px.x / cW;
       pct.y = px.y / cH;
@@ -387,15 +387,16 @@ export default {
         this.attrValues = {};
         console.warn("获取元数据失败：" + e);
       }
+      this.$emit("clickedChart", item);
     },
-    clickReportNode(data) {
+    onClickReportNode(data) {
+      this.clickReportNode = data;
       this.$emit("reportNode", data);
     },
     clickChartNode(data) {
       this.$emit("chartNode", data);
     },
     onDelete(data, type) {
-      console.log(data, type);
       this.$emit("delete", { data, type });
     },
     closeSubmitModal() {
@@ -405,23 +406,29 @@ export default {
       this.modalType = type;
       this.submitSchema = type == "chart" ? chartSchema : reportSchema;
       if (type == "chart") {
+        this.submitValues = this.clickedChart;
         let chartParent = chartForm.layout.find(
           (item) => item.name == "parentid"
         );
         if (chartParent) chartParent.options = this.chartTree;
         this.submitForm = chartForm;
       } else if (type == "report") {
+        this.submitValues = this.clickReportNode;
         let reportParent = reportForm.layout.find(
           (item) => item.name == "parentid"
         );
         if (reportParent) reportParent.options = this.reportTree;
-        this.submitForm = chartForm;
+        this.submitForm = reportForm;
       }
       this.openSubmitModal = !this.openSubmitModal;
     },
     sureSubmit() {
       if (!this.submitHooks.validate()) return; // 校验
-      this.$emit("submitValues", this.submitValues);
+      this.$emit("submitValues", {
+        type: this.modalType,
+        data: this.submitValues,
+      });
+      this.openSubmitModal = false;
     },
   },
   beforeMount() {
@@ -435,7 +442,7 @@ export default {
 
 <style lang="scss">
 @font-face {
-  font-family: "iconfont"; /* Project id 2900933 */
+  font-family: "iconfont";
   src: url("./iconfont/iconfont.woff2?t=1635472525124") format("woff2"),
     url("./iconfont/iconfont.woff?t=1635472525124") format("woff"),
     url("./iconfont/iconfont.ttf?t=1635472525124") format("truetype");

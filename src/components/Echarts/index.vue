@@ -276,7 +276,7 @@ export default {
       if (!Object.keys(data).length) return;
       await this.getCanvasWh();
       let px = data["px"];
-      let pct = data["%"];
+      let pct = data["pct"];
       pct.x = px.x / this.cW;
       pct.y = px.y / this.cH;
       pct.width = px.width / this.cW;
@@ -314,7 +314,7 @@ export default {
       await this.getCanvasWh();
       this.echarts.list.map((chartItem) => {
         let px = chartItem["px"];
-        let pct = chartItem["%"];
+        let pct = chartItem["pct"];
         px.x = pct.x * this.cW;
         px.y = pct.y * this.cH;
         px.width = pct.width * this.cW;

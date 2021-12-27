@@ -9,6 +9,8 @@
         value: 'GZf16dcf98T2q670d3256448f9678abb8ydHLaBtca179fd16edd17Lp1571',
         baseUrl: 'http://127.0.0.1:8080',
       }"
+      @clickedChart="onClickedChart"
+      @submitValues="onSubmit"
     />
   </div>
 </template>
@@ -17,26 +19,44 @@
 import EchartsDesign from "../components/EchartsDesign";
 export default {
   components: { EchartsDesign },
+  methods: {
+    onClickedChart(data) {
+      console.log("clickedChart", data);
+    },
+    onSubmit({ type, data }) {
+      console.log(type, data);
+    },
+  },
   data() {
     return {
       hooks: {},
       chartTree: [
         {
           id: 1,
-          label: "一楼展厅",
+          title: "一楼展厅",
           icon: "el-icon-pie-chart",
           children: [
             {
               id: "2",
               title: "柱形图",
               widget: "bar",
-              borderType: "1",
-              px: { x: 0, y: 0, width: 890, height: 337, z: 999 },
-              "%": {
+              px: {
                 x: 0,
-                y: 0,
-                width: 0.5614161849710982,
+                y: 143,
+                width: 429,
+                height: 250,
+                z: 1,
+              },
+              "pct": {
+                x: 0,
+                y: 0.1526147278548559,
+                width: 0.309971098265896,
                 height: 0.35965848452508004,
+              },
+              border: {
+                type: "1",
+                reverse: true,
+                color: [],
               },
               dataSource: [
                 // 数据源
@@ -46,7 +66,6 @@ export default {
                 },
               ],
               codding: "", // 逻辑
-              responseData: [], // 响应数据
               data: {
                 title: {
                   text: "IPQC白班良率统计",
@@ -104,9 +123,15 @@ export default {
       reportTree: [
         {
           id: 1,
-          label: "一楼展厅",
+          title: "一楼展厅",
           icon: "el-icon-pie-chart",
-          children: [],
+          children: [
+            {
+              id: 2,
+              title: "产量",
+              icon: "",
+            },
+          ],
         },
       ],
       charts: {
@@ -138,7 +163,7 @@ export default {
               z: 1,
               height: 114,
             },
-            "%": {
+            "pct": {
               x: 0,
               width: 0.9971098265895953,
               y: 0.011739594450373533,
@@ -196,7 +221,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "%": {
+            "pct": {
               x: 0,
               y: 0.1526147278548559,
               width: 0.309971098265896,
@@ -283,7 +308,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "%": {
+            "pct": {
               x: 0.3258670520231214,
               y: 0.1526147278548559,
               width: 0.38945086705202314,
@@ -333,7 +358,7 @@ export default {
               height: 337,
               z: 999,
             },
-            "%": {
+            "pct": {
               x: 0.7283236994219653,
               y: 0.1526147278548559,
               width: 0.26878612716763006,
@@ -412,7 +437,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "%": {
+            "pct": {
               x: 0,
               y: 0.5373532550693704,
               width: 0.309971098265896,
@@ -425,7 +450,6 @@ export default {
               },
             ],
             codding: "",
-            responseData: [],
             data: {
               title: {
                 text: "Referer of a Website",
