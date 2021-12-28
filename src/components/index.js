@@ -1,4 +1,5 @@
 import Vue from 'vue'
+import "codemirror/lib/codemirror.css"
 
 import Echarts from "./Echarts/index.vue"
 Vue.component("Echarts", Echarts)

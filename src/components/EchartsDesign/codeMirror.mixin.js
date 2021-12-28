@@ -1,5 +1,6 @@
 import CodeMirror from "codemirror";
 import "codemirror/mode/javascript/javascript.js";
+import "codemirror/lib/codemirror.css";
 import prettier from "prettier/esm/standalone";
 import parserBabel from "prettier/esm/parser-babel.mjs";
 
@@ -9,18 +10,20 @@ export default {
     },
     methods: {
         async initCodemirror() {
-            if (this.editorInstance) { this.toFormate(); return; }
-            if (!this.editorInstance) await new Promise(resolve => (setTimeout(() => (resolve()), 200)))
-            const editTextarea = document.getElementById("code-textarea");
-            if (!editTextarea) return;
-            this.editorInstance = CodeMirror.fromTextArea(editTextarea, {
-                value: this.code,
-                mode: "javascript"
-            });
-            this.toFormate();
+            await new Promise(resolve => (setTimeout(() => (resolve()), 50)));
+            if (!this.editorInstance) {
+                const editTextarea = document.getElementById("code-textarea");
+                if (!editTextarea) return;
+                this.editorInstance = CodeMirror.fromTextArea(editTextarea, {
+                    value: this.code,
+                    mode: "javascript"
+                });
+            }
+            this.editorInstance.setValue(this.code);
+            this.toFormat();
         },
-        toFormate() {
-            let code = this.editorInstance.getValue() || this.code;
+        toFormat() {
+            let code = this.editorInstance.getValue();
             const formatCode = prettier.format(code, {
                 parser: "babel",
                 plugins: [parserBabel],
@@ -33,7 +36,7 @@ export default {
             codeStr = codeStr.replace(/return/g, "")
             let runResult = eval(codeStr);
             this.clickedChart.data = runResult;
-            this.toFormate();
+            this.toFormat();
         }
     },
     data() {

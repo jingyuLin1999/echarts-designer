@@ -9,11 +9,13 @@ export const chartWidgets = [
                 id: "echarts-designer-card",
                 title: "卡片图",
                 widget: "card",
-                titleColor: "#8c8c8c",
-                valueColor: "#333",
-                titleSize: "15px",
-                valueSize: "23px",
-                distance: 10,
+                attribute: {
+                    titleColor: "#8c8c8c",
+                    valueColor: "#333",
+                    titleSize: "15px",
+                    valueSize: "23px",
+                    distance: 10,
+                },
                 border: {
                     type: "0",
                     reverse: false,

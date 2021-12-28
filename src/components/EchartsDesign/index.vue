@@ -189,7 +189,6 @@ import short from "short-uuid";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
-import "codemirror/lib/codemirror.css";
 import MonacoMixin from "./codeMirror.mixin";
 import Echarts from "@/components/Echarts";
 import { chartWidgets } from "./meta/widgets";
@@ -347,10 +346,10 @@ export default {
       if (evt.name != "codding") return;
       this.coddingModal = !this.coddingModal;
       let showTemplate = "";
-      let { data } = this.clickedChart;
+      let { data, codding } = this.clickedChart;
       let strData = JSON.stringify(data);
       let example = `let defaultData = ${strData};\nreturn defaultData;`;
-      showTemplate = this.codeTips + example;
+      showTemplate = this.codeTips + (codding ? codding : example);
       this.code = showTemplate;
       this.initCodemirror();
     },
