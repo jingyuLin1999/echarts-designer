@@ -14,7 +14,7 @@ export const form = {
             fields: [
                 [{
                     title: "标题",
-                    name: "titleColor",
+                    name: "attribute.titleColor",
                     widget: "colorpicker",
                     predefineColors: ["#8c8c8c"], // 预定义颜色
                     disabled: false,
@@ -26,7 +26,7 @@ export const form = {
                 [
                     {
                         title: "统计值",
-                        name: "valueColor",
+                        name: "attribute.valueColor",
                         widget: "colorpicker",
                         predefineColors: ["#333"],
                         disabled: false,
@@ -40,20 +40,21 @@ export const form = {
         },
         {
             title: "标题字体",
-            name: "titleSize",
+            name: "attribute.titleSize",
             widget: "input",
-            size: "mini"
+            size: "small"
         },
         {
             title: "值字体",
-            name: "valueSize",
+            name: "attribute.valueSize",
             widget: "input",
-            size: "mini"
+            size: "small"
         },
         {
             title: "卡片间隔",
-            name: "distance",
+            name: "attribute.distance",
             widget: "inputnumber",
+            size: "small"
         },
         {
             title: "卡片",

@@ -39,7 +39,7 @@
     >
       <polygon
         :fill="mergedColor[0]"
-        points="6,66 6,18 12,12 18,12 24,6 27,6 30,9 36,9 39,6 84,6 81,9 75,9 73.2,7 40.8,7 37.8,10.2 24,10.2 12,21 12,24 9,27 9,51 7.8,54 7.8,63"
+        points="0,60 0,12 6,6 12,6 18,0 21,0 24,3 30,3 33,0 78,0 75,3 69,3 67.2,1 34.8,1 31.8,4.2 18,4.2 6,15 6,18 3,21 3,45 1.8,18 1.8,56"
       >
         <animate
           attributeName="fill"
@@ -51,7 +51,7 @@
       </polygon>
       <polygon
         :fill="mergedColor[1]"
-        points="27.599999999999998,4.8 38.4,4.8 35.4,7.8 30.599999999999998,7.8"
+        points="21.599999999999998,0 32.4,0.8 29.4,1.8 24.599999999999998,1.8"
       >
         <animate
           attributeName="fill"
@@ -63,7 +63,7 @@
       </polygon>
       <polygon
         :fill="mergedColor[0]"
-        points="9,54 9,63 7.199999999999999,66 7.199999999999999,75 7.8,78 7.8,110 8.4,110 8.4,66 9.6,66 9.6,54"
+        points="3,48 3,57 1.199999999999999,60 1.199999999999999,69 1.8,72 1.8,104 2.4,104 2.4,60 3.6,60 3.6,48"
       >
         <animate
           attributeName="fill"
@@ -146,25 +146,25 @@ export default {
   }
 
   .right-top {
-    right: -6px;
-    top: -5px;
+    right: 0px;
+    top: 0px;
     transform: rotateY(180deg);
   }
 
   .left-bottom {
-    bottom: -5px;
-    left: -6px;
+    bottom: 0px;
+    left: 0px;
     transform: rotateX(180deg);
   }
 
   .left-top {
-    top: -5px;
-    left: -6px;
+    top: 0px;
+    left: 0px;
   }
 
   .right-bottom {
-    right: -6px;
-    bottom: -5px;
+    right: 0px;
+    bottom: 0px;
     transform: rotateX(180deg) rotateY(180deg);
   }
 
@@ -172,13 +172,13 @@ export default {
     position: relative;
     width: 100%;
     height: 100%;
-    padding:5px;
+    padding: 5px 4px;
     box-sizing: border-box;
     .perfect-border {
       width: 100%;
       height: 100%;
       overflow: hidden;
-      border-radius: 25px;
+      border-radius: 23px;
     }
   }
 }

@@ -140,17 +140,20 @@ export default {
         background: "#F9F6F6",
         theme: "#fff",
         height: 1200,
-        filter: { global: "global" },
+        filter: {},
         list: [
           {
             id: "0",
             title: "卡片图",
             widget: "card",
-            titleColor: "#8c8c8c",
-            valueColor: "#333",
-            titleSize: "15px",
-            valueSize: "23px",
-            distance: 10,
+            attribute: {
+              // 其他属性
+              distance: 10,
+              titleSize: "15px",
+              valueSize: "23px",
+              valueColor: "#333",
+              titleColor: "#8c8c8c",
+            },
             border: {
               type: "7",
               reverse: true,

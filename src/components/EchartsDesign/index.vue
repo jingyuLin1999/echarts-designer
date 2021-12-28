@@ -32,11 +32,6 @@
           <i class="el-icon-view" v-if="design">预览</i>
           <i class="el-icon-setting" v-else>设计</i>
         </div>
-        <!--      
-          :class="[
-            Object.keys(clickedChart).length == 0 ? 'disabled-submit' : '',
-          ]"
-        -->
         <div>
           <i class="el-icon-pie-chart" @click="onOpenSubmitModal('chart')">
             {{ Object.keys(clickedChart).length == 0 ? "新建" : "保存" }}图表
@@ -56,7 +51,6 @@
         showFooter
         :title="modalType == 'chart' ? '保存图表' : '保存报表'"
         :style="{ zIndex: 1000 }"
-        :before-hide-method="closeSubmitModal"
       >
         <RichForm
           class="submit-form"
@@ -195,6 +189,7 @@ import short from "short-uuid";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
+import "codemirror/lib/codemirror.css";
 import MonacoMixin from "./codeMirror.mixin";
 import Echarts from "@/components/Echarts";
 import { chartWidgets } from "./meta/widgets";
@@ -405,36 +400,35 @@ export default {
     onDelete(data, type) {
       this.$emit("delete", { data, type });
     },
-    closeSubmitModal() {
-      this.submitValues = {};
-    },
     onOpenSubmitModal(type) {
       this.modalType = type;
       this.submitSchema = type == "chart" ? chartSchema : reportSchema;
       if (type == "chart") {
-        this.submitValues = this.clickedChart;
         let chartParent = chartForm.layout.find(
           (item) => item.name == "parentid"
         );
         if (chartParent) chartParent.options = this.chartTree;
         this.submitForm = chartForm;
+        this.submitValues = this.clickedChart;
       } else if (type == "report") {
-        this.submitValues = this.clickReportNode;
         let reportParent = reportForm.layout.find(
           (item) => item.name == "parentid"
         );
         if (reportParent) reportParent.options = this.reportTree;
         this.submitForm = reportForm;
+        this.submitValues = this.clickReportNode;
       }
       this.openSubmitModal = !this.openSubmitModal;
     },
     sureSubmit() {
       if (!this.submitHooks.validate()) return; // 校验
+      if (!this.submitValues.parentid) this.submitValues.parentid = "0";
       this.$emit("submitValues", {
         type: this.modalType,
-        data: this.submitValues,
+        data: this.cloneJson(this.submitValues),
       });
       this.openSubmitModal = false;
+      this.submitValues = {};
     },
   },
   beforeMount() {

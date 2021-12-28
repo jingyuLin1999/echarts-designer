@@ -21,11 +21,13 @@ export default {
             id: "0",
             title: "卡片图",
             widget: "card",
-            titleColor: "#8c8c8c",
-            valueColor: "#333",
-            titleSize: "15px",
-            valueSize: "23px",
-            distance: 10,
+            attribute: { // 自定义属性
+              distance: 10,
+              titleColor: "#8c8c8c",
+              valueColor: "#333",
+              titleSize: "15px",
+              valueSize: "23px",
+            },
             border: {
               type: "7",
               reverse: true,
@@ -96,7 +98,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "pct": {
+            pct: {
               x: 0,
               y: 0.1526147278548559,
               width: 0.309971098265896,
@@ -183,7 +185,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "pct": {
+            pct: {
               x: 0.3258670520231214,
               y: 0.1526147278548559,
               width: 0.38945086705202314,
@@ -233,7 +235,7 @@ export default {
               height: 337,
               z: 999,
             },
-            "pct": {
+            pct: {
               x: 0.7283236994219653,
               y: 0.1526147278548559,
               width: 0.26878612716763006,
@@ -312,7 +314,7 @@ export default {
               height: 337,
               z: 1,
             },
-            "pct": {
+            pct: {
               x: 0,
               y: 0.5373532550693704,
               width: 0.309971098265896,

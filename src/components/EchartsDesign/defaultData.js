@@ -8,6 +8,9 @@ export const chartSchema = {
             minLength: 1,
             require: true,
         },
+        parentid: {
+            type: "string",
+        },
     },
 }
 

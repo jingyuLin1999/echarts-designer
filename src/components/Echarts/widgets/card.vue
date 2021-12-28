@@ -11,7 +11,7 @@
       :key="index"
       :style="{
         background: echarts.theme,
-        marginRight: `${chartData.distance}px`,
+        marginRight: `${chartData.attribute.distance}px`,
         width: 100 / (chartData.data.length || 1) + '%',
       }"
     >
@@ -30,8 +30,8 @@
         <div
           class="card-title"
           :style="{
-            color: chartData.titleColor,
-            fontSize: chartData.titleSize,
+            color: chartData.attribute.titleColor,
+            fontSize: chartData.attribute.titleSize,
           }"
         >
           {{ cardItem.title }}
@@ -39,8 +39,8 @@
         <div
           class="card-value"
           :style="{
-            color: chartData.valueColor,
-            fontSize: chartData.valueSize,
+            color: chartData.attribute.valueColor,
+            fontSize: chartData.attribute.valueSize,
           }"
         >
           <count-to

@@ -8,7 +8,7 @@ export const form = {
             title: "标题",
             name: "title",
             widget: "input",
-            size: "mini"
+            size: "small"
         },
         {
             title: "画布高度",
@@ -16,6 +16,7 @@ export const form = {
             widget: "inputnumber",
             max: 80000,
             step: 10,
+            size: "small",
         },
         {
             widget: "grid",
