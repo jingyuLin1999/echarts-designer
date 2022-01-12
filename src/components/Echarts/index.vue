@@ -11,6 +11,7 @@
         { // 报表数据
               title: "图表名称",
               widget: "bar", // 组件名称
+              listenKey: ["aaa","bbb"], // 当selfField下的字段改变时，带着selfField到后端获取新数据
               border: { // 边框选项
                type: "1",
               }, 
@@ -18,6 +19,7 @@
                 {key:"",value: ""}, // 数据源
                 ....
               ],
+              attribute: {}, // 自定义属性
               codding: {}, // 自定义逻辑
               px: { // 保存两种坐标，为了适配
                 x: '', // x坐标
@@ -144,6 +146,7 @@
 import Field from "./field";
 import short from "short-uuid";
 import { Icon } from "element-ui";
+import eventbus from "./utils/eventbus";
 import SplitLayout from "../SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
@@ -171,6 +174,7 @@ export default {
   provide() {
     return {
       responseData: this.responseData,
+      chartId: this.chartId,
     };
   },
   computed: {
@@ -205,6 +209,7 @@ export default {
   methods: {
     init() {
       this.onAuthorize();
+      this._registerEvents();
       const canvasDom = document.getElementById(this.chartId);
       this.erd.listenTo(canvasDom, () => {
         this.calcuMobileWidth();
@@ -321,8 +326,19 @@ export default {
         px.height = pct.height * this.cH;
       });
     },
+    _registerEvents() {
+      eventbus.$on(`${this.chartId}:event`, this.chartEventParams);
+    },
+    chartEventParams(type, params) {
+      this.$emit("event", { type, params });
+    },
+    // 注销eventbus
+    _unregisterEvents() {
+      eventbus.$off(`${this.chartId}:event`);
+    },
   },
   beforeDestroy() {
+    this._unregisterEvents();
     const canvasDom = document.getElementById(this.chartId);
     if (this.erd && canvasDom) this.erd.uninstall(canvasDom);
   },

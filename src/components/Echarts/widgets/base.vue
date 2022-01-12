@@ -1,5 +1,9 @@
 <template>
-  <div class="echart-hook" :id="uuid"></div>
+  <div
+    class="echart-hook"
+    :id="uuid"
+    :style="{ background: echarts.theme }"
+  ></div>
 </template>
 
 <script>
@@ -51,6 +55,7 @@ export default {
           theme == "#110C2A" ? "dark" : theme
         );
         this.chart.setOption(this.chartData.data);
+        this.$emit("chartHandle", this.chart);
       });
     },
     redraw() {

@@ -1,6 +1,7 @@
 import Base from "../widgets/base.vue";
 import { chartApi, isUrl, strToObj } from ".";
 import { mergeDeepRight } from "ramda";
+import eventbus from "../utils/eventbus";
 export default {
     components: { Base },
     props: {
@@ -9,10 +10,27 @@ export default {
         hooks: { type: Object, default: () => ({}) },
         echarts: { type: Object, default: () => ({}) },
     },
-    inject: ["responseData"],
+    inject: ["responseData", "chartId"],
+    data() {
+        return {
+            chart: null,
+            filterHistory: { ...this.chartData.filter },
+        }
+    },
     watch: {
         "chartData.dataSource": {
             handler(newVal, oldVal) {
+                this.pickAsyncData();
+            },
+            deep: true,
+        },
+        "echarts.filter": {
+            handler(newVal, oldVal) {
+                let listenKeyArr = this.chartData.listenKey;
+                if (!listenKeyArr || (Array.isArray(listenKeyArr) && listenKeyArr.length == 0)) return;
+                let isFind = listenKeyArr.find(key => (Object.keys(newVal).includes(key) && this.filterHistory[key] != newVal[key]));
+                this.filterHistory = JSON.parse(JSON.stringify(newVal)); // 更新历史记录
+                if (!isFind) return;
                 this.pickAsyncData();
             },
             deep: true,
@@ -40,7 +58,7 @@ export default {
                 let { method, url, params } = pathItem;
                 // if (!isUrl(url)) pathItem.url = sessionStorage.getItem("report-baseUrl") + url;
                 let queryCondition = Object.assign({ ...pathItem },
-                    { params: strToObj(params), filter: this.echarts.filter });
+                    { params: strToObj(params), filter: Object.assign({}, this.echarts.filter, this.echarts.customField) });
                 if (method && url) promiseAll.push(chartApi(queryCondition));
             });
             if (promiseAll.length == 0) return;
@@ -72,6 +90,13 @@ export default {
                 if (!fields[key]) break;
             }
             return validate;
+        },
+        emit() {
+            // 全局总线
+            if (arguments.length > 0) {
+                arguments[0] = `${this.chartId}:${arguments[0]}`;
+                eventbus.$emit(...arguments);
+            }
         },
     },
 }

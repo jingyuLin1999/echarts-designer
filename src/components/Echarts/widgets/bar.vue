@@ -6,6 +6,7 @@
       :hooks="hooks"
       :design="design"
       :echarts="echarts"
+      @chartHandle="onChartHandle"
     />
   </div>
 </template>
@@ -23,6 +24,15 @@ export default {
           subtext: "", // 副标题
         },
       };
+    },
+    onChartHandle(chart) {
+      this.chart = chart;
+      this._registerEvent();
+    },
+    _registerEvent() {
+      this.chart.on("click", (params) => {
+        this.emit("event", this.chartData.id, params);
+      });
     },
   },
 };

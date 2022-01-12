@@ -146,6 +146,7 @@ export default {
             id: "0",
             title: "卡片图",
             widget: "card",
+            listenKey: ["aaa", "bbb"],
             attribute: {
               // 其他属性
               distance: 10,
@@ -348,7 +349,7 @@ export default {
           {
             id: "3",
             title: "饼图",
-            widget: "bar",
+            widget: "pie",
             border: {
               type: "8",
               reverse: false,
