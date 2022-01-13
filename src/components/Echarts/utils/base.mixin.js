@@ -72,6 +72,7 @@ export default {
         },
         runCode() {
             let { codding, id } = this.chartData;
+            let filter = this.echarts.filter;
             let responseData = this.responseData[id];
             if (codding.length > 0) {
                 codding = codding.replace(/return/g, "")

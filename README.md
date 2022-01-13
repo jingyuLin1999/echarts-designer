@@ -15,9 +15,16 @@
   * 报表渲染，直接将报表数据丢给echarts渲染组件
 
 ## 预览
-[报表设计器](https://www.shandawang.com/echarts-designer/#/)  
+```
+npm install
 
-[设计结果](https://www.shandawang.com/echarts-designer/#/echarts)  
+npm run serve
+```
+[报表设计器](http://localhost:8080/#/)  
+http://localhost:8081/#/
+
+[设计结果](http://localhost:8081/#/echarts)  
+http://localhost:8081/#/echarts
 
 ## 文档
 * 若对echarts基础概念不了解，请先阅读[echarts概念篇](https://echarts.apache.org/handbook/zh/concepts/visual-map)

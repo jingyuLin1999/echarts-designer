@@ -98,6 +98,14 @@ export const widgetLayout = [
         ]
     },
     {
+        title: "监听字段",
+        widget: "draggablelist",
+        name: "listenKey",
+        template: "",
+        editKeys: [],
+        description: "监听字段和filter下的键值匹配且filter对应键值改变，会发起http到后台过滤",
+    },
+    {
         title: "数据接口",
         widget: "draggablelist",
         name: "dataSource",

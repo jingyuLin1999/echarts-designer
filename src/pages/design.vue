@@ -140,7 +140,7 @@ export default {
         background: "#F9F6F6",
         theme: "#fff",
         height: 1200,
-        filter: {},
+        filter: { aaa: 123 },
         list: [
           {
             id: "0",
@@ -213,6 +213,7 @@ export default {
             id: "1",
             title: "柱形图",
             widget: "bar",
+            listenKey: [],
             border: {
               type: "12",
               reverse: false,
@@ -300,6 +301,7 @@ export default {
             id: "2",
             title: "折线图",
             widget: "line",
+            listenKey: [],
             border: {
               type: "8",
               reverse: true,
@@ -350,6 +352,7 @@ export default {
             id: "3",
             title: "饼图",
             widget: "pie",
+            listenKey: [],
             border: {
               type: "8",
               reverse: false,
@@ -429,6 +432,7 @@ export default {
             id: "echarts-designer4Da3zEQ9VmjjuhLGGncnma",
             title: "饼状图",
             widget: "pie",
+            listenKey: [],
             border: {
               type: "8",
               reverse: true,
