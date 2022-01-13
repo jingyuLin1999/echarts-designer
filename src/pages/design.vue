@@ -40,6 +40,7 @@ export default {
               id: "as2",
               title: "柱形图",
               widget: "bar",
+              listenKey: ["test"],
               px: {
                 x: 0,
                 y: 143,
@@ -179,7 +180,7 @@ export default {
           //   codding: "",
           //   data: {
           //     layout: [
-      
+
           //     ],
           //     schema: {},
           //   },

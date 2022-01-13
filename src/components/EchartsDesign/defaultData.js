@@ -28,7 +28,7 @@ export const chartForm = {
             title: "图标",
             description: "element icon",
             name: "icon",
-            widget: "input",
+            widget: "icon",
             size: "small",
         },
         {
@@ -84,7 +84,7 @@ export const reportForm = {
             title: "图标",
             description: "element icon",
             name: "icon",
-            widget: "input",
+            widget: "icon",
             size: "small",
         },
         {
