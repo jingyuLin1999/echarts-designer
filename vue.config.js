@@ -19,6 +19,7 @@ module.exports = {
     },
     plugins: [],
     externals: {
+      // "@jiaminghi/data-view": "@jiaminghi/data-view",
       // "axios": "axios",
       // "echarts": "echarts",
       // "element-ui": "element-ui",
