@@ -388,6 +388,7 @@ export default {
         console.warn("获取元数据失败：" + e);
       }
       this.$emit("clickedChart", item);
+      if (this.activeRightTab != "attribute") this.activeRightTab = "attribute";
     },
     onClickReportNode(data) {
       this.clickReportNode = data;

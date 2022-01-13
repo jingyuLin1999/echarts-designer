@@ -10,7 +10,6 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "@jiaminghi/data-view": "^2.10.0",
     "axios": "^0.21.1",
     "codemirror": "^5.64.0",
     "echarts": "^5.2.1",

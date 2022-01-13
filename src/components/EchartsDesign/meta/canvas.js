@@ -52,6 +52,14 @@ export const form = {
                 ],
             ],
         },
+        // { // todo richform json editor
+        //     title: "过滤字段",
+        //     widget: "input",
+        //     type: "textarea",
+        //     name: "filter",
+        //     size: "small",
+        //     rows: 3
+        // },
     ],
 }
 

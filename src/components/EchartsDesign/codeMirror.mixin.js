@@ -1,6 +1,7 @@
 import CodeMirror from "codemirror";
 import "codemirror/mode/javascript/javascript.js";
 import "codemirror/lib/codemirror.css";
+import 'codemirror/theme/monokai.css';
 import prettier from "prettier/esm/standalone";
 import parserBabel from "prettier/esm/parser-babel.mjs";
 
@@ -31,6 +32,7 @@ export default {
             this.editorInstance.setValue(formatCode);
         },
         onRunCode() {
+            let filter = this.echarts.filter;
             let responseData = this.hooks.responseData[this.clickedChart.id];
             let codeStr = this.editorInstance.getValue();
             codeStr = codeStr.replace(/return/g, "")

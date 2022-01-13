@@ -9,6 +9,7 @@ export const chartWidgets = [
                 id: "echarts-designer-card",
                 title: "卡片图",
                 widget: "card",
+                listenKey: [],
                 attribute: {
                     titleColor: "#8c8c8c",
                     valueColor: "#333",
@@ -57,6 +58,7 @@ export const chartWidgets = [
                 id: "echarts-designer-bar",
                 title: "柱形图",
                 widget: "bar", // 组件名称
+                listenKey: [],
                 border: {
                     type: "8",
                     reverse: false,
@@ -111,6 +113,7 @@ export const chartWidgets = [
                 id: "echarts-designer-2",
                 title: "折线图",
                 widget: "bar",
+                listenKey: [],
                 border: {
                     type: "8",
                     reverse: false,
@@ -171,6 +174,7 @@ export const chartWidgets = [
                 id: "echarts-designer-3",
                 title: "饼状图",
                 widget: "pie",
+                listenKey: [],
                 border: {
                     type: "8",
                     reverse: false,
@@ -223,6 +227,46 @@ export const chartWidgets = [
                             },
                         },
                     ],
+                },
+            },
+            {
+                id: "form-4",
+                title: "富表单",
+                widget: "form",
+                listenKey: [],
+                attribute: {
+                    border: false,
+                    grid: false,
+                    labelSuffix: ":",
+                    labelWidth: "80px",
+                    validator: "input",
+                    labelAlign: "right",
+                    labelInline: true,
+                    actions: [],
+                },
+                border: {
+                    type: "8",
+                    reverse: true,
+                    color: [],
+                },
+                px: {
+                    x: 0,
+                    width: 964,
+                    y: 11,
+                    z: 999,
+                    height: 68,
+                },
+                pct: {
+                    x: 0,
+                    width: 0.9968976215098242,
+                    y: 0.011739594450373533,
+                    height: 0.07257203842049093,
+                },
+                dataSource: [],
+                codding: "",
+                data: {
+                    layout: [],
+                    schema: {},
                 },
             },
         ],

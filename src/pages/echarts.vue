@@ -21,7 +21,9 @@ export default {
             id: "0",
             title: "卡片图",
             widget: "card",
-            attribute: { // 自定义属性
+            listenKey: [],
+            attribute: {
+              // 自定义属性
               distance: 10,
               titleColor: "#8c8c8c",
               valueColor: "#333",
@@ -86,6 +88,7 @@ export default {
             id: "1",
             title: "柱形图",
             widget: "bar",
+            listenKey: [],
             border: {
               type: "12",
               reverse: false,
@@ -173,6 +176,7 @@ export default {
             id: "2",
             title: "折线图",
             widget: "line",
+            listenKey: [],
             border: {
               type: "8",
               reverse: true,
@@ -223,6 +227,7 @@ export default {
             id: "3",
             title: "饼图",
             widget: "bar",
+            listenKey: [],
             border: {
               type: "8",
               reverse: false,
@@ -302,6 +307,7 @@ export default {
             id: "echarts-designer4Da3zEQ9VmjjuhLGGncnma",
             title: "饼状图",
             widget: "pie",
+            listenKey: [],
             border: {
               type: "8",
               reverse: true,
