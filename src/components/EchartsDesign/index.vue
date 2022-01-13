@@ -26,6 +26,9 @@
       </div>
       <div class="tools-right">
         <div>
+          <i class="el-icon-delete" @click="onClearCanvas">清空画布</i>
+        </div>
+        <div>
           <i class="el-icon-document-add" @click="viewJson = true">生成JSON</i>
         </div>
         <div class="tool" @click="preview">
@@ -389,6 +392,12 @@ export default {
       }
       this.$emit("clickedChart", item);
       if (this.activeRightTab != "attribute") this.activeRightTab = "attribute";
+    },
+    // 清空画布
+    onClearCanvas() {
+      this.echarts.list = [];
+      this.clickedChart = {};
+      this.clickReportNode = {};
     },
     onClickReportNode(data) {
       this.clickReportNode = data;
