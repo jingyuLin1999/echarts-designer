@@ -98,6 +98,13 @@ export const widgetLayout = [
         ]
     },
     {
+        title: "标识",
+        widget: "input",
+        description: "自定义标识，用于事件区分图表",
+        name: "attribute.name",
+        size: "small"
+    },
+    {
         title: "监听字段",
         widget: "draggablelist",
         name: "listenKey",

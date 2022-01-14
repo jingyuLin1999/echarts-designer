@@ -16,6 +16,7 @@ export default {
     design: { type: Boolean, default: true }, // 是否是设计模式
     hooks: { type: Object, default: () => ({}) },
     echarts: { type: Object, default: () => ({}) },
+    chartsHandle: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -56,7 +57,8 @@ export default {
           theme == "#110C2A" ? "dark" : theme
         );
         this.chart.setOption(this.chartData.data);
-        this.$emit("chartHandle", this.chart);
+        this.chartsHandle[this.chartData.id] = this.chart;
+        this.$emit("initialized", this.chart);
       });
     },
     redraw() {

@@ -67,6 +67,13 @@ export const form = {
             size: "small",
         },
         {
+            title: "标识",
+            widget: "input",
+            description: "自定义标识",
+            name: "attribute.name",
+            size: "small"
+        },
+        {
             title: "数据接口",
             widget: "draggablelist",
             name: "dataSource",

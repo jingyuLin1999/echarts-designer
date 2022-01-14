@@ -9,11 +9,11 @@ export default {
         design: { type: Boolean, default: true }, // 是否是设计模式
         hooks: { type: Object, default: () => ({}) },
         echarts: { type: Object, default: () => ({}) },
+        chartsHandle: { type: Object, default: () => ({}) },
     },
     inject: ["responseData", "chartId"],
     data() {
         return {
-            chart: null,
             filterHistory: { ...this.chartData.filter },
         }
     },
@@ -100,6 +100,19 @@ export default {
                 arguments[0] = `${this.chartId}:${arguments[0]}`;
                 eventbus.$emit(...arguments);
             }
+        },
+        // 注册图表事件 
+        // TODO 事件拓展 
+        _registerChartEvent() {
+            let chartHandle = this.chartsHandle[this.chartData.id];
+            chartHandle.on("click", (params) => {
+                this.emitEventParams(params);
+            });
+        },
+        // 发送图表事件参数
+        emitEventParams(params) {
+            let { id, attribute } = this.chartData;
+            this.emit("event", attribute.name || id, params);
         },
     },
 }

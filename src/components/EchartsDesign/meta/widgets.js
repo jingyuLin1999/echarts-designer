@@ -11,6 +11,7 @@ export const chartWidgets = [
                 widget: "card",
                 listenKey: [],
                 attribute: {
+                    name: "",
                     titleColor: "#8c8c8c",
                     valueColor: "#333",
                     titleSize: "15px",
@@ -59,6 +60,9 @@ export const chartWidgets = [
                 title: "柱形图",
                 widget: "bar", // 组件名称
                 listenKey: [],
+                attribute: {
+                    name: "",
+                },
                 border: {
                     type: "8",
                     reverse: false,
@@ -114,6 +118,9 @@ export const chartWidgets = [
                 title: "折线图",
                 widget: "bar",
                 listenKey: [],
+                attribute: {
+                    name: "",
+                },
                 border: {
                     type: "8",
                     reverse: false,
@@ -175,6 +182,9 @@ export const chartWidgets = [
                 title: "饼状图",
                 widget: "pie",
                 listenKey: [],
+                attribute: {
+                    name: "",
+                },
                 border: {
                     type: "8",
                     reverse: false,
@@ -235,6 +245,7 @@ export const chartWidgets = [
                 widget: "form",
                 listenKey: [],
                 attribute: {
+                    name: "",
                     border: false,
                     grid: false,
                     labelSuffix: ":",

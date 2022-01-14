@@ -7,6 +7,7 @@
       :is="asyncComponent"
       :chartData="chartData"
       :echarts="echarts"
+      :chartsHandle="chartsHandle"
     />
   </PerfectBorder>
 </template>
@@ -21,6 +22,7 @@ export default {
     hooks: { type: Object, default: () => ({}) },
     chartData: { type: Object, default: () => ({}) },
     echarts: { type: Object, default: () => ({}) },
+    chartsHandle: { type: Object, default: () => ({}) },
   },
   computed: {
     asyncComponent() {

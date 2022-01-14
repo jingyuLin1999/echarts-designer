@@ -8,6 +8,7 @@
       :hooks="hooks"
       :design="design"
       :echarts="echarts"
+      :chartsHandle="chartsHandle"
     />
   </div>
 </template>

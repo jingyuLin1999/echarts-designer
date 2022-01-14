@@ -24,6 +24,7 @@ export default {
             listenKey: [],
             attribute: {
               // 自定义属性
+              name: "",
               distance: 10,
               titleColor: "#8c8c8c",
               valueColor: "#333",
@@ -89,6 +90,9 @@ export default {
             title: "柱形图",
             widget: "bar",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "12",
               reverse: false,
@@ -177,6 +181,9 @@ export default {
             title: "折线图",
             widget: "line",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "8",
               reverse: true,
@@ -228,6 +235,9 @@ export default {
             title: "饼图",
             widget: "bar",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "8",
               reverse: false,
@@ -308,6 +318,9 @@ export default {
             title: "饼状图",
             widget: "pie",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "8",
               reverse: true,

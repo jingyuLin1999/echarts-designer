@@ -12,5 +12,7 @@ export default {};
 .perfect-border {
   padding: 1px;
   box-sizing: border-box;
+  width: 100%;
+  height: 100%;
 }
 </style>

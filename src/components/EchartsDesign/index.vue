@@ -173,6 +173,7 @@
                     </span>
                   </div>
                   <div class="node-tools">
+                    <span @click="copyReportId(data.id)"> 复制id </span>
                     <i
                       class="tool el-icon-delete"
                       @click="onDelete(data, 'report')"
@@ -189,6 +190,7 @@
 </template>
 <script>
 import short from "short-uuid";
+// import ClipboardJS from "clipboard";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
@@ -439,6 +441,9 @@ export default {
       this.openSubmitModal = false;
       this.submitValues = {};
     },
+    copyReportId(id) {
+      // const textCopied = ClipboardJS.copy("1qwe23");
+    },
   },
   beforeMount() {
     window.addEventListener("resize", this.$_resizeHandler);
@@ -541,6 +546,9 @@ export default {
       .node-tools {
         display: none;
         margin-right: 10px;
+        > * {
+          margin-left: 10px;
+        }
       }
     }
     .designer-tree-node:hover > .node-tools {

@@ -19,7 +19,9 @@
                 {key:"",value: ""}, // 数据源
                 ....
               ],
-              attribute: {}, // 自定义属性
+              attribute: {
+                name: "", // 自定义，在点击事件中可根据该名称区分点击的是哪个图表
+              }, // 自定义属性
               codding: {}, // 自定义逻辑
               px: { // 保存两种坐标，为了适配
                 x: '', // x坐标
@@ -66,6 +68,7 @@
           :hooks="hooks"
           :design="design"
           :echarts="echarts"
+          :chartsHandle="chartsHandle"
           :style="{
             width: item.px.width + 'px',
             height: item.px.height + 'px',
@@ -111,6 +114,7 @@
             :hooks="hooks"
             :design="design"
             :echarts="echarts"
+            :chartsHandle="chartsHandle"
           />
         </vue-draggable-resizable>
         <!--辅助线-->
@@ -201,6 +205,7 @@ export default {
       id: short.generate(), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
       responseData: {}, // 相应数据
+      chartsHandle: {}, // 所有图表的句柄，用于注册事件
     };
   },
   mounted() {

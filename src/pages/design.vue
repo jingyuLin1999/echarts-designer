@@ -192,6 +192,7 @@ export default {
             listenKey: ["aaa", "bbb"],
             attribute: {
               // 其他属性
+              name: "",
               distance: 10,
               titleSize: "15px",
               valueSize: "23px",
@@ -257,6 +258,9 @@ export default {
             title: "柱形图",
             widget: "bar",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "12",
               reverse: false,
@@ -345,6 +349,9 @@ export default {
             title: "折线图",
             widget: "line",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "8",
               reverse: true,
@@ -396,6 +403,9 @@ export default {
             title: "饼图",
             widget: "pie",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "8",
               reverse: false,
@@ -476,6 +486,9 @@ export default {
             title: "饼状图",
             widget: "pie",
             listenKey: [],
+            attribute: {
+              name: "",
+            },
             border: {
               type: "8",
               reverse: true,
