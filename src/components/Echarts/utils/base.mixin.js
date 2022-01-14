@@ -30,7 +30,9 @@ export default {
                 if (!listenKeyArr || (Array.isArray(listenKeyArr) && listenKeyArr.length == 0)) return;
                 let isFind = listenKeyArr.find(key => (Object.keys(newVal).includes(key) && this.filterHistory[key] != newVal[key]));
                 this.filterHistory = JSON.parse(JSON.stringify(newVal)); // 更新历史记录
-                if (!isFind) return;
+                // 当所监听的字段都有值时，才发起请求
+                let hasValue = listenKeyArr.find(key => (newVal[key] == undefined || newVal[key] == null));
+                if (hasValue || !isFind) return;
                 this.pickAsyncData();
             },
             deep: true,

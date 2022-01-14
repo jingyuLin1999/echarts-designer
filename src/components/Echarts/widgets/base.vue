@@ -37,7 +37,8 @@ export default {
     },
     "chartData.data": {
       handler() {
-        if (this.design) this.redraw();
+        // 过滤条件改变导致数据改变或设计模式下
+        this.redraw();
       },
       deep: true,
     },
