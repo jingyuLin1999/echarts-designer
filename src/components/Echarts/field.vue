@@ -1,9 +1,13 @@
 <template>
-  <PerfectBorder :border="chartData.border">
+  <PerfectBorder
+    class="perfect-border"
+    :border="chartData.border"
+    :style="{
+      background: echarts.theme,
+      padding: chartData.attribute.padding + 'px' || 0,
+    }"
+  >
     <component
-      :style="{
-        padding: chartData.attribute.padding + 'px' || 0,
-      }"
       class="async-component"
       :hooks="hooks"
       :design="design"
@@ -44,9 +48,11 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.perfect-border {
+  box-sizing: border-box;
+}
 .async-component {
   width: 100%;
   height: 100%;
-  box-sizing: border-box;
 }
 </style>

@@ -1,11 +1,5 @@
 <template>
-  <div
-    class="echart-hook"
-    :id="uuid"
-    :style="{
-      background: echarts.theme,
-    }"
-  ></div>
+  <div class="echart-hook" :id="uuid"></div>
 </template>
 
 <script>
