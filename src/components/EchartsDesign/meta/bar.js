@@ -6,7 +6,6 @@ export const form = {
     ...coddeButton,
     layout: [
         ...widgetLayout,
-
     ],
 }
 

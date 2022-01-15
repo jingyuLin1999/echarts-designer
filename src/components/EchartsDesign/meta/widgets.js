@@ -62,6 +62,7 @@ export const chartWidgets = [
                 listenKey: [],
                 attribute: {
                     name: "",
+                    padding: 0,
                 },
                 border: {
                     type: "8",
@@ -120,6 +121,7 @@ export const chartWidgets = [
                 listenKey: [],
                 attribute: {
                     name: "",
+                    padding: 0,
                 },
                 border: {
                     type: "8",
@@ -184,6 +186,7 @@ export const chartWidgets = [
                 listenKey: [],
                 attribute: {
                     name: "",
+                    padding: 0,
                 },
                 border: {
                     type: "8",

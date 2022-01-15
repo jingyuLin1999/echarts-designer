@@ -105,6 +105,13 @@ export const widgetLayout = [
         size: "small"
     },
     {
+        title: "边距",
+        widget: "inputnumber",
+        name: "attribute.padding",
+        description: "单位px",
+        size: "small"
+    },
+    {
         title: "监听字段",
         widget: "draggablelist",
         name: "listenKey",

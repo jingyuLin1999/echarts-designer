@@ -1,6 +1,9 @@
 <template>
   <PerfectBorder :border="chartData.border">
     <component
+      :style="{
+        padding: chartData.attribute.padding + 'px' || 0,
+      }"
       class="async-component"
       :hooks="hooks"
       :design="design"
@@ -44,5 +47,6 @@ export default {
 .async-component {
   width: 100%;
   height: 100%;
+  box-sizing: border-box;
 }
 </style>

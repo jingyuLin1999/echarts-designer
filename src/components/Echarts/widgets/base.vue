@@ -2,7 +2,9 @@
   <div
     class="echart-hook"
     :id="uuid"
-    :style="{ background: echarts.theme }"
+    :style="{
+      background: echarts.theme,
+    }"
   ></div>
 </template>
 
@@ -46,6 +48,9 @@ export default {
     "echarts.theme"() {
       this.chart.dispose();
       this.createChart();
+    },
+    "chartData.attribute.padding"() {
+      this.redraw();
     },
   },
   methods: {

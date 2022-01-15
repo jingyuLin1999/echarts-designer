@@ -11,6 +11,7 @@
       resize
       title="查看JSON"
       :showFooter="false"
+      :style="{position: 'absolute',zIndex: 9999}"
     >
       {{ echarts.list }}
     </modal>

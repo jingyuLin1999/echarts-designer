@@ -260,6 +260,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "12",
@@ -296,6 +297,12 @@ export default {
                 },
                 subtext: "",
               },
+              grid: {
+                x: 50,
+                y: 50,
+                x2: 50,
+                y2: 50, //距离下边的距离
+              },
               legend: {
                 orient: "horizontal",
                 right: 10,
@@ -316,7 +323,9 @@ export default {
                 type: "category",
                 axisLabel: {
                   formatter: "{value}",
-                  align: "center",
+                  align: "right",
+                  rotate: "20",
+                  interval: 0,
                 },
               },
               yAxis: {
@@ -351,6 +360,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "8",
@@ -405,6 +415,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "8",
@@ -488,6 +499,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "8",

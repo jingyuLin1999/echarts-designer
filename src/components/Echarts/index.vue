@@ -21,6 +21,7 @@
               ],
               attribute: {
                 name: "", // 自定义，在点击事件中可根据该名称区分点击的是哪个图表
+                padding: 0, // 距离边距是多少 单位px
               }, // 自定义属性
               codding: {}, // 自定义逻辑
               px: { // 保存两种坐标，为了适配
@@ -188,8 +189,9 @@ export default {
     echartsList() {
       // 适配不同屏宽
       // 异步加载数据延迟需要监听并重新计算
-      if (this.isMobile && !this.design) this.calcuMobileWh();
-      else this.calcuPctToPx();
+      this.isMobile && !this.design
+        ? this.calcuMobileWh()
+        : this.calcuPctToPx();
       return this.echarts.list;
     },
   },
@@ -218,9 +220,8 @@ export default {
       const canvasDom = document.getElementById(this.chartId);
       this.erd.listenTo(canvasDom, () => {
         this.calcuMobileWidth();
-        if (this.isMobile && !this.design) {
-          this.calcuMobileWh();
-        } else {
+        if (this.isMobile && !this.design) this.calcuMobileWh();
+        else {
           this.calcuPctToPx();
           // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
           window.dispatchEvent(new Event("resize"));
@@ -236,11 +237,22 @@ export default {
         let unitWidth = (this.cW - 5 * takeUpNum - 5) / takeUpNum;
         px.width = unitWidth;
       });
+      // 根据坐标进行排序，应为可能是乱序的
+      let sorted = this.sortByPx(this.echarts.list, "x");
+      this.sortByPx(sorted, "y");
+    },
+    sortByPx(toSortArr, key) {
+      let sorted = toSortArr.sort((a, b) => {
+        if (a.px[key] > b.px[key]) return 1;
+        else if (a.px[key] < b.px[key]) return -1;
+        else return 0;
+      });
+      return sorted;
     },
     // 根据屏宽判断是否移动端
     async calcuMobileWidth() {
       await this.getCanvasWh();
-      this.isMobile = this.cW < 940;
+      this.isMobile = this.cW < 500;
     },
     // 画布全局参数
     clickCanvas() {
@@ -425,7 +437,7 @@ export default {
     padding-left: 5px;
     .chart-unit {
       margin-right: 5px;
-      margin-bottom: 5px;
+      margin-top: 5px;
     }
   }
 }

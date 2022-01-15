@@ -18,72 +18,59 @@ export default {
         widget: "canvas",
         list: [
           {
-            id: "0",
-            title: "卡片图",
-            widget: "card",
+            id: "2",
+            title: "折线图",
+            widget: "line",
             listenKey: [],
             attribute: {
-              // 自定义属性
               name: "",
-              distance: 10,
-              titleColor: "#8c8c8c",
-              valueColor: "#333",
-              titleSize: "15px",
-              valueSize: "23px",
+              padding: 0,
             },
             border: {
-              type: "7",
+              type: "8",
               reverse: true,
               color: [],
             },
             px: {
-              x: 0,
-              width: 1380,
-              y: 11,
+              x: 451,
+              y: 143,
+              width: 539,
+              height: 337,
               z: 1,
-              height: 114,
             },
             pct: {
-              x: 0,
-              width: 0.9971098265895953,
-              y: 0.011739594450373533,
-              height: 0.12166488794023479,
+              x: 0.3258670520231214,
+              y: 0.1526147278548559,
+              width: 0.38945086705202314,
+              height: 0.35965848452508004,
             },
             dataSource: [
               {
                 method: "get",
-                url: "http://",
-                params: "",
-                id: "2",
+                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
             codding: "",
-            data: [
-              {
-                title: "登入次数",
-                icon: "el-icon-video-camera-solid",
-                iconColor: "#4FCAC6",
-                value: 6521,
+            data: {
+              title: {
+                text: "一周出勤人数",
+                subtext: "",
+                left: "center",
               },
-              {
-                title: "用户数",
-                icon: "el-icon-user-solid",
-                iconColor: "#48A4F6",
-                value: 555,
+              xAxis: {
+                type: "category",
+                data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
               },
-              {
-                title: "设备数",
-                icon: "el-icon-s-platform",
-                iconColor: "#EF4C6D",
-                value: 8521,
+              yAxis: {
+                type: "value",
               },
-              {
-                title: "刀具数",
-                icon: "el-icon-knife-fork",
-                iconColor: "#43C0A3",
-                value: 955,
-              },
-            ],
+              series: [
+                {
+                  data: [150, 230, 224, 218, 135, 147, 260],
+                  type: "line",
+                },
+              ],
+            },
           },
           {
             id: "1",
@@ -92,6 +79,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "12",
@@ -177,58 +165,72 @@ export default {
             },
           },
           {
-            id: "2",
-            title: "折线图",
-            widget: "line",
+            id: "0",
+            title: "卡片图",
+            widget: "card",
             listenKey: [],
             attribute: {
+              // 自定义属性
               name: "",
+              distance: 10,
+              titleColor: "#8c8c8c",
+              valueColor: "#333",
+              titleSize: "15px",
+              valueSize: "23px",
             },
             border: {
-              type: "8",
+              type: "7",
               reverse: true,
               color: [],
             },
             px: {
-              x: 451,
-              y: 143,
-              width: 539,
-              height: 337,
+              x: 0,
+              width: 1380,
+              y: 11,
               z: 1,
+              height: 114,
             },
             pct: {
-              x: 0.3258670520231214,
-              y: 0.1526147278548559,
-              width: 0.38945086705202314,
-              height: 0.35965848452508004,
+              x: 0,
+              width: 0.9971098265895953,
+              y: 0.011739594450373533,
+              height: 0.12166488794023479,
             },
             dataSource: [
               {
                 method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+                url: "http://",
+                params: "",
+                id: "2",
               },
             ],
             codding: "",
-            data: {
-              title: {
-                text: "一周出勤人数",
-                subtext: "",
-                left: "center",
+            data: [
+              {
+                title: "登入次数",
+                icon: "el-icon-video-camera-solid",
+                iconColor: "#4FCAC6",
+                value: 6521,
               },
-              xAxis: {
-                type: "category",
-                data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+              {
+                title: "用户数",
+                icon: "el-icon-user-solid",
+                iconColor: "#48A4F6",
+                value: 555,
               },
-              yAxis: {
-                type: "value",
+              {
+                title: "设备数",
+                icon: "el-icon-s-platform",
+                iconColor: "#EF4C6D",
+                value: 8521,
               },
-              series: [
-                {
-                  data: [150, 230, 224, 218, 135, 147, 260],
-                  type: "line",
-                },
-              ],
-            },
+              {
+                title: "刀具数",
+                icon: "el-icon-knife-fork",
+                iconColor: "#43C0A3",
+                value: 955,
+              },
+            ],
           },
           {
             id: "3",
@@ -237,6 +239,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "8",
@@ -320,6 +323,7 @@ export default {
             listenKey: [],
             attribute: {
               name: "",
+              padding: 0,
             },
             border: {
               type: "8",
