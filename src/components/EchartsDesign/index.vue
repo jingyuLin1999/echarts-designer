@@ -11,7 +11,7 @@
       resize
       title="查看JSON"
       :showFooter="false"
-      :style="{position: 'absolute',zIndex: 9999}"
+      :style="{ position: 'absolute', zIndex: 9999 }"
     >
       {{ echarts.list }}
     </modal>
@@ -174,7 +174,7 @@
                     </span>
                   </div>
                   <div class="node-tools">
-                    <span @click="copyReportId(data.id)"> 复制id </span>
+                    <span @click="copyReportId(data.id)"> 复制ID </span>
                     <i
                       class="tool el-icon-delete"
                       @click="onDelete(data, 'report')"
@@ -191,7 +191,7 @@
 </template>
 <script>
 import short from "short-uuid";
-// import ClipboardJS from "clipboard";
+import ClipboardJS from "clipboard";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
@@ -443,7 +443,11 @@ export default {
       this.submitValues = {};
     },
     copyReportId(id) {
-      // const textCopied = ClipboardJS.copy("1qwe23");
+      // https://github.com/zenorocha/clipboard.js/issues/784#issuecomment-1014216264
+      const fakerBtn = document.createElement("button");
+      new ClipboardJS(fakerBtn, { text: () => id });
+      fakerBtn.click();
+      Message({ type: "success", message: "复制成功" });
     },
   },
   beforeMount() {

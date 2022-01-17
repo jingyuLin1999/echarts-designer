@@ -21,6 +21,7 @@ module.exports = {
     externals: {
       // "@jiaminghi/data-view": "@jiaminghi/data-view",
       // "axios": "axios",
+      // "clipboard": "clipboard",
       // "echarts": "echarts",
       // "element-ui": "element-ui",
       // "hotkeys-js": "hotkeys-js",
