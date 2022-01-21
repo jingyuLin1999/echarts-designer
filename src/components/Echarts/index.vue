@@ -142,7 +142,13 @@
           }"
         />
         <!-- 画布点击事件 -->
-        <div class="click-canvas" @click="clickCanvas"></div>
+        <div
+          class="click-canvas"
+          @click="clickCanvas"
+          :style="{
+            zIndex: design ? 0 : -2,
+          }"
+        ></div>
       </div>
     </div>
   </div>
