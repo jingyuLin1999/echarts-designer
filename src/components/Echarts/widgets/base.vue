@@ -67,6 +67,9 @@ export default {
       this.chart.resize();
     },
   },
+  beforeDestroy() {
+    this.chart.dispose();
+  },
 };
 </script>
 <style lang="scss">

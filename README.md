@@ -21,10 +21,10 @@ npm install
 npm run serve
 ```
 [报表设计器](http://localhost:8080/#/)  
-http://localhost:8081/#/
+http://localhost:8080/#/
 
-[设计结果](http://localhost:8081/#/echarts)  
-http://localhost:8081/#/echarts
+[设计结果](http://localhost:8080/#/echarts)  
+http://localhost:8080/#/echarts
 
 ## 文档
 * 若对echarts基础概念不了解，请先阅读[echarts概念篇](https://echarts.apache.org/handbook/zh/concepts/visual-map)
@@ -51,11 +51,10 @@ npm i echarts-designer -S
 </template>
 ```
 
-
 ```js
-import { Echarts, EchartsDesign } from "echarts-designer";
+import { Echarts, EchartsDesign, CoolNavigation } from "echarts-designer";
 export default {
-  components: { Echarts, EchartsDesign },
+  components: { Echarts, EchartsDesign, CoolNavigation },
   methods: {
     onClickedChart(data) {
       console.log("clickedChart", data);
@@ -73,72 +72,91 @@ export default {
     return {
       charts: {
         title: "图表名称",
-        bgColor: "#fff",
+        theme: "#110C2A",
+        background: "#110C2A",
+        widget: "canvas",
         list: [
           {
-            id: "1",
-            title: "柱形图",
+            id: "3",
+            title: "饼图",
             widget: "bar",
-            px: { x: 0, y: 0, width: 792, height: 337, z: 999 },
-            pct: {
-              x: 0,
-              y: 0,
-              width: 0.7880597014925373,
-              height: 0.35965848452508004,
+            listenKey: [],
+            attribute: {
+              name: "",
+              padding: 0,
             },
             border: {
-              type: "1",
-              reverse: true,
+              type: "8",
+              reverse: false,
               color: [],
             },
+            px: {
+              x: 1008,
+              y: 143,
+              width: 372,
+              height: 337,
+              z: 999,
+            },
+            pct: {
+              x: 0.7283236994219653,
+              y: 0.1526147278548559,
+              width: 0.26878612716763006,
+              height: 0.35965848452508004,
+            },
             dataSource: [
-              // 数据源
               {
                 method: "get",
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "", // 逻辑
+            codding: "",
             data: {
               title: {
-                text: "ECharts 入门示例",
-                subtext: "Living Expenses in Shenzhen",
+                text: "Referer of a Website",
+                subtext: "Fake Data",
+                left: "center",
+              },
+              tooltip: {
+                trigger: "item",
               },
               legend: {
-                orient: "horizontal", // vertical/horizontal
-                left: 0,
-                // top: 0,
-                bottom: 0,
-              },
-              tooltip: {},
-              dataset: {
-                source: [
-                  ["product", "2015", "2016", "2017"],
-                  ["Matcha Latte", 43.3, 85.8, 93.7],
-                  ["Milk Tea", 83.1, 73.4, 55.1],
-                  ["Cheese Cocoa", 86.4, 65.2, 82.5],
-                  ["Walnut Brownie", 72.4, 53.9, 39.1],
-                ],
-              },
-              // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
-              xAxis: {
-                type: "category",
-                axisLabel: {
-                  formatter: "{value}",
-                  align: "center",
-                },
-              },
-              yAxis: {
-                axisLabel: {
-                  formatter: "{value}",
-                  align: "center",
-                  position: "right",
-                },
+                orient: "vertical",
+                left: "left",
               },
               series: [
-                { type: "bar", seriesLayoutBy: "column" },
-                { type: "bar", seriesLayoutBy: "column" },
-                { type: "bar", seriesLayoutBy: "column" },
+                {
+                  name: "Access From",
+                  type: "pie",
+                  radius: "50%",
+                  data: [
+                    {
+                      value: 1048,
+                      name: "Search Engine",
+                    },
+                    {
+                      value: 735,
+                      name: "Direct",
+                    },
+                    {
+                      value: 580,
+                      name: "Email",
+                    },
+                    {
+                      value: 484,
+                      name: "Union Ads",
+                    },
+                    {
+                      value: 300,
+                      name: "Video Ads",
+                    },
+                  ],
+                  emphasis: {
+                    itemStyle: {
+                      shadowBlur: 10,
+                      shadowOffsetX: 0,
+                    },
+                  },
+                },
               ],
             },
           },

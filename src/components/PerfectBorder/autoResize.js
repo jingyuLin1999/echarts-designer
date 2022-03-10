@@ -1,7 +1,7 @@
 import { debounce, observerDomResize } from './util/index'
 
 export default {
-  data () {
+  data() {
     return {
       dom: '',
 
@@ -14,7 +14,7 @@ export default {
     }
   },
   methods: {
-    async autoResizeMixinInit () {
+    async autoResizeMixinInit() {
       const { initWH, getDebounceInitWHFun, bindDomResizeCallback, afterAutoResizeMixinInit } = this
 
       await initWH(false)
@@ -25,7 +25,7 @@ export default {
 
       if (typeof afterAutoResizeMixinInit === 'function') afterAutoResizeMixinInit()
     },
-    initWH (resize = true) {
+    initWH(resize = true) {
       const { $nextTick, $refs, ref, onResize } = this
 
       return new Promise(resolve => {
@@ -47,19 +47,19 @@ export default {
         })
       })
     },
-    getDebounceInitWHFun () {
+    getDebounceInitWHFun() {
       const { initWH } = this
 
       this.debounceInitWHFun = debounce(10, initWH)
     },
-    bindDomResizeCallback () {
+    bindDomResizeCallback() {
       const { dom, debounceInitWHFun } = this
 
       this.domObserver = observerDomResize(dom, debounceInitWHFun)
 
       window.addEventListener('resize', debounceInitWHFun)
     },
-    unbindDomResizeCallback () {
+    unbindDomResizeCallback() {
       let { domObserver, debounceInitWHFun } = this
 
       if (!domObserver) return
@@ -71,12 +71,12 @@ export default {
       window.removeEventListener('resize', debounceInitWHFun)
     }
   },
-  mounted () {
+  mounted() {
     const { autoResizeMixinInit } = this
 
     autoResizeMixinInit()
   },
-  beforeDestroy () {
+  beforeDestroy() {
     const { unbindDomResizeCallback } = this
 
     unbindDomResizeCallback()

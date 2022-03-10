@@ -104,13 +104,13 @@ export default {
       const { reverse, width, height } = this;
 
       if (reverse)
-        return `M 1, 1 L 1, ${height - 1} L ${width - 1}, ${
-          height - 1
-        } L ${width - 1}, 1 L 1, 1`;
+        return `M 1, 1 L 1, ${height - 1} L ${width - 1}, ${height - 1} L ${
+          width - 1
+        }, 1 L 1, 1`;
 
-      return `M1, 1 L${width - 1}, 1 L${width - 1}, ${
+      return `M1, 1 L${width - 1}, 1 L${width - 1}, ${height - 1} L1, ${
         height - 1
-      } L1, ${height - 1} L1, 1`;
+      } L1, 1`;
     },
   },
   watch: {

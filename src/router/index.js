@@ -6,17 +6,22 @@ const routes = [
     {
         path: '/echarts',
         name: 'echarts',
-        component: () => import('@/pages/echarts')
+        component: () => import('@/demo/echarts')
     },
     {
         path: '/',
         name: 'design',
-        component: () => import('@/pages/design')
+        component: () => import('@/demo/design')
     },
     {
         path: '/border',
         name: 'border',
-        component: () => import('@/pages/border')
+        component: () => import('@/demo/border')
+    },
+    {
+        path: '/navigation',
+        name: 'navigation',
+        component: () => import('@/demo/navigation')
     }
 ]
 

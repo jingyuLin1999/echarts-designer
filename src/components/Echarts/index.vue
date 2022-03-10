@@ -223,6 +223,11 @@ export default {
     init() {
       this.onAuthorize();
       this._registerEvents();
+      this.watchCanvasDom();
+      this.hooks.responseData = this.responseData;
+    },
+    // 监听图表dom的变化
+    watchCanvasDom() {
       const canvasDom = document.getElementById(this.chartId);
       this.erd.listenTo(canvasDom, () => {
         this.calcuMobileWidth();
@@ -233,7 +238,6 @@ export default {
           window.dispatchEvent(new Event("resize"));
         }
       });
-      this.hooks.responseData = this.responseData;
     },
     calcuMobileWh() {
       let baseWidth = 350;
@@ -243,7 +247,7 @@ export default {
         let unitWidth = (this.cW - 5 * takeUpNum - 5) / takeUpNum;
         px.width = unitWidth;
       });
-      // 根据坐标进行排序，应为可能是乱序的
+      // 根据坐标进行排序，因为可能是乱序的
       let sorted = this.sortByPx(this.echarts.list, "x");
       this.sortByPx(sorted, "y");
     },

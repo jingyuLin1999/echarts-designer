@@ -7,7 +7,10 @@ Vue.component("Echarts", Echarts)
 import EchartsDesign from "./EchartsDesign/index.vue"
 Vue.component("EchartsDesign", EchartsDesign)
 
+import CoolNavigation from "./CoolNavigation/index.vue"
+Vue.component("CoolNavigation", CoolNavigation)
+
 import * as echarts from 'echarts';
 Vue.prototype.$echart = echarts;
 
-export { Echarts, EchartsDesign }
+export { Echarts, EchartsDesign, CoolNavigation }
