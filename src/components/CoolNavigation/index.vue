@@ -5,6 +5,7 @@
     :menuSize="menuSize"
     :navTitle="navTitle"
     :colors="colors"
+    :bgColor="bgColor"
   >
   </component>
 </template>
@@ -17,6 +18,7 @@ export default {
     colors: { type: Array, default: () => [] }, // 导航颜色
     menu: { type: Array, default: () => [] },
     menuSize: { type: Array, default: () => [120, 34] },
+    bgColor: { type: String, default: "#061f57" },
   },
   computed: {
     asyncComponent() {

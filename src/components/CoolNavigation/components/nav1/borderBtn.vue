@@ -56,6 +56,7 @@ export default {
       return {
         "--color": this.colors[0],
         "--color-hover": this.colors[1],
+        "--width": this.size[0] + "px",
       };
     },
   },
@@ -68,11 +69,12 @@ export default {
   margin-right: 10px;
   .border-box-content {
     position: absolute;
+    z-index: 9999;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    font-size: 1.3em;
+    font-size: 16px;
     box-sizing: border-box;
     padding: 5px 5px 5px 18px;
     color: var(--color);
@@ -92,6 +94,7 @@ export default {
     }
     & > dd {
       display: none;
+      width: var(--width);
       height: 33px;
       line-height: 33px;
       text-align: left;
@@ -106,9 +109,9 @@ export default {
       color: var(--color-hover);
     }
     & > dd:first-of-type {
-      margin-top: 6px;
+      margin-top: 10px;
     }
-    & > * {
+    & > dt > a {
       white-space: nowrap;
       overflow: hidden;
       text-overflow: ellipsis;

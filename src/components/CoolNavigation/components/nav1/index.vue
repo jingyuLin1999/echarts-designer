@@ -205,7 +205,11 @@
         :size="menuSize"
       />
       <Button class="more-menu" v-if="moreMenu.length > 0" :size="menuSize">
-        <dd v-for="(moreItem, index) in moreMenu" :key="index">
+        <dd
+          v-for="(moreItem, index) in moreMenu"
+          :key="index"
+          :style="{ background: bgColor }"
+        >
           <router-link :to="moreItem.path"> {{ moreItem.title }}</router-link>
         </dd>
       </Button>
@@ -225,6 +229,7 @@ export default {
     colors: { type: Array, default: () => [] },
     navTitle: { type: String, default: "工厂看板" },
     menuSize: { type: Array, default: () => [120, 34] },
+    bgColor: { type: String, default: "" },
   },
   computed: {
     halfWidth() {
@@ -300,7 +305,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 3.3em;
+    font-size: 41px;
     font-weight: 550;
     font-family: "微软雅黑";
     background: linear-gradient(to bottom, #fefaf4 30%, #32dafe);
