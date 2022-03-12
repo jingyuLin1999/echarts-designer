@@ -72,7 +72,7 @@ export default {
     return {
       charts: {
         title: "图表名称",
-        theme: "#110C2A",
+        theme: "", // dark|light
         background: "#110C2A",
         widget: "canvas",
         list: [

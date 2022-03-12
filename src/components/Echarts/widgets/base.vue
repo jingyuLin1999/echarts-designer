@@ -50,12 +50,14 @@ export default {
   methods: {
     createChart() {
       this.$nextTick(() => {
-        const theme = this.echarts.theme;
+        const { theme, background } = this.echarts;
         this.chart = this.$echart.init(
           document.getElementById(this.uuid),
-          theme == "#110C2A" ? "dark" : theme
+          theme
         );
-        this.chart.setOption(this.chartData.data);
+        this.chart.setOption(
+          Object.assign(this.chartData.data, { backgroundColor: background })
+        );
         this.chartsHandle[this.chartData.id] = this.chart;
         this.$emit("initialized", this.chart);
       });

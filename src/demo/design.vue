@@ -138,8 +138,8 @@ export default {
       charts: {
         id: "-1",
         title: "图表名称",
-        background: "#F9F6F6",
-        theme: "#fff",
+        background: "#fff",
+        theme: "",
         height: 1200,
         filter: { aaa: 123 },
         list: [
