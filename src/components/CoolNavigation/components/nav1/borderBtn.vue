@@ -33,7 +33,7 @@
       />
     </svg>
     <dl class="border-box-content" :style="styleObject">
-      <dt>
+      <dt @click="onClickBtn">
         <router-link :to="btnInfo.path">{{ btnInfo.title }}</router-link>
       </dt>
       <slot></slot>
@@ -56,14 +56,20 @@ export default {
       return {
         "--color": this.colors[0],
         "--color-hover": this.colors[1],
-        "--width": this.size[0] + "px",
+        "--width": this.size[0] - 1 + "px",
       };
+    },
+  },
+  methods: {
+    onClickBtn() {
+      this.$emit("clickButton", this.btnInfo);
     },
   },
 };
 </script>
 
 <style lang="scss">
+$moreMenuBorder: #2fb3b5;
 .border-btn {
   position: relative;
   margin-right: 10px;
@@ -87,6 +93,8 @@ export default {
       cursor: pointer;
     }
     & > dt {
+      width: 100%;
+      height: 100%;
       text-align: center;
     }
     & > dt:hover a {
@@ -98,9 +106,14 @@ export default {
       height: 33px;
       line-height: 33px;
       text-align: left;
-      margin-left: -17px;
+      margin-left: -18px;
       box-sizing: border-box;
       padding-left: 4px;
+      border-left: 3px solid $moreMenuBorder;
+      border-right: 3px solid $moreMenuBorder;
+    }
+    & > dd:last-of-type {
+      border-bottom: 3px solid $moreMenuBorder;
     }
     &:hover dd {
       display: inline-block;
@@ -109,8 +122,9 @@ export default {
       color: var(--color-hover);
     }
     & > dd:first-of-type {
-      margin-top: 10px;
+      margin-top: 3px;
     }
+
     & > dt > a {
       white-space: nowrap;
       overflow: hidden;

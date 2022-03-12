@@ -14,18 +14,12 @@
         ${halfWidth * 0.591},${height * 0.31} 
         ${halfWidth * 0.613},${height * 0.53} 
         ${halfWidth * 0.709},${height * 0.53} 
-        ${halfWidth - halfWidth * 0.239},${height}
+        ${halfWidth * 0.761},${height}
         ${halfWidth},${height}
         ${halfWidth},${height - 2}
-        ${halfWidth - halfWidth * 0.239 + 1},${height - 2}
+        ${halfWidth * 0.761 + 1},${height - 2}
         ${halfWidth * 0.709 + 1},${height * 0.53 - 2} 
-        ${
-          halfWidth -
-          halfWidth * 0.21 -
-          halfWidth * 0.081 -
-          halfWidth * 0.096 +
-          1
-        },${height * 0.53 - 2} 
+        ${halfWidth * 0.613 + 1},${height * 0.53 - 2} 
         ${halfWidth * 0.591 + 1},${height * 0.31 - 2} 
         0,${height * 0.31 - 2}`"
       />
@@ -34,8 +28,8 @@
       <polygon
         style="stroke-width: 1"
         fill="#34D4FC"
-        :points="`${halfWidth - halfWidth * 0.239},${height} 
-        ${halfWidth - halfWidth * 0.139},${height - 2} 
+        :points="`${halfWidth * 0.761},${height} 
+        ${halfWidth * 0.861},${height - 2} 
         ${halfWidth},${height - 3}
         ${halfWidth},${height}
         `"
@@ -74,13 +68,7 @@
         v-for="(item, index) in 10"
         :key="item"
         class="top-rect"
-        :x="
-          halfWidth -
-          halfWidth * 0.1 -
-          halfWidth * 0.08 -
-          halfWidth * 0.028 -
-          index * 32
-        "
+        :x="halfWidth * 0.792 - index * 32"
         y="0"
         :width="
           halfWidth * 0.022 - index * 1.7 > 0
@@ -95,33 +83,31 @@
         style="stroke-width: 1"
         fill="#1171B7"
         :points="`
-        ${halfWidth * 0.709 - halfWidth * 0.058},${height * 0.59} 
-        ${halfWidth - halfWidth * 0.21 - halfWidth * 0.107},${height - 6} 
-        ${halfWidth - halfWidth * 0.21 - halfWidth * 0.086},${height - 6} 
-        ${
-          halfWidth - halfWidth * 0.21 - halfWidth * 0.082 - halfWidth * 0.037
-        },${height * 0.59}`"
+        ${halfWidth * 0.651},${height * 0.59} 
+        ${halfWidth * 0.683},${height - 6} 
+        ${halfWidth * 0.704},${height - 6} 
+        ${halfWidth * 0.671},${height * 0.59}`"
       />
       <polygon
         style="stroke-width: 1"
         fill="#2C9BFB"
         :points="`
-        ${halfWidth - halfWidth * 0.321},${height * 0.59} 
-        ${halfWidth - halfWidth * 0.286},${height - 6} 
-        ${halfWidth - halfWidth * 0.257},${height - 6} 
-        ${halfWidth - halfWidth * 0.294},${height * 0.59}`"
+        ${halfWidth * 0.679},${height * 0.59} 
+        ${halfWidth * 0.714},${height - 6} 
+        ${halfWidth * 0.743},${height - 6} 
+        ${halfWidth * 0.706},${height * 0.59}`"
       />
       <!-- 上方线 -->
       <polygon
         style="stroke-width: 1"
         fill="#3557f6"
         :points="`
-        ${halfWidth * 0.596},${height * (0.31 + 0.06)} 
-        ${halfWidth * 0.709 + 10},${height * (0.31 + 0.06)} 
-        ${halfWidth - halfWidth * 0.21},${height - 2}
-        ${halfWidth - halfWidth * 0.21 + 3},${height - 2}
-        ${halfWidth * 0.709 + 10},${height * (0.31 + 0.06) - 1} 
-        ${halfWidth * 0.606 - 1},${height * (0.31 + 0.06) - 2} 
+        ${halfWidth * 0.596},${height * 0.37} 
+        ${halfWidth * 0.709 + 10},${height * 0.37} 
+        ${halfWidth * 0.79},${height - 2}
+        ${halfWidth * 0.79 + 3},${height - 2}
+        ${halfWidth * 0.709 + 10},${height * 0.37 - 1} 
+        ${halfWidth * 0.606 - 1},${height * 0.37 - 2} 
         `"
       />
       <!-- 下方线 -->
@@ -129,60 +115,32 @@
         style="stroke-width: 1"
         fill="#039eff"
         :points="`
-        ${halfWidth * 0.709 - halfWidth * 0.07},${height * 0.56} 
-        ${halfWidth * 0.709 - halfWidth * 0.029},${height} 
-        ${halfWidth - halfWidth * 0.245},${height}
-        ${halfWidth - halfWidth * 0.245},${height - 1}
-        ${
-          halfWidth -
-          halfWidth * 0.21 -
-          halfWidth * 0.081 -
-          halfWidth * 0.029 +
-          1
-        },${height - 1} 
-        ${
-          halfWidth -
-          halfWidth * 0.21 -
-          halfWidth * 0.081 -
-          halfWidth * 0.07 +
-          2
-        },${height * 0.56} 
+        ${halfWidth * 0.639},${height * 0.56} 
+        ${halfWidth * 0.68},${height} 
+        ${halfWidth * 0.755},${height}
+        ${halfWidth * 0.755},${height - 1}
+        ${halfWidth * 0.68 + 1},${height - 1} 
+        ${halfWidth * 0.639 + 2},${height * 0.56} 
         `"
       />
       <polygon
         style="stroke-width: 1"
         fill="#3557f6"
         :points="`
-        ${halfWidth * 0.709 - halfWidth * 0.082},${height * 0.56} 
-        ${halfWidth * 0.709 - halfWidth * 0.042},${height} 
-        ${
-          halfWidth -
-          halfWidth * 0.21 -
-          halfWidth * 0.082 -
-          halfWidth * 0.041 +
-          2
-        },${height} 
-        ${
-          halfWidth -
-          halfWidth * 0.21 -
-          halfWidth * 0.082 -
-          halfWidth * 0.08 +
-          2
-        },${height * 0.56} 
+        ${halfWidth * 0.627},${height * 0.56} 
+        ${halfWidth * 0.667},${height} 
+        ${halfWidth * 0.667 + 2},${height} 
+        ${halfWidth * 0.628 + 2},${height * 0.56} 
         `"
       />
       <polygon
         style="stroke-width: 1"
         fill="#3557f6"
         :points="`
-        ${
-          halfWidth - halfWidth * 0.21 - halfWidth * 0.082 - halfWidth * 0.094
-        },${height * 0.56} 
-        ${
-          halfWidth - halfWidth * 0.21 - halfWidth * 0.082 - halfWidth * 0.057
-        },${height} 
-        ${halfWidth - halfWidth * 0.349 + 2},${height} 
-        ${halfWidth - halfWidth * 0.385 + 2},${height * 0.56} 
+        ${halfWidth * 0.614},${height * 0.56} 
+        ${halfWidth * 0.651},${height} 
+        ${halfWidth * 0.651 + 2},${height} 
+        ${halfWidth * 0.615 + 2},${height * 0.56} 
         `"
       />
     </svg>
@@ -195,6 +153,8 @@
         :key="index"
         :btnInfo="menuItem"
         :size="menuSize"
+        :class="[activeMenu == menuItem.path ? 'active-menu' : '']"
+        @clickButton="onActiveMenu"
       />
     </div>
     <div class="right-menu menu-position">
@@ -203,12 +163,16 @@
         :key="index"
         :btnInfo="menuItem"
         :size="menuSize"
+        :class="[activeMenu == menuItem.path ? 'active-menu' : '']"
+        @clickButton="onActiveMenu"
       />
       <Button class="more-menu" v-if="moreMenu.length > 0" :size="menuSize">
         <dd
           v-for="(moreItem, index) in moreMenu"
           :key="index"
           :style="{ background: bgColor }"
+          :class="[activeMenu == moreItem.path ? 'active-menu' : '']"
+          @click="onActiveMenu(moreItem)"
         >
           <router-link :to="moreItem.path"> {{ moreItem.title }}</router-link>
         </dd>
@@ -260,9 +224,15 @@ export default {
       return moreMenu;
     },
   },
+  methods: {
+    onActiveMenu(menuInfo) {
+      this.activeMenu = menuInfo.path;
+    },
+  },
   data() {
     return {
       ref: "cool-navigation-1",
+      activeMenu: "", // 已触发的菜单
       topRectColor: [
         "#2ec9ff",
         "#26c4ff",
@@ -285,6 +255,9 @@ export default {
   position: relative;
   width: 100%;
   height: 100%;
+  .active-menu a {
+    color: #56f3f5;
+  }
   .line-reverse {
     position: absolute;
     right: 0;
