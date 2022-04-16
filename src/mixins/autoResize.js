@@ -1,4 +1,4 @@
-import { debounce, observerDomResize } from './util/index'
+import { debounce, observerDomResize } from '@/utils'
 
 export default {
   data() {
@@ -8,9 +8,14 @@ export default {
       width: 0,
       height: 0,
 
+      disWidth: 0,
+      disHeight: 0,
+
       debounceInitWHFun: '',
 
-      domObserver: ''
+      domObserver: '',
+
+      debounceTime: 10, // ms
     }
   },
   methods: {
@@ -32,25 +37,31 @@ export default {
         $nextTick(_ => {
           const dom = this.dom = $refs[ref]
 
-          this.width = dom ? dom.clientWidth : 0
-          this.height = dom ? dom.clientHeight : 0
+          const newWidth = dom ? dom.clientWidth : 0
+          const newHeight = dom ? dom.clientHeight : 0
+
+          this.disWidth = newWidth - this.width
+          this.disHeight = newHeight - this.height
+
+          this.width = newWidth
+          this.height = newHeight
 
           if (!dom) {
-            console.warn('DataV: Failed to get dom node, component rendering may be abnormal!')
+            // console.warn('Failed to get dom node, component rendering may be abnormal!')
           } else if (!this.width || !this.height) {
-            console.warn('DataV: Component width or height is 0px, rendering abnormality may occur!')
+            // console.warn('Component width or height is 0px, rendering abnormality may occur!')
           }
 
-          if (typeof onResize === 'function' && resize) onResize()
+          if (typeof onResize === 'function' && resize && (this.disWidth != 0 || this.disHeight != 0)) onResize()
 
           resolve()
         })
       })
     },
     getDebounceInitWHFun() {
-      const { initWH } = this
+      const { initWH, debounceTime } = this
 
-      this.debounceInitWHFun = debounce(10, initWH)
+      this.debounceInitWHFun = debounce(debounceTime, initWH)
     },
     bindDomResizeCallback() {
       const { dom, debounceInitWHFun } = this

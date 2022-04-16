@@ -1,5 +1,5 @@
 import Base from "../widgets/base.vue";
-import { chartApi, isUrl, strToObj } from ".";
+import { chartApi, isUrl, strToObj } from "../utils";
 import { mergeDeepRight } from "ramda";
 import eventbus from "../utils/eventbus";
 export default {
@@ -10,6 +10,7 @@ export default {
         hooks: { type: Object, default: () => ({}) },
         echarts: { type: Object, default: () => ({}) },
         chartsHandle: { type: Object, default: () => ({}) },
+        isMobile: { type: Boolean, default: false },
     },
     inject: ["responseData", "chartId"],
     data() {
@@ -114,5 +115,18 @@ export default {
             let { id, attribute } = this.chartData;
             this.emit("event", attribute.name || id, params);
         },
+        // 
+        moveWidgetY(newHeight = 0) {
+            let { chartData, echarts } = this
+            let disHeight = newHeight - chartData.px.height;
+            this.chartData.px.height = newHeight;
+
+            let baseY = chartData.px.y
+            echarts.list.map(item => {
+                if (item.px.y > baseY) {
+                    item.px.y += disHeight;
+                }
+            })
+        }
     },
 }

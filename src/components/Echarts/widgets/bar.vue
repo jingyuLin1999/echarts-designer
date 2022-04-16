@@ -1,6 +1,6 @@
 <!--  柱形图 -->
 <template>
-  <div class="bar-wrapper">
+  <div class="bar-widget">
     <Base
       :chartData="chartData"
       :hooks="hooks"
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "../utils/base.mixin";
+import BaseMixin from "./base.mixin";
 export default {
   name: "bar",
   mixins: [BaseMixin],

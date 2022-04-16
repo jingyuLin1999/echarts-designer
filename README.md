@@ -52,9 +52,9 @@ npm i echarts-designer -S
 ```
 
 ```js
-import { Echarts, EchartsDesign, CoolNavigation } from "echarts-designer";
+import { Echarts, EchartsDesign, CoolNavigation, PerfectBorder } from "echarts-designer";
 export default {
-  components: { Echarts, EchartsDesign, CoolNavigation },
+  components: { Echarts, EchartsDesign, CoolNavigation, PerfectBorder },
   methods: {
     onClickedChart(data) {
       console.log("clickedChart", data);

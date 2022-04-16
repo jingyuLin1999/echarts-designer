@@ -2,7 +2,7 @@
     折线图
 -->
 <template>
-  <div class="line-wrapper">
+  <div class="line-widget">
     <Base
       :chartData="chartData"
       :hooks="hooks"
@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "../utils/base.mixin";
+import BaseMixin from "./base.mixin";
 export default {
   name: "basicline",
   mixins: [BaseMixin],
@@ -35,6 +35,6 @@ export default {
 };
 </script>
 <style lang="scss">
-.line-wrapper {
+.line-widget {
 }
 </style>

@@ -1,7 +1,7 @@
 import CodeMirror from "codemirror";
 import "codemirror/mode/javascript/javascript.js";
 import "codemirror/lib/codemirror.css";
-import 'codemirror/theme/monokai.css';
+// import 'codemirror/theme/monokai.css';
 import prettier from "prettier/esm/standalone";
 import parserBabel from "prettier/esm/parser-babel.mjs";
 

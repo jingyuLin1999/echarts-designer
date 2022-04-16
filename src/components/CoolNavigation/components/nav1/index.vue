@@ -183,7 +183,7 @@
 
 <script>
 import Button from "./borderBtn";
-import autoResize from "../../../PerfectBorder/autoResize";
+import autoResize from "@/mixins/autoResize";
 export default {
   name: "decorationTitle",
   mixins: [autoResize],
@@ -194,6 +194,10 @@ export default {
     navTitle: { type: String, default: "工厂看板" },
     menuSize: { type: Array, default: () => [120, 34] },
     bgColor: { type: String, default: "" },
+    defaultActiveMenu: { type: String, default: "" },
+  },
+  mounted() {
+    this.activeMenu = this.defaultActiveMenu;
   },
   computed: {
     halfWidth() {

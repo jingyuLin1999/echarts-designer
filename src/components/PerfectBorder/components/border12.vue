@@ -112,9 +112,9 @@
 </template>
 
 <script>
-import { uuid } from "../util/index";
+import { uuid } from "@/utils";
 
-import autoResize from "../autoResize";
+import autoResize from "@/mixins/autoResize";
 
 import { clone, mergeDeepRight } from "ramda";
 

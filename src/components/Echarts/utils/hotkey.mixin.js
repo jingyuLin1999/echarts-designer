@@ -4,48 +4,63 @@ export default {
     data() {
         return {
             activeItem: {},
+            echartList: [],
+            cloneItem: {},
         }
     },
     methods: {
-        initHotKey(activeItem, parent) {
+        initHotKey(activeItem, echartList) {
+            this.activeItem = activeItem;
+            this.echartList = echartList;
             this.onKeyDown();
-            this.onCopy(activeItem);
-            this.onStick(parent);
-            this.onDelete(parent);
+            this.onCopy();
+            this.onStick();
+            this.onDelete();
+            this.onSave();
         },
         /**-----------------键盘事件--------------------- **/
         onKeyDown() {
+            let { activeItem } = this;
             document.addEventListener('keydown', (event) => {
-                let activeItem = this.activeItem;
-                // switch (event.key) {
-                //     case "ArrowLeft": activeItem.px.x -= 1; break;
-                //     case "ArrowRight": activeItem.px.x += 1; break;
-                //     case "ArrowUp": activeItem.px.y -= 1; break;
-                //     case "ArrowDown": activeItem.px.y += 1; break;
-                // }
+                switch (event.key) {
+                    case "ArrowLeft": activeItem.px.x -= 1; break;
+                    case "ArrowRight": activeItem.px.x += 1; break;
+                    case "ArrowUp": activeItem.px.y -= 1; break;
+                    case "ArrowDown": activeItem.px.y += 1; break;
+                }
             });
         },
         onKeyUp(activeItem) {
             document.addEventListener('keyup', (event) => { });
         },
-        onCopy(activeItem) {
+        onCopy() {
+            let { activeItem } = this;
             let cloneItem = JSON.parse(JSON.stringify(activeItem));
             hotkeys("ctrl+c", (event, handler) => {
-                this.activeItem = cloneItem
+                cloneItem.id = short.generate();
+                cloneItem.px.x += 10;
+                cloneItem.px.y += 10;
+                this.cloneItem = cloneItem
             });
         },
-        onStick(parent) {
+        onStick() {
+            let { echartList } = this;
             hotkeys("ctrl+v", (event, handler) => {
-                this.activeItem.id = short.generate();
-                this.activeItem.px.x += 10;
-                this.activeItem.px.y += 10;
-                parent.push(this.activeItem)
+                // echartList.push(this.cloneItem)
             });
         },
-        onDelete(parent) {
+        onDelete() {
+            let { activeItem, echartList } = this;
             hotkeys("del", () => {
-                const chartIndex = parent.findIndex(item => item.id == this.activeItem.id)
-                parent.splice(chartIndex, 1);
+                const chartIndex = echartList.findIndex(item => item.id == activeItem.id)
+                echartList.splice(chartIndex, 1);
+            })
+        },
+        onSave() {
+            let { echarts } = this;
+            hotkeys("ctrl+s", (event) => {
+                event.preventDefault();
+                localStorage.setItem("echarts-designer", JSON.stringify(echarts))
             })
         }
     }

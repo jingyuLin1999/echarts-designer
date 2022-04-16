@@ -69,6 +69,7 @@
           :hooks="hooks"
           :design="design"
           :echarts="echarts"
+          :isMobile="isMobile"
           :chartsHandle="chartsHandle"
           :style="{
             width: item.px.width + 'px',
@@ -115,6 +116,7 @@
             :hooks="hooks"
             :design="design"
             :echarts="echarts"
+            :isMobile="isMobile"
             :chartsHandle="chartsHandle"
           />
         </vue-draggable-resizable>
@@ -181,6 +183,7 @@ export default {
     hooks: { type: Object, default: () => ({}) }, // 钩子
     echartsId: { type: String, default: "" },
     authorization: { type: Object, default: () => ({}) },
+    responseData: { type: Object, default: () => ({}) }, // 响应数据
   },
   provide() {
     return {
@@ -212,7 +215,6 @@ export default {
       isMobile: true, // 是否是移动端
       id: short.generate(), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
-      responseData: {}, // 相应数据
       chartsHandle: {}, // 所有图表的句柄，用于注册事件
     };
   },
@@ -348,9 +350,10 @@ export default {
         let px = chartItem["px"];
         let pct = chartItem["pct"];
         px.x = pct.x * this.cW;
-        px.y = pct.y * this.cH;
         px.width = pct.width * this.cW;
-        px.height = pct.height * this.cH;
+        // form和card影响
+        // px.y = pct.y * this.cH;
+        // px.height = pct.height * this.cH;
       });
     },
     _registerEvents() {

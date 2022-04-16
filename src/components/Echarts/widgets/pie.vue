@@ -2,7 +2,7 @@
     饼图
 -->
 <template>
-  <div class="pie-wrapper">
+  <div class="pie-widget">
     <Base
       :chartData="chartData"
       :hooks="hooks"
@@ -13,7 +13,7 @@
   </div>
 </template>
 <script>
-import BaseMixin from "../utils/base.mixin";
+import BaseMixin from "./base.mixin";
 export default {
   name: "basicline",
   mixins: [BaseMixin],
@@ -35,6 +35,6 @@ export default {
 };
 </script>
 <style lang="scss">
-.pie-wrapper {
+.pie-widget {
 }
 </style>

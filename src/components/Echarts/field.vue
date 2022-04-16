@@ -15,6 +15,7 @@
       :chartData="chartData"
       :echarts="echarts"
       :chartsHandle="chartsHandle"
+      :isMobile="isMobile"
     />
   </PerfectBorder>
 </template>
@@ -30,6 +31,7 @@ export default {
     chartData: { type: Object, default: () => ({}) },
     echarts: { type: Object, default: () => ({}) },
     chartsHandle: { type: Object, default: () => ({}) },
+    isMobile: { type: Boolean, default: false },
   },
   computed: {
     asyncComponent() {

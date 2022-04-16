@@ -1,77 +1,90 @@
 <template>
-  <div
-    class="card-wrapper"
-    :style="{
-      background: echarts.background,
-    }"
-  >
-    <div
-      class="card"
-      v-for="(cardItem, index) in chartData.data"
-      :key="index"
-      :style="{
-        background: echarts.theme,
-        marginRight: `${chartData.attribute.distance}px`,
-        width: 100 / (chartData.data.length || 1) + '%',
-      }"
+  <div class="card-widget">
+    <FlexBoxContainer
+      :boxSize="[200, 108]"
+      :style="styles"
+      :margin="chartData.attribute.distance"
+      @domResize="onDomResize"
     >
       <div
-        class="card-icon"
-        :style="{
-          color: cardIdx == index ? '#fff' : cardItem.iconColor,
-          background: cardIdx == index ? cardItem.iconColor : '',
-        }"
+        class="card"
+        v-for="(cardItem, index) in chartData.data"
+        :key="index"
         @mouseover="cardIdx = index"
         @mouseout="cardIdx = -1"
       >
-        <i :class="cardItem.icon"></i>
-      </div>
-      <div class="card-msg-wrapper">
         <div
-          class="card-title"
+          class="card-icon"
           :style="{
-            color: chartData.attribute.titleColor,
-            fontSize: chartData.attribute.titleSize,
+            color: cardIdx == index ? '#fff' : cardItem.iconColor,
+            background: cardIdx == index ? cardItem.iconColor : '',
           }"
         >
-          {{ cardItem.title }}
+          <i :class="cardItem.icon"></i>
         </div>
-        <div
-          class="card-value"
-          :style="{
-            color: chartData.attribute.valueColor,
-            fontSize: chartData.attribute.valueSize,
-          }"
-        >
-          <count-to
+        <div class="card-msg">
+          <div
+            class="msg-title"
+            :style="{
+              color:
+                cardIdx == index
+                  ? cardItem.iconColor
+                  : chartData.attribute.titleColor,
+              fontSize: chartData.attribute.titleSize,
+            }"
+          >
+            {{ cardItem.title }}
+          </div>
+          <countTo
+            :style="{
+              color:
+                cardIdx == index
+                  ? cardItem.iconColor
+                  : chartData.attribute.valueColor,
+              fontSize: chartData.attribute.valueSize,
+            }"
+            class="msg-value"
             :startVal="0"
             :endVal="cardItem.value"
             :duration="2000"
-          ></count-to>
+          />
         </div>
       </div>
-    </div>
+    </FlexBoxContainer>
   </div>
 </template>
 <script>
-import BaseMixin from "../utils/base.mixin";
 import countTo from "vue-count-to";
+import BaseMixin from "./base.mixin";
+import FlexBoxContainer from "@/components/FlexBoxContainer";
 export default {
   name: "card",
   mixins: [BaseMixin],
-  components: { countTo },
+  components: { countTo, FlexBoxContainer },
   data() {
     return {
       cardIdx: -1,
+      height: 0,
     };
+  },
+  computed: {
+    styles() {
+      let { bgColor } = this.chartData.attribute;
+      return {
+        "--bgColor": bgColor,
+      };
+    },
   },
   methods: {
     defaultFieldAttr() {
       return {
-        titleColor: "#8c8c8c",
-        valueColor: "#333",
-        titleSize: "15px",
-        valueSize: "23px",
+        attribute: {
+          bgColor: "",
+          titleColor: "#8c8c8c",
+          valueColor: "#333",
+          titleSize: "15px",
+          valueSize: "23px",
+        },
         data: [
           {
             title: "卡片标题",
@@ -82,52 +95,46 @@ export default {
         ],
       };
     },
+    onDomResize({ height: newHeight, disHeight }) {
+      if (disHeight == 0) return;
+      this.moveWidgetY(newHeight);
+    },
   },
 };
 </script>
-<style lang="scss" scoped>
-.card-wrapper {
-  width: 99.8%;
-  height: 100%;
-  display: flex;
-  justify-content: space-between;
-  overflow: hidden;
-  > .card {
-    height: 100%;
+<style lang="scss">
+.card-widget {
+  .card {
     display: flex;
     justify-content: space-between;
-    padding: 15px;
+    align-items: center;
+    background: var(--bgColor);
     box-sizing: border-box;
-    > .card-icon {
-      padding: 10px;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      font-size: 60px;
-      align-items: center;
+    padding: 10px;
+    .card-icon {
+      width: 75px;
+      height: 75px;
+      font-size: 55px;
+      border-radius: 8px;
+      text-align: center;
     }
-    > .card-icon:hover {
-      border-radius: 10px;
-    }
-    > .card-msg-wrapper {
+    .card-msg {
+      width: calc(100% - 75px);
       height: 100%;
+      min-width: 80px;
       display: flex;
       flex-direction: column;
       justify-content: center;
-      font-weight: 600;
-      > .card-title {
-        color: #8c8c8c;
-        font-size: 15px;
+      align-items: flex-end;
+      .msg-title {
+        font-size: 16px;
       }
-      > .card-value {
-        margin-top: 12px;
-        color: #333;
-        font-size: 23px;
+      .msg-value {
+        margin-top: 6px;
+        font-size: 18px;
+        font-weight: 600;
       }
     }
-  }
-  > .card:last-child {
-    margin-right: 0 !important;
   }
 }
 </style>

@@ -11,7 +11,7 @@ export const chartWidgets = [
                 widget: "card",
                 listenKey: [],
                 attribute: {
-                    name: "",
+                    bgColor: "#fff",
                     titleColor: "#8c8c8c",
                     valueColor: "#333",
                     titleSize: "15px",
@@ -248,15 +248,7 @@ export const chartWidgets = [
                 widget: "form",
                 listenKey: [],
                 attribute: {
-                    name: "",
-                    border: false,
-                    grid: false,
-                    labelSuffix: ":",
-                    labelWidth: "80px",
-                    validator: "input",
-                    labelAlign: "right",
-                    labelInline: true,
-                    actions: [],
+
                 },
                 border: {
                     type: "8",
@@ -279,7 +271,51 @@ export const chartWidgets = [
                 dataSource: [],
                 codding: "",
                 data: {
-                    layout: [],
+                    form: {
+                        border: false,
+                        grid: false,
+                        labelSuffix: ":",
+                        labelWidth: "80px",
+                        validator: "input",
+                        labelAlign: "right",
+                        labelInline: true,
+                        colors: {},
+                        actions: [],
+                        layout: [
+                            {
+                                title: "选择工厂",
+                                name: "group_code1",
+                                widget: "select",
+                                options: [
+                                    {
+                                        label: "工厂一",
+                                        value: "工厂一",
+                                    },
+                                    {
+                                        label: "工厂二",
+                                        value: "工厂二",
+                                    },
+                                ],
+                                isGroup: false,
+                                placeholder: "请选择",
+                                size: "",
+                                disabled: false,
+                                clearable: false,
+                                multiple: false,
+                                collapseTags: false,
+                                filterable: false,
+                                allowCreate: false,
+                                defaultProp: {
+                                    label: "label",
+                                    value: "value",
+                                },
+                                filter: {
+                                    key: null,
+                                    value: null,
+                                },
+                            },
+                        ],
+                    },
                     schema: {},
                 },
             },

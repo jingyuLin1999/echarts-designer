@@ -27,7 +27,10 @@
       </div>
       <div class="tools-right">
         <div>
-          <i class="el-icon-delete" @click="onClearCanvas">清空画布</i>
+          <i class="el-icon-delete" @click="onClearCache">缓存</i>
+        </div>
+        <div>
+          <i class="el-icon-delete" @click="onClearCanvas">画布</i>
         </div>
         <div>
           <i class="el-icon-document-add" @click="viewJson = true">生成JSON</i>
@@ -174,7 +177,9 @@
                     </span>
                   </div>
                   <div class="node-tools">
-                    <span @click="copyReportId(data.id)"> 复制ID </span>
+                    <span @click="copyReportId(data.id)" class="copy-label">
+                      复制ID
+                    </span>
                     <i
                       class="tool el-icon-delete"
                       @click="onDelete(data, 'report')"
@@ -195,12 +200,11 @@ import ClipboardJS from "clipboard";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
+import DnDMixin from "@/mixins/dnd.mixin";
 import MonacoMixin from "./codeMirror.mixin";
 import Echarts from "@/components/Echarts";
 import { chartWidgets } from "./meta/widgets";
-import DnDMixin from "../Echarts/utils/dnd.mixin.js";
 import SplitLayout from "@/components/SplitLayout";
-
 import { defaultContainer } from "../Echarts/utils/defaultData";
 import {
   chartSchema,
@@ -304,6 +308,12 @@ export default {
     load() {
       this.initHook();
       this.getCanvasWh();
+      this.loadStorage();
+    },
+    loadStorage() {
+      let getStorege = localStorage.getItem("echarts-designer");
+
+      if (getStorege) Object.assign(this.echarts, JSON.parse(getStorege));
     },
     initHook() {
       this.hooks.preview = this.preview;
@@ -401,6 +411,10 @@ export default {
       this.echarts.list = [];
       this.clickedChart = {};
       this.clickReportNode = {};
+    },
+    onClearCache() {
+      this.onClearCanvas();
+      localStorage.removeItem("echarts-designer");
     },
     onClickReportNode(data) {
       this.clickReportNode = data;
@@ -551,6 +565,12 @@ export default {
       .node-tools {
         display: none;
         margin-right: 10px;
+        .copy-label {
+          font-size: 12px;
+        }
+        .copy-label:hover {
+          color: #f60;
+        }
         > * {
           margin-left: 10px;
         }

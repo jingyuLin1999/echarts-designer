@@ -16,7 +16,7 @@
 </template>
 
 <script>
-import EchartsDesign from "../components/EchartsDesign";
+import EchartsDesign from "@/components/EchartsDesign";
 export default {
   components: { EchartsDesign },
   methods: {
@@ -37,49 +37,57 @@ export default {
           icon: "el-icon-pie-chart",
           children: [
             {
-              id: "as2",
+              id: "as1",
               title: "柱形图",
               widget: "bar",
-              listenKey: ["test"],
+              listenKey: [""],
+              attribute: {
+                name: "",
+                padding: 0,
+              },
+              border: {
+                type: "12",
+                reverse: false,
+                color: [],
+              },
               px: {
                 x: 0,
-                y: 143,
-                width: 429,
-                height: 250,
+                y: 238,
+                width: 349.9573699421966,
+                height: 337,
                 z: 1,
               },
               pct: {
                 x: 0,
-                y: 0.1526147278548559,
+                y: 0.25400213447171827,
                 width: 0.309971098265896,
                 height: 0.35965848452508004,
               },
-              border: {
-                type: "1",
-                reverse: true,
-                color: [],
-              },
               dataSource: [
-                // 数据源
                 {
                   method: "get",
                   url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
                 },
               ],
-              codding: "", // 逻辑
+              codding: "",
               data: {
                 title: {
-                  text: "IPQC白班良率统计",
-                  left: "left", // center/right
+                  text: "工厂良率统计",
+                  left: "left",
                   textStyle: {
                     fontStyle: "normal",
                     color: "#f00",
                   },
                   subtext: "",
                 },
+                grid: {
+                  x: 50,
+                  y: 50,
+                  x2: 50,
+                  y2: 50,
+                },
                 legend: {
-                  orient: "horizontal", // vertical/horizontal
-                  // left: 0,
+                  orient: "horizontal",
                   right: 10,
                   top: 0,
                   bottom: 0,
@@ -94,12 +102,13 @@ export default {
                     ["Walnut Brownie", 72.4, 53.9, 39.1],
                   ],
                 },
-                // 声明一个 X 轴，类目轴（category）。默认情况下，类目轴对应到 dataset 第一列。
                 xAxis: {
                   type: "category",
                   axisLabel: {
                     formatter: "{value}",
-                    align: "center",
+                    align: "right",
+                    rotate: "20",
+                    interval: 0,
                   },
                 },
                 yAxis: {
@@ -112,10 +121,20 @@ export default {
                   },
                 },
                 series: [
-                  { type: "bar", seriesLayoutBy: "column" },
-                  { type: "bar", seriesLayoutBy: "column" },
-                  { type: "line", seriesLayoutBy: "column" },
+                  {
+                    type: "bar",
+                    seriesLayoutBy: "column",
+                  },
+                  {
+                    type: "bar",
+                    seriesLayoutBy: "column",
+                  },
+                  {
+                    type: "line",
+                    seriesLayoutBy: "column",
+                  },
                 ],
+                backgroundColor: "#fff",
               },
             },
           ],
@@ -143,61 +162,206 @@ export default {
         height: 1200,
         filter: { aaa: 123 },
         list: [
-          // {
-          //   id: "-1",
-          //   title: "表单",
-          //   widget: "form",
-          //   listenKey: [],
-          //   attribute: {
-          //     border: false,
-          //     grid: false,
-          //     labelSuffix: ":",
-          //     labelWidth: "80px",
-          //     validator: "input",
-          //     labelAlign: "right",
-          //     labelInline: true,
-          //     actions: [],
-          //   },
-          //   border: {
-          //     type: "8",
-          //     reverse: true,
-          //     color: [],
-          //   },
-          //   px: {
-          //     x: 0,
-          //     width: 964,
-          //     y: 11,
-          //     z: 999,
-          //     height: 68,
-          //   },
-          //   pct: {
-          //     x: 0,
-          //     width: 0.9968976215098242,
-          //     y: 0.011739594450373533,
-          //     height: 0.07257203842049093,
-          //   },
-          //   dataSource: [],
-          //   codding: "",
-          //   data: {
-          //     layout: [
-
-          //     ],
-          //     schema: {},
-          //   },
-          // },
+          {
+            id: "-1",
+            title: "表单",
+            widget: "form",
+            listenKey: [],
+            attribute: {},
+            border: {
+              type: "8",
+              reverse: true,
+              color: [],
+            },
+            px: {
+              x: 0,
+              width: 1125.4974146845916,
+              y: 11,
+              z: 999,
+              height: 72,
+            },
+            pct: {
+              x: 0,
+              width: 0.9968976215098242,
+              y: 0.011739594450373533,
+              height: 0.07257203842049093,
+            },
+            dataSource: [
+              {
+                method: "get",
+                url: "http://",
+                params: "",
+                id: "2",
+              },
+            ],
+            codding: "",
+            data: {
+              form: {
+                border: false,
+                grid: false,
+                labelSuffix: ":",
+                labelWidth: "80px",
+                validator: "input",
+                labelAlign: "right",
+                labelInline: true,
+                actions: [],
+                colors: {
+                  // theme: "#120C2A",
+                  // fontColor: "#37d0fa",
+                  // btnColor: "#f8f4f4",
+                  // btnBgColor: "#040c19",
+                  // activeColor: "#4F9FFE",
+                  // dateRangeBgColor: "#999",
+                  // multiOptionBgColor: "#ddd",
+                },
+                layout: [
+                  {
+                    widget: "grid",
+                    title: "文件上传",
+                    showTitle: false,
+                    isClicked: false,
+                    flexWrap: true,
+                    ratio: "1:2:1:1",
+                    fields: [
+                      [
+                        {
+                          title: "选择工厂",
+                          name: "group_code1",
+                          widget: "select",
+                          options: [
+                            {
+                              label: "工厂一",
+                              value: "工厂一",
+                            },
+                            {
+                              label: "工厂二",
+                              value: "工厂二",
+                            },
+                          ],
+                          isGroup: false,
+                          placeholder: "请选择",
+                          size: "",
+                          disabled: false,
+                          clearable: false,
+                          multiple: false,
+                          collapseTags: false,
+                          filterable: false,
+                          allowCreate: false,
+                          defaultProp: {
+                            label: "label",
+                            value: "value",
+                          },
+                          filter: {
+                            key: null,
+                            value: null,
+                          },
+                        },
+                      ],
+                      [
+                        {
+                          title: "选择工序",
+                          name: "group_code1",
+                          widget: "select",
+                          options: [],
+                          isGroup: false,
+                          placeholder: "请选择",
+                          size: "",
+                          disabled: false,
+                          clearable: false,
+                          multiple: false,
+                          collapseTags: false,
+                          filterable: false,
+                          allowCreate: false,
+                          defaultProp: {
+                            label: "label",
+                            value: "value",
+                          },
+                          filter: {
+                            key: null,
+                            value: null,
+                          },
+                        },
+                      ],
+                      [
+                        {
+                          title: "选择工厂",
+                          name: "group_code1",
+                          widget: "select",
+                          options: [
+                            {
+                              label: "工厂一",
+                              value: "工厂一",
+                            },
+                            {
+                              label: "工厂二",
+                              value: "工厂二",
+                            },
+                          ],
+                          isGroup: false,
+                          placeholder: "请选择",
+                          size: "",
+                          disabled: false,
+                          clearable: false,
+                          multiple: false,
+                          collapseTags: false,
+                          filterable: false,
+                          allowCreate: false,
+                          defaultProp: {
+                            label: "label",
+                            value: "value",
+                          },
+                          filter: {
+                            key: null,
+                            value: null,
+                          },
+                        },
+                      ],
+                      [
+                        {
+                          title: "选择工序",
+                          name: "group_code1",
+                          widget: "select",
+                          options: [],
+                          isGroup: false,
+                          placeholder: "请选择",
+                          size: "",
+                          disabled: false,
+                          clearable: false,
+                          multiple: false,
+                          collapseTags: false,
+                          filterable: false,
+                          allowCreate: false,
+                          defaultProp: {
+                            label: "label",
+                            value: "value",
+                          },
+                          filter: {
+                            key: null,
+                            value: null,
+                          },
+                        },
+                      ],
+                    ],
+                  },
+                ],
+              },
+              schema: {},
+            },
+            layout: [],
+            schema: {},
+          },
           {
             id: "0",
             title: "卡片图",
             widget: "card",
             listenKey: ["aaa", "bbb"],
             attribute: {
-              // 其他属性
-              name: "",
-              distance: 10,
+              bgColor: "#fff",
+              titleColor: "#8c8c8c",
+              valueColor: "#333",
               titleSize: "15px",
               valueSize: "23px",
-              valueColor: "#333",
-              titleColor: "#8c8c8c",
+              distance: 8,
             },
             border: {
               type: "7",
@@ -206,15 +370,15 @@ export default {
             },
             px: {
               x: 0,
-              width: 1380,
-              y: 11,
+              width: 1125.736994219653,
+              y: 100,
               z: 1,
               height: 114,
             },
             pct: {
               x: 0,
-              width: 0.9971098265895953,
-              y: 0.011739594450373533,
+              width: 0.9971098265895952,
+              y: 0.10672358591248667,
               height: 0.12166488794023479,
             },
             dataSource: [
@@ -257,7 +421,7 @@ export default {
             id: "1",
             title: "柱形图",
             widget: "bar",
-            listenKey: [],
+            listenKey: [""],
             attribute: {
               name: "",
               padding: 0,
@@ -269,14 +433,14 @@ export default {
             },
             px: {
               x: 0,
-              y: 143,
-              width: 429,
+              y: 238,
+              width: 349.9573699421966,
               height: 337,
               z: 1,
             },
             pct: {
               x: 0,
-              y: 0.1526147278548559,
+              y: 0.25400213447171827,
               width: 0.309971098265896,
               height: 0.35965848452508004,
             },
@@ -301,7 +465,7 @@ export default {
                 x: 50,
                 y: 50,
                 x2: 50,
-                y2: 50, //距离下边的距离
+                y2: 50,
               },
               legend: {
                 orient: "horizontal",
@@ -351,13 +515,14 @@ export default {
                   seriesLayoutBy: "column",
                 },
               ],
+              backgroundColor: "#fff",
             },
           },
           {
             id: "2",
             title: "折线图",
             widget: "line",
-            listenKey: [],
+            listenKey: [""],
             attribute: {
               name: "",
               padding: 0,
@@ -368,15 +533,15 @@ export default {
               color: [],
             },
             px: {
-              x: 451,
-              y: 143,
-              width: 539,
+              x: 366,
+              y: 238,
+              width: 439.69002890173414,
               height: 337,
               z: 1,
             },
             pct: {
-              x: 0.3258670520231214,
-              y: 0.1526147278548559,
+              x: 0.32418069087688217,
+              y: 0.25400213447171827,
               width: 0.38945086705202314,
               height: 0.35965848452508004,
             },
@@ -406,13 +571,14 @@ export default {
                   type: "line",
                 },
               ],
+              backgroundColor: "#fff",
             },
           },
           {
             id: "3",
             title: "饼图",
             widget: "pie",
-            listenKey: [],
+            listenKey: [""],
             attribute: {
               name: "",
               padding: 0,
@@ -423,15 +589,15 @@ export default {
               color: [],
             },
             px: {
-              x: 1008,
-              y: 143,
-              width: 372,
+              x: 822,
+              y: 238,
+              width: 303.45953757225436,
               height: 337,
-              z: 999,
+              z: 1,
             },
             pct: {
-              x: 0.7283236994219653,
-              y: 0.1526147278548559,
+              x: 0.7280779450841453,
+              y: 0.25400213447171827,
               width: 0.26878612716763006,
               height: 0.35965848452508004,
             },
@@ -490,13 +656,14 @@ export default {
                   },
                 },
               ],
+              backgroundColor: "#fff",
             },
           },
           {
             id: "echarts-designer4Da3zEQ9VmjjuhLGGncnma",
             title: "饼状图",
             widget: "pie",
-            listenKey: [],
+            listenKey: [""],
             attribute: {
               name: "",
               padding: 0,
@@ -508,14 +675,14 @@ export default {
             },
             px: {
               x: 0,
-              y: 503.50000000000006,
-              width: 429,
+              y: 596,
+              width: 349.9573699421966,
               height: 337,
               z: 1,
             },
             pct: {
               x: 0,
-              y: 0.5373532550693704,
+              y: 0.6360725720384205,
               width: 0.309971098265896,
               height: 0.35965848452508004,
             },
@@ -574,6 +741,7 @@ export default {
                   },
                 },
               ],
+              backgroundColor: "#fff",
             },
           },
         ],

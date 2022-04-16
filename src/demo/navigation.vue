@@ -6,12 +6,13 @@
       widget="nav1"
       :menu="menu"
       :menuSize="[120, 34]"
+      defaultActiveMenu="/echarts"
     ></CoolNavigation>
   </div>
 </template>
 
 <script>
-import CoolNavigation from "../components/CoolNavigation";
+import CoolNavigation from "@/components/CoolNavigation";
 export default {
   components: { CoolNavigation },
   data() {

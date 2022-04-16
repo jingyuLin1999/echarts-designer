@@ -53,7 +53,7 @@
 </template>
 
 <script>
-import PerfectBorder from "../components/PerfectBorder";
+import PerfectBorder from "@/components/PerfectBorder";
 export default {
   components: { PerfectBorder },
 };
