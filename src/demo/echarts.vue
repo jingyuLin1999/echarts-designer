@@ -18,7 +18,7 @@ export default {
         widget: "canvas",
         dataSource: {
           method: "get",
-          url: "http://",
+          url: "",
         },
         list: [
           {
@@ -28,7 +28,7 @@ export default {
             listenKey: [],
             attribute: {},
             border: {
-              type: "8",
+              type: "7",
               reverse: true,
               color: [],
             },
@@ -442,7 +442,7 @@ export default {
               padding: 0,
             },
             border: {
-              type: "8",
+              type: "1",
               reverse: false,
               color: [],
             },
@@ -602,6 +602,97 @@ export default {
               backgroundColor: "#fff",
             },
           },
+          {
+            id: "dtqgkHot8TZf5xcCQJ5FvG",
+            title: "柱形图",
+            widget: "table",
+            listenKey: [""],
+            attribute: { name: "", padding: 0 },
+            border: { type: "7", reverse: false, color: [] },
+            px: {
+              x: 448,
+              y: 598,
+              width: 925,
+              height: 337,
+              z: 999,
+            },
+            pct: {
+              x: 0.3236994219653179,
+              y: 0.6419423692636073,
+              width: 0.673,
+              height: 0.35965848452508004,
+            },
+            dataSource: [{ method: "get", url: "" }],
+            codding: "",
+            data: {
+              fields: [
+                {
+                  title: "区域编号",
+                  field: "code",
+                  isSlot: false,
+                  sortable: false,
+                  searchable: true,
+                  importRequired: true,
+                  formSort: 9,
+                  formSort: 2,
+                },
+                {
+                  title: "区域名称",
+                  field: "name",
+                  isSlot: false,
+                  sortable: false,
+                  searchable: true,
+                  importRequired: true,
+                  formSort: 10,
+                },
+              ], // 字段
+              showToolBtns: {
+                // 按钮权限
+                import: false,
+                export: true,
+                update: false,
+                delete: false,
+                search: false,
+                add: false,
+                refresh: true,
+                exportable: {
+                  filter: false,
+                },
+              },
+              colors: {
+                // 颜色
+                theme: "#0D194B",
+                fontColor: "#37D0FA",
+                btnColor: "#F8F4F4",
+                btnBgColor: "#232B60",
+                activeColor: "#4F9FFE",
+                dateRangeBgColor: "#999",
+                multiOptionBgColor: "#ddd",
+                tableBorderColor: "#4780BA",
+              },
+              addConfig: {},
+              deleteConfig: {},
+              updateConfig: {},
+              selectConfig: {},
+              importConfig: {},
+              token: {
+                key: "",
+                value: "",
+                baseUrl: "",
+              },
+              defaultProp: {
+                data: "",
+                total: "",
+              },
+              formRules: {},
+              tableHooks: {},
+              showToolBar: true,
+              tableData: [
+                { code: "code1", name: "name1" },
+                { code: "code2", name: "name2" },
+              ], // 数据
+            },
+          },
         ],
       },
     };
@@ -618,7 +709,6 @@ export default {
   .right {
     width: 100%;
     height: 100%;
-    background: #0f0;
   }
 }
 </style>

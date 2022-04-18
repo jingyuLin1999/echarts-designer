@@ -13,11 +13,11 @@ export default {
         initHotKey(activeItem, echartList) {
             this.activeItem = activeItem;
             this.echartList = echartList;
-            this.onKeyDown();
-            this.onCopy();
-            this.onStick();
-            this.onDelete();
-            this.onSave();
+            // this.onKeyDown();
+            // this.onCopy();
+            //     this.onStick();
+            // this.onDelete();
+            // this.onSave();
         },
         /**-----------------键盘事件--------------------- **/
         onKeyDown() {

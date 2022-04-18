@@ -238,15 +238,20 @@ export default {
       this.hooks.responseData = this.responseData;
     },
     async loadGlobalData() {
-      let { method, url } = this.echarts.dataSource;
-      if (!isUrl(url))
-        url = sessionStorage.getItem("report-baseUrl") + "/" + url;
-      let payload = await chartApi({
-        method,
-        url,
-        parmas: this.echarts.filter,
-      });
-      if (payload) this.responseData.globalData = payload;
+      try {
+        if (!this.echarts.dataSource || !this.echarts.dataSource.url) return;
+        let { method, url } = this.echarts.dataSource;
+        if (!isUrl(url))
+          url = sessionStorage.getItem("report-baseUrl") + "/" + url;
+        let payload = await chartApi({
+          method,
+          url,
+          parmas: this.echarts.filter,
+        });
+        if (payload) this.responseData.globalData = payload;
+      } catch (e) {
+        console.error("加载全局数据失败", e);
+      }
     },
     // 监听图表dom的变化
     watchCanvasDom() {
