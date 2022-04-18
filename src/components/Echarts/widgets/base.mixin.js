@@ -77,6 +77,7 @@ export default {
             let { codding, id } = this.chartData;
             let filter = this.echarts.filter;
             let responseData = this.responseData[id];
+            let globalData = this.responseData.globalData;
             if (codding.length > 0) {
                 codding = codding.replace(/return/g, "")
                 const result = eval(codding);

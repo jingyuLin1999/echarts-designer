@@ -123,7 +123,7 @@ export const widgetLayout = [
         title: "数据接口",
         widget: "draggablelist",
         name: "dataSource",
-        template: { method: "get", url: "http://", params: "" },
+        template: { method: "get", url: "http://" },
         editKeys: ["method", "url", "params"],
     },
 ]

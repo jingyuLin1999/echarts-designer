@@ -1,5 +1,6 @@
-import hotkeys from "hotkeys-js";
 import short from "short-uuid";
+import hotkeys from "hotkeys-js";
+
 export default {
     data() {
         return {
@@ -23,10 +24,10 @@ export default {
             let { activeItem } = this;
             document.addEventListener('keydown', (event) => {
                 switch (event.key) {
-                    case "ArrowLeft": activeItem.px.x -= 1; break;
-                    case "ArrowRight": activeItem.px.x += 1; break;
-                    case "ArrowUp": activeItem.px.y -= 1; break;
-                    case "ArrowDown": activeItem.px.y += 1; break;
+                    case "ArrowLeft": event.preventDefault(); activeItem.px.x -= 1; break;
+                    case "ArrowRight": event.preventDefault(); activeItem.px.x += 1; break;
+                    case "ArrowUp": event.preventDefault(); activeItem.px.y -= 1; break;
+                    case "ArrowDown": event.preventDefault(); activeItem.px.y += 1; break;
                 }
             });
         },
@@ -46,7 +47,8 @@ export default {
         onStick() {
             let { echartList } = this;
             hotkeys("ctrl+v", (event, handler) => {
-                // echartList.push(this.cloneItem)
+                let hasItem = echartList.find(item => item.id == this.cloneItem.id)
+                if (!hasItem) echartList.push(this.cloneItem)
             });
         },
         onDelete() {

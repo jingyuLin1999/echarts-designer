@@ -19,6 +19,23 @@ export const form = {
             size: "small",
         },
         {
+            title: "类型",
+            name: "dataSource.method",
+            widget: "select",
+            size: "small",
+            placeholder: "post或get",
+            options: [
+                { label: "Get", value: 'get' },
+                { label: "Post", value: 'post' },
+            ]
+        },
+        {
+            title: "路径",
+            name: "dataSource.url",
+            widget: "input",
+            size: "small",
+        },
+        {
             widget: "grid",
             title: "栅格布局",
             showTitle: false,

@@ -9,7 +9,7 @@ export const form = {
         {
             title: "表边框",
             widget: "select",
-            name: "attribute.border",
+            name: "data.form.border",
             size: "small",
             options: [
                 {
@@ -25,7 +25,7 @@ export const form = {
         {
             title: "表栅栏",
             widget: "select",
-            name: "attribute.grid",
+            name: "data.form.grid",
             size: "small",
             options: [
                 {
@@ -41,7 +41,7 @@ export const form = {
         {
             title: "对齐方式",
             widget: "select",
-            name: "attribute.labelAlign",
+            name: "data.form.labelAlign",
             size: "small",
             options: [
                 {
@@ -57,28 +57,28 @@ export const form = {
         {
             title: "标签后缀",
             widget: "input",
-            name: "attribute.labelSuffix",
+            name: "data.form.labelSuffix",
             size: "small",
         },
         {
             title: "标签宽度",
             widget: "input",
-            name: "attribute.labelWidth",
+            name: "data.form.labelWidth",
             size: "small",
         },
         {
             title: "标识",
             widget: "input",
             description: "自定义标识",
-            name: "attribute.name",
+            name: "data.form.name",
             size: "small"
         },
         {
             title: "数据接口",
             widget: "draggablelist",
             name: "dataSource",
-            template: { method: "get", url: "http://", params: "" },
-            editKeys: ["method", "url", "params"],
+            template: { method: "get", url: "http://"},
+            editKeys: ["method", "url"],
         },
         {
             title: "说明",

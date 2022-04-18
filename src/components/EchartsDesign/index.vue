@@ -4,17 +4,6 @@
 -->
 <template>
   <div class="echar-design-wrapper">
-    <modal
-      v-model="viewJson"
-      width="45%"
-      height="40%"
-      resize
-      title="查看JSON"
-      :showFooter="false"
-      :style="{ position: 'absolute', zIndex: 9999 }"
-    >
-      {{ echarts.list }}
-    </modal>
     <header class="design-header" v-if="showHeader">
       <div class="header-left">
         <a
@@ -33,7 +22,7 @@
           <i class="el-icon-delete" @click="onClearCanvas">画布</i>
         </div>
         <div>
-          <i class="el-icon-document-add" @click="viewJson = true">生成JSON</i>
+          <i class="el-icon-document-add" @click="onViewJson">生成JSON</i>
         </div>
         <div class="tool" @click="preview">
           <i class="el-icon-view" v-if="design">预览</i>
@@ -148,21 +137,51 @@
                 @action="attrActions"
               />
               <modal
+                class="codding-modal"
                 v-model="coddingModal"
                 width="95%"
                 height="95%"
                 showFooter
                 resize
-                title="数据源编辑"
+                :title="codeTitle"
                 @close="onCodeEdited"
               >
-                <textarea id="code-textarea" v-model="code"></textarea>
+                <textarea id="code-textarea" v-model="codding"></textarea>
                 <template #footer>
-                  <Button size="small" type="primary" @click="onRunCode"
+                  <Button
+                    v-if="isCodding"
+                    size="small"
+                    type="primary"
+                    @click="onRunCode"
                     >运行</Button
                   >
-                  <Button size="small" type="success" @click="onCodeEdited"
+                  <Button
+                    v-if="isCodding"
+                    size="small"
+                    type="success"
+                    @click="onCodeEdited"
                     >确定</Button
+                  >
+                  <Button
+                    v-if="!isCodding"
+                    size="small"
+                    type="success"
+                    @click="toFormat"
+                    >格式化</Button
+                  >
+                  <Button
+                    v-if="!isCodding"
+                    size="small"
+                    type="primary"
+                    @click="toStorage"
+                    >缓存</Button
+                  >
+                  <Button
+                    v-if="!isCodding"
+                    size="small"
+                    type="danger"
+                    @click="toCopy(JSON.stringify(echarts))"
+                    >复制</Button
                   >
                 </template>
               </modal>
@@ -177,7 +196,7 @@
                     </span>
                   </div>
                   <div class="node-tools">
-                    <span @click="copyReportId(data.id)" class="copy-label">
+                    <span @click="toCopy(data.id)" class="copy-label">
                       复制ID
                     </span>
                     <i
@@ -197,6 +216,7 @@
 <script>
 import short from "short-uuid";
 import ClipboardJS from "clipboard";
+import { mergeDeepRight } from "ramda";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
 import { RichForm } from "richform";
@@ -206,6 +226,7 @@ import Echarts from "@/components/Echarts";
 import { chartWidgets } from "./meta/widgets";
 import SplitLayout from "@/components/SplitLayout";
 import { defaultContainer } from "../Echarts/utils/defaultData";
+
 import {
   chartSchema,
   chartForm,
@@ -285,9 +306,13 @@ export default {
       openSubmitModal: false, // 打开提交窗口
       clickedChart: {}, // 点击的图表数据
       clickReportNode: {}, // 点击报表节点
+      codding: "",
+      viewCode: "",
+      codeTitle: "编辑数据源",
+      isCodding: true,
       // 代码编辑器提示语
       codeTips:
-        "// http请求响应数据在responseData中，试试打印：console.log(responseData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
+        "// http请求响应数据在responseData中，试试打印：console.log(responseData);或console.log(globalData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
     };
   },
   computed: {
@@ -311,9 +336,12 @@ export default {
       this.loadStorage();
     },
     loadStorage() {
-      let getStorege = localStorage.getItem("echarts-designer");
-
-      if (getStorege) Object.assign(this.echarts, JSON.parse(getStorege));
+      try {
+        let getStorege = localStorage.getItem("echarts-designer");
+        if (getStorege) Object.assign(this.echarts, JSON.parse(getStorege));
+      } catch (e) {
+        console.error("从本地加载数据错误", e);
+      }
     },
     initHook() {
       this.hooks.preview = this.preview;
@@ -360,14 +388,21 @@ export default {
     // 初始化编辑器
     attrActions(evt) {
       if (evt.name != "codding") return;
+      this.isCodding = true;
+      this.codeTitle = "编辑数据源";
       this.coddingModal = !this.coddingModal;
-      let showTemplate = "";
       let { data, codding } = this.clickedChart;
-      let strData = JSON.stringify(data);
+      if (codding) {
+        let responseData = "";
+        let globalData = "";
+        codding = codding.replace(/return/g, "");
+        let evalCode = eval(codding);
+        this.clickedChart.data = mergeDeepRight(evalCode, data);
+      }
+      let strData = JSON.stringify(this.clickedChart.data);
       let example = `let defaultData = ${strData};\nreturn defaultData;`;
-      showTemplate = this.codeTips + (codding ? codding : example);
-      this.code = showTemplate;
-      this.initCodemirror();
+      let code = this.codeTips + example;
+      this.initCodemirror({ el: "code-textarea", code });
     },
     // 关闭编辑器
     onCodeEdited() {
@@ -456,10 +491,29 @@ export default {
       this.openSubmitModal = false;
       this.submitValues = {};
     },
-    copyReportId(id) {
+    onViewJson() {
+      this.isCodding = false;
+      this.coddingModal = true;
+      this.codeTitle = "JSON数据";
+      this.initCodemirror({
+        el: "code-textarea",
+        code: `let data = ${JSON.stringify(this.echarts)};\n return data;`,
+      });
+    },
+    toStorage() {
+      if (this.editorInstance) {
+        let codeStr = this.editorInstance.getValue();
+        codeStr = codeStr.replace(/return/g, "");
+        let runResult = eval(codeStr);
+        localStorage.setItem("echarts-designer", JSON.stringify(runResult));
+        Message({ type: "success", message: "缓存成功，刷新看看" });
+        this.coddingModal = false;
+      }
+    },
+    toCopy(data) {
       // https://github.com/zenorocha/clipboard.js/issues/784#issuecomment-1014216264
       const fakerBtn = document.createElement("button");
-      new ClipboardJS(fakerBtn, { text: () => id });
+      new ClipboardJS(fakerBtn, { text: () => data });
       fakerBtn.click();
       Message({ type: "success", message: "复制成功" });
     },
@@ -474,6 +528,7 @@ export default {
 </script>
 
 <style lang="scss">
+@import "./codemirros.scss"; // 直接子js中import进来，打包后失效
 @font-face {
   font-family: "iconfont";
   src: url("./iconfont/iconfont.woff2?t=1635472525124") format("woff2"),
@@ -487,11 +542,18 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+.vxe-modal--content {
+  height: 100%;
+}
 .echar-design-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
   background: #fff;
+  .codding-modal {
+    position: relative;
+    z-index: 99999;
+  }
   .design-header {
     height: 55px;
     line-height: 55px;

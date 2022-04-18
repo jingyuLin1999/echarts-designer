@@ -16,6 +16,10 @@ export default {
         theme: "dark",
         background: "#110C2A",
         widget: "canvas",
+        dataSource: {
+          method: "get",
+          url: "http://",
+        },
         list: [
           {
             id: "-1",
@@ -45,7 +49,6 @@ export default {
               {
                 method: "get",
                 url: "http://",
-                params: "",
                 id: "2",
               },
             ],

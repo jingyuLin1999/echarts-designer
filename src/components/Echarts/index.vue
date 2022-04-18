@@ -7,6 +7,13 @@
     theme: "#fff", // 面板主题颜色
     height: 1200, // 设计模式画布高度可调
     filter: null, // 全局过滤条件
+    dataSource: [ // 全局数据源，一次性获取所有图表的数据源
+      {
+        method: "get",
+        url: "http://",
+        id: "1",
+      },
+    ],
     list: [
         { // 报表数据
               title: "图表名称",
@@ -159,6 +166,7 @@
 import Field from "./field";
 import short from "short-uuid";
 import { Icon } from "element-ui";
+import { chartApi, isUrl } from "./utils";
 import eventbus from "./utils/eventbus";
 import SplitLayout from "../SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
@@ -226,7 +234,19 @@ export default {
       this.onAuthorize();
       this._registerEvents();
       this.watchCanvasDom();
+      this.loadGlobalData();
       this.hooks.responseData = this.responseData;
+    },
+    async loadGlobalData() {
+      let { method, url } = this.echarts.dataSource;
+      if (!isUrl(url))
+        url = sessionStorage.getItem("report-baseUrl") + "/" + url;
+      let payload = await chartApi({
+        method,
+        url,
+        parmas: this.echarts.filter,
+      });
+      if (payload) this.responseData.globalData = payload;
     },
     // 监听图表dom的变化
     watchCanvasDom() {

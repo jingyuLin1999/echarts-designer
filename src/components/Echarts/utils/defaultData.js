@@ -4,7 +4,11 @@ export const defaultContainer = {
     background: "#F9F6F6", // 背景颜色
     theme: "#fff",
     height: 1200,
-    filter: "13", // 过滤条件
+    filter: {}, // 过滤条件
+    dataSource: { // 全局数据源
+        method: "",
+        url: "",
+    },
     list: []
 }
 

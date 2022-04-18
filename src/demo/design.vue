@@ -161,6 +161,10 @@ export default {
         theme: "",
         height: 1200,
         filter: { aaa: 123 },
+        dataSource: {
+          method: "get",
+          url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+        },
         list: [
           {
             id: "-1",
