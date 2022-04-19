@@ -15,6 +15,10 @@
       :hooks="tableHooks"
       :fields="chartData.data.fields"
       :tableData="chartData.data.tableData"
+      :showPageBar="chartData.data.showPageBar"
+      :showCheckbox="chartData.data.showCheckbox"
+      :showHeader="chartData.data.showHeader"
+      :showSeq="chartData.data.showSeq"
     >
     </ready-table>
   </div>
@@ -76,6 +80,9 @@ export default {
         formRules: {},
         tableData: [], // 数据
         showToolBar: true,
+        showPageBar: true,
+        showCheckbox: true,
+        showHeader: true,
       };
     },
   },

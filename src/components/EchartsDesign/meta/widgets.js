@@ -11,6 +11,7 @@ export const chartWidgets = [
                 widget: "card",
                 listenKey: [],
                 attribute: {
+                    name: "", // 标识
                     bgColor: "#fff",
                     titleColor: "#8c8c8c",
                     valueColor: "#333",
@@ -248,7 +249,7 @@ export const chartWidgets = [
                 widget: "form",
                 listenKey: [],
                 attribute: {
-
+                    name: "", // 标识
                 },
                 border: {
                     type: "8",
@@ -324,7 +325,7 @@ export const chartWidgets = [
                 title: "表组件",
                 widget: "table",
                 listenKey: [""],
-                attribute: { name: "", padding: 0 },
+                attribute: { name: "" },
                 border: { type: "7", reverse: false, color: [] },
                 px: {
                     x: 448,

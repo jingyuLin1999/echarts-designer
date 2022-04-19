@@ -16,10 +16,10 @@
       </div>
       <div class="tools-right">
         <div>
-          <i class="el-icon-delete" @click="onClearCache">缓存</i>
+          <i class="el-icon-delete" @click="onClearCache">清空缓存</i>
         </div>
         <div>
-          <i class="el-icon-delete" @click="onClearCanvas">画布</i>
+          <i class="el-icon-delete" @click="onClearCanvas">清空画布</i>
         </div>
         <div>
           <i class="el-icon-document-add" @click="onViewJson">生成JSON</i>
@@ -448,8 +448,8 @@ export default {
       this.clickReportNode = {};
     },
     onClearCache() {
-      this.onClearCanvas();
       localStorage.removeItem("echarts-designer");
+      Message({ type: "success", message: "缓存清除成功" });
     },
     onClickReportNode(data) {
       this.clickReportNode = data;
@@ -507,6 +507,7 @@ export default {
         let runResult = eval(codeStr);
         localStorage.setItem("echarts-designer", JSON.stringify(runResult));
         Message({ type: "success", message: "缓存成功，刷新看看" });
+        message;
         this.coddingModal = false;
       }
     },
@@ -552,7 +553,7 @@ export default {
   background: #fff;
   .codding-modal {
     position: relative;
-    z-index: 99999;
+    z-index: 10;
   }
   .design-header {
     height: 55px;
