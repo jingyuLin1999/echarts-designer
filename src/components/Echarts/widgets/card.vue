@@ -1,7 +1,7 @@
 <template>
   <div class="card-widget">
     <FlexBoxContainer
-      :boxSize="[200, 108]"
+      :boxSize="[120, 108]"
       :style="styles"
       :margin="chartData.attribute.distance"
       @domResize="onDomResize"
@@ -96,7 +96,7 @@ export default {
       };
     },
     onDomResize({ height: newHeight, disHeight }) {
-      if (disHeight == 0) return;
+      // if (disHeight == 0) return;
       this.moveWidgetY(newHeight);
     },
   },

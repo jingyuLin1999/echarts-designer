@@ -192,6 +192,7 @@ export default {
     echartsId: { type: String, default: "" },
     authorization: { type: Object, default: () => ({}) },
     responseData: { type: Object, default: () => ({}) }, // 响应数据
+    sortRules: { type: String, default: "y@x" },
   },
   provide() {
     return {
@@ -275,16 +276,16 @@ export default {
         px.width = unitWidth;
       });
       // 根据坐标进行排序，因为可能是乱序的
-      let sorted = this.sortByPx(this.echarts.list, "x");
-      this.sortByPx(sorted, "y");
+      let [sort1, sort2] = this.sortRules.split("@");
+      this.sortByPx(this.echarts.list, sort1);
+      this.sortByPx(this.echarts.list, sort2);
     },
     sortByPx(toSortArr, key) {
-      let sorted = toSortArr.sort((a, b) => {
+      toSortArr.sort((a, b) => {
         if (a.px[key] > b.px[key]) return 1;
         else if (a.px[key] < b.px[key]) return -1;
         else return 0;
       });
-      return sorted;
     },
     // 根据屏宽判断是否移动端
     async calcuMobileWidth() {

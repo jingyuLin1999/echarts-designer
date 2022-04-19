@@ -15,6 +15,14 @@
   * 报表渲染，直接将报表数据丢给echarts渲染组件
 
 ## 预览
+
+### 线上预览
+
+[报表设计器](http://117.73.12.76/demo/echarts/#/)  
+
+[设计结果](http://117.73.12.76/demo/echarts/#/echarts)  
+
+### 本地预览
 ```
 npm install
 
@@ -52,9 +60,9 @@ npm i echarts-designer -S
 ```
 
 ```js
-import { Echarts, EchartsDesign, CoolNavigation } from "echarts-designer";
+import { Echarts, EchartsDesign, CoolNavigation, PerfectBorder } from "echarts-designer";
 export default {
-  components: { Echarts, EchartsDesign, CoolNavigation },
+  components: { Echarts, EchartsDesign, CoolNavigation, PerfectBorder },
   methods: {
     onClickedChart(data) {
       console.log("clickedChart", data);
@@ -71,36 +79,43 @@ export default {
   data() {
     return {
       charts: {
+        id: -1,
         title: "图表名称",
         theme: "", // dark|light
-        background: "#110C2A",
+        background: "#fff",
+        height: 1200,
+        filter: { aaa: 123 },
+        dataSource: {
+          method: "get",
+          url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+        },
         widget: "canvas",
         list: [
-          {
-            id: "3",
-            title: "饼图",
+               {
+            id: "1",
+            title: "柱形图",
             widget: "bar",
-            listenKey: [],
+            listenKey: [""],
             attribute: {
               name: "",
               padding: 0,
             },
             border: {
-              type: "8",
+              type: "12",
               reverse: false,
               color: [],
             },
             px: {
-              x: 1008,
-              y: 143,
-              width: 372,
+              x: 0,
+              y: 238,
+              width: 349.9573699421966,
               height: 337,
-              z: 999,
+              z: 1,
             },
             pct: {
-              x: 0.7283236994219653,
-              y: 0.1526147278548559,
-              width: 0.26878612716763006,
+              x: 0,
+              y: 0.25400213447171827,
+              width: 0.309971098265896,
               height: 0.35965848452508004,
             },
             dataSource: [
@@ -112,52 +127,69 @@ export default {
             codding: "",
             data: {
               title: {
-                text: "Referer of a Website",
-                subtext: "Fake Data",
-                left: "center",
+                text: "IPQC白班良率统计",
+                left: "left",
+                textStyle: {
+                  fontStyle: "normal",
+                  color: "#f00",
+                },
+                subtext: "",
               },
-              tooltip: {
-                trigger: "item",
+              grid: {
+                x: 50,
+                y: 50,
+                x2: 50,
+                y2: 50,
               },
               legend: {
-                orient: "vertical",
-                left: "left",
+                orient: "horizontal",
+                right: 10,
+                top: 0,
+                bottom: 0,
+              },
+              tooltip: {},
+              dataset: {
+                dimensions: ["product", "2015", "2016", "2017"],
+                source: [
+                  ["Matcha Latte", 43.3, 85.8, 93.7],
+                  ["Milk Tea", 83.1, 73.4, 55.1],
+                  ["Cheese Cocoa", 86.4, 65.2, 82.5],
+                  ["Walnut Brownie", 72.4, 53.9, 39.1],
+                ],
+              },
+              xAxis: {
+                type: "category",
+                axisLabel: {
+                  formatter: "{value}",
+                  align: "right",
+                  rotate: "20",
+                  interval: 0,
+                },
+              },
+              yAxis: {
+                name: "数量",
+                axisLabel: {
+                  formatter: "{value} 件",
+                  align: "center",
+                  position: "left",
+                  margin: 28,
+                },
               },
               series: [
                 {
-                  name: "Access From",
-                  type: "pie",
-                  radius: "50%",
-                  data: [
-                    {
-                      value: 1048,
-                      name: "Search Engine",
-                    },
-                    {
-                      value: 735,
-                      name: "Direct",
-                    },
-                    {
-                      value: 580,
-                      name: "Email",
-                    },
-                    {
-                      value: 484,
-                      name: "Union Ads",
-                    },
-                    {
-                      value: 300,
-                      name: "Video Ads",
-                    },
-                  ],
-                  emphasis: {
-                    itemStyle: {
-                      shadowBlur: 10,
-                      shadowOffsetX: 0,
-                    },
-                  },
+                  type: "bar",
+                  seriesLayoutBy: "column",
+                },
+                {
+                  type: "bar",
+                  seriesLayoutBy: "column",
+                },
+                {
+                  type: "line",
+                  seriesLayoutBy: "column",
                 },
               ],
+              backgroundColor: "#fff",
             },
           },
         ],
