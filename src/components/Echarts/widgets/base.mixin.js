@@ -12,9 +12,10 @@ export default {
         chartsHandle: { type: Object, default: () => ({}) },
         isMobile: { type: Boolean, default: false },
     },
-    inject: ["responseData", "chartId"],
+    inject: ["chartId"],
     data() {
         return {
+            runCodeDebounce: null,
             filterHistory: { ...this.chartData.filter },
         }
     },
@@ -38,6 +39,12 @@ export default {
             },
             deep: true,
         },
+        "hooks.responseData.globalData": {
+            handler(newVal, oldVal) {
+                this.runCode();
+            },
+            deep: true,
+        },
     },
     created() {
         this.load();
@@ -56,10 +63,9 @@ export default {
             let asyncPaths = this.chartData.dataSource;
             if (asyncPaths.length == 0) return;
             let promiseAll = [];
-            if (!this.responseData[this.chartData.id]) this.responseData[this.chartData.id] = {};
+            if (!this.hooks.responseData[this.chartData.id]) this.hooks.responseData[this.chartData.id] = {};
             asyncPaths.map((pathItem) => {
                 let { method, url, params } = pathItem;
-                // if (!isUrl(url)) pathItem.url = sessionStorage.getItem("report-baseUrl") + url;
                 let queryCondition = Object.assign({ ...pathItem },
                     { params: strToObj(params), filter: Object.assign({}, this.echarts.filter, this.echarts.customField) });
                 if (method && url) promiseAll.push(chartApi(queryCondition));
@@ -67,23 +73,25 @@ export default {
             if (promiseAll.length == 0) return;
             await Promise.all(promiseAll)
                 .then((response) => {
-                    this.responseData[this.chartData.id] = response.payload || response;
+                    this.hooks.responseData[this.chartData.id] = response.payload || response;
                     if (response) this.runCode();
                 }).catch((e) => {
                     // console.warn("url获取异步数据失败", e)
                 });
         },
         runCode() {
-            let { codding, id } = this.chartData;
-            let filter = this.echarts.filter;
-            let responseData = this.responseData[id];
-            let globalData = this.responseData.globalData;
-            if (codding.length > 0) {
-                codding = codding.replace(/return/g, "")
-                const result = eval(codding);
-                if (result) this.chartData.data = result;
-            }
-            // else this.chartData.data = responseData;
+            try {
+                let { codding, id } = this.chartData;
+                if (codding.length > 0) {
+                    let filter = this.echarts.filter;
+                    let attribute = this.echarts.attribute;
+                    let responseData = this.hooks.responseData[id];
+                    let globalData = this.hooks.responseData.globalData;
+                    codding = codding.replace(/return/g, "")
+                    const result = eval(codding);
+                    if (result) this.chartData.data = result;
+                }
+            } catch (e) { }
         },
         checkEchartField(fields) {
             // TODO 需要对responseData格式进行校验，符合echarts标准数据格式才能赋值，否则报错
@@ -116,17 +124,26 @@ export default {
             let { id, attribute } = this.chartData;
             this.emit("event", attribute.name || id, params);
         },
+        // 画布宽高
+        async reCalcuWH(item) {
+            await this.$nextTick();
+            const canvas = document.getElementById(this.chartId);
+            if (!canvas) return;
+            const canvasW = canvas.offsetWidth || 1;
+            const canvasH = canvas.offsetHeight || 1;
+            const { pct, px } = item;
+            pct.height = px.height / canvasH;
+            pct.y = px.y / canvasH;
+            // pct.x = px.x / canvasW;
+        },
         // 
         moveWidgetY(newHeight = 0) {
-            let { chartData, echarts } = this
+            let { chartData, echarts, reCalcuWH } = this
             let disHeight = newHeight - chartData.px.height;
             this.chartData.px.height = newHeight;
-
             let baseY = chartData.px.y
             echarts.list.map(item => {
-                if (item.px.y > baseY) {
-                    item.px.y += disHeight;
-                }
+                if (item.px.y > baseY) item.px.y += disHeight;
             })
         }
     },

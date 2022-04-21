@@ -1,5 +1,7 @@
 import short from "short-uuid";
 import hotkeys from "hotkeys-js";
+import { Message } from "element-ui";
+import { _debounce } from "./index"
 
 export default {
     data() {
@@ -7,9 +9,20 @@ export default {
             activeItem: {},
             echartList: [],
             cloneItem: {},
+            ctrlSdebounce: null,
         }
     },
+    mounted() {
+        this.initKeysDebounce();
+    },
     methods: {
+        initKeysDebounce() {
+            let { echarts } = this;
+            this.ctrlSdebounce = _debounce(() => {
+                localStorage.setItem("echarts-designer", JSON.stringify(echarts))
+                Message({ type: "success", message: "成功保存至本地" })
+            }, 100)
+        },
         initHotKey(activeItem, echartList) {
             this.activeItem = activeItem;
             this.echartList = echartList;
@@ -59,10 +72,9 @@ export default {
             })
         },
         onSave() {
-            let { echarts } = this;
             hotkeys("ctrl+s", (event) => {
                 event.preventDefault();
-                localStorage.setItem("echarts-designer", JSON.stringify(echarts))
+                this.ctrlSdebounce();
             })
         }
     }

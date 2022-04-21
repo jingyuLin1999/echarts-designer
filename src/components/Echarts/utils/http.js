@@ -3,9 +3,6 @@ import { Message } from 'element-ui'
 
 // create an axios instance
 const service = axios.create({
-  // headers: {
-  //   'Content-Type': 'application/json;charset=UTF-8' // application/x-www-form-urlencoded
-  // },
   baseURL: sessionStorage.getItem("report-baseUrl"),
   timeout: 5000 // request timeout
 })
@@ -15,14 +12,7 @@ service.interceptors.request.use(
   config => {
     const authKey = sessionStorage.getItem("report-key");
     const authValue = sessionStorage.getItem("report-value");
-    if (authKey == "" || authValue == "") {
-      Message({
-        message: '无法请求数据，token未定义',
-        type: 'error'
-      })
-      return Promise.reject('无法请求数据，token未定义')
-    }
-    config.headers[authKey] = authValue
+    if (authKey && authValue) config.headers[authKey] = authValue
     return config;
   },
   error => {

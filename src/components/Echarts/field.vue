@@ -7,6 +7,13 @@
       padding: chartData.attribute.padding + 'px' || 0,
     }"
   >
+    <div
+      class="field-title"
+      v-if="chartData.showTitle"
+      :style="{ color: echarts.theme == 'dark' ? fontColor : '#333' }"
+    >
+      {{ chartData.title }}
+    </div>
     <component
       class="async-component"
       :hooks="hooks"
@@ -16,6 +23,7 @@
       :echarts="echarts"
       :chartsHandle="chartsHandle"
       :isMobile="isMobile"
+      :style="{ height: chartData.showTitle ? `calc(100% - 22px)` : '100%' }"
     />
   </PerfectBorder>
 </template>
@@ -45,6 +53,10 @@ export default {
         timeout: 3000,
       });
     },
+    fontColor() {
+      let { fontColor } = this.echarts.attribute.colors;
+      return fontColor || "#fff";
+    },
   },
 };
 </script>
@@ -52,9 +64,14 @@ export default {
 <style lang="scss" scoped>
 .perfect-border {
   box-sizing: border-box;
-}
-.async-component {
-  width: 100%;
-  height: 100%;
+  .field-title {
+    height: 22px;
+    line-height: 22px;
+    font-size: 14px;
+  }
+  .async-component {
+    width: 100%;
+    height: 100%;
+  }
 }
 </style>

@@ -1,10 +1,11 @@
 <template>
   <div class="richform-widget">
-    <div :ref="ref">
+    <div :ref="ref" class="form">
       <RichForm
         :form="chartData.data.form"
         :schema="chartData.data.schema"
         :values="echarts.filter"
+        :authorization="authorization"
       />
     </div>
   </div>
@@ -17,6 +18,14 @@ export default {
   name: "richform",
   mixins: [BaseMixin, autoResize],
   components: { RichForm },
+  computed: {
+    authorization() {
+      return {
+        key: sessionStorage.getItem("report-key"),
+        value: sessionStorage.getItem("report-value"),
+      };
+    },
+  },
   methods: {
     defaultFieldAttr() {
       return {};
@@ -36,4 +45,10 @@ export default {
 };
 </script>
 <style lang="scss">
+.richform-widget {
+  .form {
+    padding-bottom: 4px;
+    box-sizing: border-box;
+  }
+}
 </style>

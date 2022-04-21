@@ -19,7 +19,7 @@ export const form = {
             size: "small",
         },
         {
-            title: "类型",
+            title: "请求类型",
             name: "dataSource.method",
             widget: "select",
             size: "small",
@@ -30,11 +30,27 @@ export const form = {
             ]
         },
         {
-            title: "路径",
+            title: "请求路径",
             name: "dataSource.url",
             widget: "input",
             size: "small",
         },
+        {
+            title: "映射字段",
+            widget: "input",
+            name: "dataSource.respProp",
+            size: "small",
+            description: "字段用.隔开，如：payload.data",
+        },
+        {
+            title: "监听字段",
+            widget: "draggablelist",
+            name: "listenKey",
+            template: "",
+            editKeys: [],
+            description: "监听字段和filter下的键值匹配且filter对应键值改变，会发起http到后台过滤",
+        },
+
         {
             widget: "grid",
             title: "栅格布局",

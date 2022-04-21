@@ -35,6 +35,7 @@ export default {
             let filter = this.echarts.filter;
             let responseData = this.hooks.responseData[this.clickedChart.id];
             let globalData = this.hooks.responseData.globalData;
+            let attribute = this.echarts.attribute;
             let codeStr = this.editorInstance.getValue();
             codeStr = codeStr.replace(/return/g, "")
             let runResult = eval(codeStr);

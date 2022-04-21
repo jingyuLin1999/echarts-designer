@@ -75,7 +75,7 @@
           :chartData="item"
           :hooks="hooks"
           :design="design"
-          :echarts="echarts"
+          :echarts="friendEchart"
           :isMobile="isMobile"
           :chartsHandle="chartsHandle"
           :style="{
@@ -122,7 +122,7 @@
             :chartData="item"
             :hooks="hooks"
             :design="design"
-            :echarts="echarts"
+            :echarts="friendEchart"
             :isMobile="isMobile"
             :chartsHandle="chartsHandle"
           />
@@ -165,16 +165,17 @@
 <script>
 import Field from "./field";
 import short from "short-uuid";
-import { Icon } from "element-ui";
+import { mergeDeepRight } from "ramda";
+import { Icon, Message } from "element-ui";
 import { chartApi, isUrl } from "./utils";
 import eventbus from "./utils/eventbus";
 import SplitLayout from "../SplitLayout";
 import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
-import { defaultAuthorization } from "./utils/defaultData";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
 import elementResizeDetectorMaker from "element-resize-detector";
+import { defaultAuthorization, defaultContainer } from "./utils/defaultData";
 
 export default {
   name: "echart",
@@ -191,12 +192,10 @@ export default {
     hooks: { type: Object, default: () => ({}) }, // 钩子
     echartsId: { type: String, default: "" },
     authorization: { type: Object, default: () => ({}) },
-    responseData: { type: Object, default: () => ({}) }, // 响应数据
-    sortRules: { type: String, default: "y@x" },
+    sortRules: { type: String, default: "x@y" },
   },
   provide() {
     return {
-      responseData: this.responseData,
       chartId: this.chartId,
     };
   },
@@ -210,7 +209,26 @@ export default {
       this.isMobile && !this.design
         ? this.calcuMobileWh()
         : this.calcuPctToPx();
-      return this.echarts.list;
+      return this.friendEchart.list;
+    },
+    friendEchart() {
+      let mergeEcharts = mergeDeepRight(defaultContainer, this.echarts);
+      Object.assign(this.echarts, mergeEcharts);
+      return this.echarts;
+    },
+  },
+  watch: {
+    "echarts.filter": {
+      handler() {
+        this.loadGlobalData();
+      },
+      deep: true,
+    },
+    "echarts.dataSource": {
+      handler() {
+        this.loadGlobalData();
+      },
+      deep: true,
     },
   },
   data() {
@@ -227,6 +245,9 @@ export default {
       chartsHandle: {}, // 所有图表的句柄，用于注册事件
     };
   },
+  created() {
+    this.$set(this.hooks, "responseData", { globalData: null });
+  },
   mounted() {
     this.init();
   },
@@ -235,22 +256,36 @@ export default {
       this.onAuthorize();
       this._registerEvents();
       this.watchCanvasDom();
-      this.loadGlobalData();
-      this.hooks.responseData = this.responseData;
+    },
+    deepPick(keys = [], obj) {
+      if (keys.length == 0) return obj;
+      let pickObj = null;
+      keys.map((key, index) => {
+        pickObj = obj[key];
+        if (pickObj && keys.length != index + 1) obj = pickObj;
+      });
+      return pickObj;
     },
     async loadGlobalData() {
       try {
-        if (!this.echarts.dataSource || !this.echarts.dataSource.url) return;
-        let { method, url } = this.echarts.dataSource;
+        let { listenKey, dataSource, filter } = this.friendEchart;
+        let reqParamsErr = listenKey.find(
+          (key) => !filter[key] || filter[key].length == 0
+        );
+        if (!dataSource || !dataSource.url || reqParamsErr) return;
+
+        let { method, url, respProp } = dataSource;
         if (!isUrl(url))
           url = sessionStorage.getItem("report-baseUrl") + "/" + url;
-        let payload = await chartApi({
-          method,
-          url,
-          parmas: this.echarts.filter,
-        });
-        if (payload) this.responseData.globalData = payload;
+        let payload = await chartApi({ method, url, filter });
+        if (payload) {
+          this.hooks.responseData.globalData = this.deepPick(
+            respProp ? respProp.split(".") : [],
+            payload
+          );
+        }
       } catch (e) {
+        Message({ type: "error", message: "加载全局数据失败" });
         console.error("加载全局数据失败", e);
       }
     },
@@ -269,7 +304,7 @@ export default {
     },
     calcuMobileWh() {
       let baseWidth = 350;
-      this.echarts.list.map((chartItem) => {
+      this.friendEchart.list.map((chartItem) => {
         let px = chartItem["px"];
         let takeUpNum = Math.floor((this.cW - 5) / (baseWidth + 5)) || 1;
         let unitWidth = (this.cW - 5 * takeUpNum - 5) / takeUpNum;
@@ -277,8 +312,8 @@ export default {
       });
       // 根据坐标进行排序，因为可能是乱序的
       let [sort1, sort2] = this.sortRules.split("@");
-      this.sortByPx(this.echarts.list, sort1);
-      this.sortByPx(this.echarts.list, sort2);
+      this.sortByPx(this.friendEchart.list, sort1);
+      this.sortByPx(this.friendEchart.list, sort2);
     },
     sortByPx(toSortArr, key) {
       toSortArr.sort((a, b) => {
@@ -294,8 +329,8 @@ export default {
     },
     // 画布全局参数
     clickCanvas() {
-      this.echarts.widget = "canvas";
-      this.$emit("designItem", this.echarts);
+      this.friendEchart.widget = "canvas";
+      this.$emit("designItem", this.friendEchart);
     },
     // 设置请求权限
     onAuthorize() {
@@ -348,7 +383,7 @@ export default {
       item.px.z = 999;
       this.beforeActive = item;
       this.activeChart = item;
-      this.initHotKey(item, this.echarts.list);
+      this.initHotKey(item, this.friendEchart.list);
       this.$emit("designItem", item);
     },
     // 拖拽
@@ -367,12 +402,12 @@ export default {
     },
     // 删除图表
     deleteChart(chartIndex) {
-      this.echarts.list.splice(chartIndex, 1);
+      this.friendEchart.list.splice(chartIndex, 1);
     },
     // 根据百分比和画布大小重新计算px
     async calcuPctToPx() {
       await this.getCanvasWh();
-      this.echarts.list.map((chartItem) => {
+      this.friendEchart.list.map((chartItem) => {
         let px = chartItem["px"];
         let pct = chartItem["pct"];
         px.x = pct.x * this.cW;

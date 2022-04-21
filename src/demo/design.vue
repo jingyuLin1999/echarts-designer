@@ -160,11 +160,26 @@ export default {
         background: "#fff",
         theme: "",
         height: 1200,
-        filter: { aaa: 123 },
+        filter: {},
         dataSource: {
           method: "get",
           url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+          respProp: "",
         },
+        attribute: {
+          colors: {
+            // 全局颜色设置
+            theme: "#0D194B",
+            fontColor: "#37D0FA",
+            btnColor: "#F8F4F4",
+            btnBgColor: "#232B60",
+            activeColor: "#4F9FFE",
+            dateRangeBgColor: "#999",
+            multiOptionBgColor: "#ddd",
+            tableBorderColor: "#4780BA",
+          },
+        },
+        listenKey: [],
         list: [
           {
             id: "-1",
@@ -221,7 +236,7 @@ export default {
                 layout: [
                   {
                     widget: "grid",
-                    title: "文件上传",
+                    title: "",
                     showTitle: false,
                     isClicked: false,
                     flexWrap: true,
@@ -264,7 +279,7 @@ export default {
                       [
                         {
                           title: "选择工序",
-                          name: "group_code1",
+                          name: "group_code1p",
                           widget: "select",
                           options: [],
                           isGroup: false,
@@ -289,7 +304,7 @@ export default {
                       [
                         {
                           title: "选择工厂",
-                          name: "group_code1",
+                          name: "group_code1p",
                           widget: "select",
                           options: [
                             {
@@ -323,7 +338,7 @@ export default {
                       [
                         {
                           title: "选择工序",
-                          name: "group_code1",
+                          name: "group_code1p",
                           widget: "select",
                           options: [],
                           isGroup: false,
@@ -753,7 +768,7 @@ export default {
             title: "表组件",
             widget: "table",
             listenKey: [""],
-            attribute: { name: ""},
+            attribute: { name: "" },
             border: { type: "7", reverse: false, color: [] },
             px: { x: 365, y: 596, width: 763, height: 337, z: 999 },
             pct: {
@@ -811,7 +826,7 @@ export default {
               ],
               showToolBar: true,
               showPageBar: true,
-              showCheckbox: false
+              showCheckbox: false,
             },
           },
         ],

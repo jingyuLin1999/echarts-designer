@@ -2,14 +2,18 @@
 export const defaultContainer = {
     unit: "px", // 单位 px(默认) | %
     background: "#F9F6F6", // 背景颜色
-    theme: "#fff",
+    theme: "light",
     height: 1200,
     filter: {}, // 过滤条件
     dataSource: { // 全局数据源
         method: "",
         url: "",
+        respProp: "", // 响应映射字段，用.隔开
     },
-    list: []
+    attribute: {
+        colors: {}
+    }, // 全局属性，比如颜色配置，该属性在代码编辑器中可获得
+    list: [] // 报表列表
 }
 
 export const defaultAuthorization = {

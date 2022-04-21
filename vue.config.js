@@ -11,6 +11,14 @@ module.exports = {
   assetsDir: 'static',
   productionSourceMap: false,
   css: { extract: false },
+  devServer: {
+    port: 8000,
+    open: true,
+    overlay: {
+      warnings: false,
+      errors: true
+    },
+  },
   configureWebpack: {
     resolve: {
       alias: {

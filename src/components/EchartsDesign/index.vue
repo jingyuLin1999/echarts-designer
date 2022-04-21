@@ -16,13 +16,13 @@
       </div>
       <div class="tools-right">
         <div>
-          <i class="el-icon-delete" @click="onClearCache">清空缓存</i>
+          <i class="el-icon-delete" @click="onClearCache">删除缓存</i>
         </div>
         <div>
           <i class="el-icon-delete" @click="onClearCanvas">清空画布</i>
         </div>
         <div>
-          <i class="el-icon-document-add" @click="onViewJson">生成JSON</i>
+          <i class="el-icon-document-add" @click="onViewJson">查看JSON</i>
         </div>
         <div class="tool" @click="preview">
           <i class="el-icon-view" v-if="design">预览</i>
@@ -216,16 +216,15 @@
 <script>
 import short from "short-uuid";
 import ClipboardJS from "clipboard";
-import { mergeDeepRight } from "ramda";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
+import { mergeDeepRight } from "ramda";
 import { RichForm } from "richform";
 import DnDMixin from "@/mixins/dnd.mixin";
 import MonacoMixin from "./codeMirror.mixin";
 import Echarts from "@/components/Echarts";
 import { chartWidgets } from "./meta/widgets";
 import SplitLayout from "@/components/SplitLayout";
-import { defaultContainer } from "../Echarts/utils/defaultData";
 
 import {
   chartSchema,
@@ -312,13 +311,10 @@ export default {
       isCodding: true,
       // 代码编辑器提示语
       codeTips:
-        "// http请求响应数据在responseData中，试试打印：console.log(responseData);或console.log(globalData);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
+        "// http请求响应数据在responseData中，试试打印：console.log(responseData);或console.log(globalData);或console.log(attribute);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
     };
   },
   computed: {
-    drawEchart() {
-      return Object.assign(defaultContainer, this.echarts);
-    },
     chartsTree() {
       setTimeout(() => {
         this.dndEnabled();
@@ -373,7 +369,7 @@ export default {
       chart.px.x = offsetX - chart.px.width / 2;
       chart.px.y = offsetY - chart.px.height / 2;
       this.calcuPct(chart);
-      this.drawEchart.list.push(chart);
+      this.echarts.list.push(chart);
     },
     calcuPct(chart) {
       let { width: cW, height: cH } = this.canvas;
@@ -392,16 +388,29 @@ export default {
       this.codeTitle = "编辑数据源";
       this.coddingModal = !this.coddingModal;
       let { data, codding } = this.clickedChart;
-      if (codding) {
-        let responseData = "";
-        let globalData = "";
-        codding = codding.replace(/return/g, "");
-        let evalCode = eval(codding);
-        this.clickedChart.data = mergeDeepRight(evalCode, data);
+      if (!codding) {
+        // let responseData = this.hooks.responseData[this.clickedChart.id];
+        // let globalData = this.hooks.responseData.globalData;
+        // let friendCode = codding.replace(/return/g, "");
+        // let evalCode = eval(friendCode);
+        // this.clickedChart.data = mergeDeepRight(evalCode, data);
+        // // https://wenku.baidu.com/view/ddf1070b463610661ed9ad51f01dc281e53a56a9.html
+        // codding = codding.replace(/[\r\n]/g, "");
+        // let match = codding.match(/(?<=(let defaultData =)).*?(};)/);
+        // if (match) {
+        //   let matchText = match[0];
+        //   if (matchText[matchText.length - 1] == ";") {
+        //     matchText = matchText.slice(0, matchText.length - 1);
+        //   }
+        //   codding = codding.replace(
+        //     matchText,
+        //     JSON.stringify(this.clickedChart.data)
+        //   );
+        // }
+        let strData = JSON.stringify(this.clickedChart.data);
+        codding = `let defaultData = ${strData};\nreturn defaultData;`;
       }
-      let strData = JSON.stringify(this.clickedChart.data);
-      let example = `let defaultData = ${strData};\nreturn defaultData;`;
-      let code = this.codeTips + example;
+      let code = this.codeTips + codding;
       this.initCodemirror({ el: "code-textarea", code });
     },
     // 关闭编辑器
@@ -449,7 +458,7 @@ export default {
     },
     onClearCache() {
       localStorage.removeItem("echarts-designer");
-      Message({ type: "success", message: "缓存清除成功" });
+      Message({ type: "success", message: "清除缓存成功" });
     },
     onClickReportNode(data) {
       this.clickReportNode = data;
@@ -507,14 +516,21 @@ export default {
         let runResult = eval(codeStr);
         localStorage.setItem("echarts-designer", JSON.stringify(runResult));
         Message({ type: "success", message: "缓存成功，刷新看看" });
-        message;
         this.coddingModal = false;
       }
     },
-    toCopy(data) {
+    toCopyJSON() {
+      let cloneEcharts = JSON.parse(JSON.stringify(this.echarts));
+      cloneEcharts.list.map((item) => {
+        let { codding, data } = item;
+        if (codding.length > 0) item.data = Array.isArray(data) ? [] : {};
+      });
+      this.toCopy(JSON.stringify(cloneEcharts));
+    },
+    toCopy(str) {
       // https://github.com/zenorocha/clipboard.js/issues/784#issuecomment-1014216264
       const fakerBtn = document.createElement("button");
-      new ClipboardJS(fakerBtn, { text: () => data });
+      new ClipboardJS(fakerBtn, { text: () => str });
       fakerBtn.click();
       Message({ type: "success", message: "复制成功" });
     },

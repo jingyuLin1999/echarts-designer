@@ -63,7 +63,11 @@ export default {
       });
     },
     redraw() {
-      this.chart.setOption(this.chartData.data, true);
+      const { background } = this.echarts;
+      let data = Object.assign(this.chartData.data, {
+        backgroundColor: background,
+      });
+      this.chart.setOption(data, true);
     },
     resize() {
       this.chart.resize();

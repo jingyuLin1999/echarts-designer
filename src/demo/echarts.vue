@@ -10,7 +10,6 @@ export default {
   components: { Echarts },
   data() {
     return {
-      width: "200px",
       charts: {
         title: "图表名称",
         theme: "dark",
@@ -20,6 +19,8 @@ export default {
           method: "get",
           url: "",
         },
+        listenKey: [],
+        attribute: {},
         list: [
           {
             id: "-1",
