@@ -19,10 +19,23 @@ export default {
   methods: {
     defaultFieldAttr() {
       return {
-        title: {
-          // 标题
-          text: "", // 主标题
-          subtext: "", // 副标题
+        listenKey: [""],
+        attribute: { name: "" },
+        dataSource: [],
+        codding: "",
+        data: {
+          title: {
+            text: "",
+            left: "left",
+            textStyle: {
+              fontStyle: "normal",
+              color: "",
+            },
+            subtext: "",
+          },
+          legend: {
+            orient: "horizontal",
+          },
         },
       };
     },

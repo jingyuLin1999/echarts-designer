@@ -2,7 +2,7 @@
   <div class="richform-widget">
     <div :ref="ref" class="form">
       <RichForm
-        :form="chartData.data.form"
+        :form="friendForm"
         :schema="chartData.data.schema"
         :values="echarts.filter"
         :authorization="authorization"
@@ -25,10 +25,35 @@ export default {
         value: sessionStorage.getItem("report-value"),
       };
     },
+    friendForm() {
+      let colors = this.echarts.attribute.colors;
+      if (colors) this.chartData.data.form.colors = colors;
+      return this.chartData.data.form;
+    },
   },
   methods: {
     defaultFieldAttr() {
-      return {};
+      return {
+        listenKey: [""],
+        attribute: { name: "" },
+        dataSource: [],
+        codding: "",
+        data: {
+          form: {
+            border: false,
+            grid: false,
+            labelSuffix: ":",
+            labelWidth: "80px",
+            validator: "input",
+            labelAlign: "right",
+            labelInline: true,
+            colors: {},
+            actions: [],
+            layout: [],
+          },
+          schema: {},
+        },
+      };
     },
     onResize() {
       let { height, disHeight } = this;

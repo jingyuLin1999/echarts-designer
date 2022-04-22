@@ -15,7 +15,6 @@ export default {
     inject: ["chartId"],
     data() {
         return {
-            runCodeDebounce: null,
             filterHistory: { ...this.chartData.filter },
         }
     },

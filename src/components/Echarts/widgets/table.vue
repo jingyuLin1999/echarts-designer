@@ -3,7 +3,7 @@
     <ready-table
       :showToolBar="chartData.data.showToolBar"
       :showToolBtns="chartData.data.showToolBtns"
-      :colors="chartData.data.colors"
+      :colors="colors"
       :addConfig="chartData.data.addConfig"
       :deleteConfig="chartData.data.deleteConfig"
       :updateConfig="chartData.data.updateConfig"
@@ -35,54 +35,54 @@ export default {
       tableHooks: {},
     };
   },
+  computed: {
+    colors() {
+      return this.echarts.attribute.colors || this.chartData.colors;
+    },
+  },
   methods: {
     defaultFieldAttr() {
+      let colors = this.echarts.attribute.colors || {};
       return {
-        fields: [], // 字段
-        showToolBtns: {
-          // 按钮权限
-          import: false,
-          export: true,
-          update: false,
-          delete: false,
-          search: false,
-          add: false,
-          refresh: true,
-          exportable: {
-            filter: false,
+        listenKey: [""],
+        attribute: { name: "" },
+        data: {
+          fields: [], // 字段
+          showToolBtns: {
+            // 按钮权限
+            import: false,
+            export: true,
+            update: false,
+            delete: false,
+            search: false,
+            add: false,
+            refresh: true,
+            exportable: {
+              filter: false,
+            },
           },
+          colors, // 颜色
+          addConfig: {},
+          deleteConfig: {},
+          updateConfig: {},
+          selectConfig: {},
+          importConfig: {},
+          showToolBar: true,
+          showPageBar: true,
+          showCheckbox: true,
+          showHeader: true,
+          token: {
+            key: "",
+            value: "",
+            baseUrl: "",
+          },
+          defaultProp: {
+            data: "",
+            total: "",
+          },
+          formRules: {},
+          tableData: [], // 数据
         },
-        colors: {
-          // 颜色
-          theme: "#0D194B",
-          fontColor: "#37D0FA",
-          btnColor: "#F8F4F4",
-          btnBgColor: "#232B60",
-          activeColor: "#4F9FFE",
-          dateRangeBgColor: "#999",
-          multiOptionBgColor: "#ddd",
-          tableBorderColor: "#4780BA",
-        },
-        addConfig: {},
-        deleteConfig: {},
-        updateConfig: {},
-        selectConfig: {},
-        importConfig: {},
-        token: {
-          key: "",
-          value: "",
-          baseUrl: "",
-        },
-        defaultProp: {
-          data: "",
-          total: "",
-        },
-        formRules: {},
-        tableData: [], // 数据
-        showToolBar: true,
-        showPageBar: true,
-        showCheckbox: true,
-        showHeader: true,
       };
     },
   },

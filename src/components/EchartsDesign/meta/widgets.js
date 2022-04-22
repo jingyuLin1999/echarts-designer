@@ -377,17 +377,7 @@ export const chartWidgets = [
                             filter: false,
                         },
                     },
-                    colors: {
-                        // 颜色
-                        theme: "#fff",
-                        // fontColor: "#37D0FA",
-                        // btnColor: "#F8F4F4",
-                        // btnBgColor: "#232B60",
-                        // activeColor: "#4F9FFE",
-                        // dateRangeBgColor: "#999",
-                        // multiOptionBgColor: "#ddd",
-                        // tableBorderColor: "#4780BA",
-                    },
+                    colors: { theme: "", },
                     addConfig: {},
                     deleteConfig: {},
                     updateConfig: {},

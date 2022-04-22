@@ -372,10 +372,10 @@ export default {
       await this.getCanvasWh();
       let px = data["px"];
       let pct = data["pct"];
-      pct.x = px.x / this.cW;
-      pct.y = px.y / this.cH;
-      pct.width = px.width / this.cW;
-      pct.height = px.height / this.cH;
+      pct.x = Math.round((px.x * 10000) / this.cW) / 10000;
+      pct.y = Math.round((px.y * 10000) / this.cH) / 10000;
+      pct.width = Math.round((px.width * 10000) / this.cW) / 10000;
+      pct.height = Math.round((px.height * 10000) / this.cH) / 10000;
     },
     // 报表选中
     onActivated(item) {

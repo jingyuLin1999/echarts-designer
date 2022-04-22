@@ -388,12 +388,14 @@ export default {
       this.codeTitle = "编辑数据源";
       this.coddingModal = !this.coddingModal;
       let { data, codding } = this.clickedChart;
-      if (!codding) {
-        // let responseData = this.hooks.responseData[this.clickedChart.id];
+      if (codding) {
+        // TODO 要先获取richform的脏数据
+        // let attribute = this.echarts.attribute;
         // let globalData = this.hooks.responseData.globalData;
+        // let responseData = this.hooks.responseData[this.clickedChart.id];
         // let friendCode = codding.replace(/return/g, "");
         // let evalCode = eval(friendCode);
-        // this.clickedChart.data = mergeDeepRight(evalCode, data);
+        // let mergeData = mergeDeepRight(evalCode, this.clickedChart);
         // // https://wenku.baidu.com/view/ddf1070b463610661ed9ad51f01dc281e53a56a9.html
         // codding = codding.replace(/[\r\n]/g, "");
         // let match = codding.match(/(?<=(let defaultData =)).*?(};)/);
@@ -407,7 +409,8 @@ export default {
         //     JSON.stringify(this.clickedChart.data)
         //   );
         // }
-        let strData = JSON.stringify(this.clickedChart.data);
+      } else {
+        let strData = JSON.stringify(data);
         codding = `let defaultData = ${strData};\nreturn defaultData;`;
       }
       let code = this.codeTips + codding;
@@ -415,10 +418,12 @@ export default {
     },
     // 关闭编辑器
     onCodeEdited() {
-      let codding = this.editorInstance.getValue();
-      codding = codding.replace(this.codeTips, "");
-      this.clickedChart.codding = codding;
-      this.onRunCode();
+      if (this.isCodding) {
+        let codding = this.editorInstance.getValue();
+        codding = codding.replace(this.codeTips, "");
+        this.clickedChart.codding = codding;
+        this.onRunCode();
+      }
       this.coddingModal = false;
     },
     // 监听DOM是否变化

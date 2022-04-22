@@ -10,9 +10,9 @@ export const defaultContainer = {
         url: "",
         respProp: "", // 响应映射字段，用.隔开
     },
-    attribute: {
-        colors: {}
-    }, // 全局属性，比如颜色配置，该属性在代码编辑器中可获得
+    attribute: { // 全局属性，比如颜色配置，该属性在代码编辑器中可获得
+        colors: {}, // 颜色
+    }, 
     list: [] // 报表列表
 }
 
