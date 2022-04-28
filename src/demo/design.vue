@@ -11,6 +11,7 @@
       }"
       @clickedChart="onClickedChart"
       @submitValues="onSubmit"
+      @loading="isLoading"
     />
   </div>
 </template>
@@ -25,6 +26,9 @@ export default {
     },
     onSubmit({ type, data }) {
       console.log(type, data);
+    },
+    isLoading(status) {
+      // console.log(status);
     },
   },
   data() {
@@ -134,7 +138,6 @@ export default {
                     seriesLayoutBy: "column",
                   },
                 ],
-                backgroundColor: "#fff",
               },
             },
           ],
@@ -167,16 +170,17 @@ export default {
           respProp: "",
         },
         attribute: {
+          reqType: "action", // 或auto，请求类型
           colors: {
             // 全局颜色设置
-            theme: "#0D194B",
-            fontColor: "#37D0FA",
-            btnColor: "#F8F4F4",
-            btnBgColor: "#232B60",
-            activeColor: "#4F9FFE",
-            dateRangeBgColor: "#999",
-            multiOptionBgColor: "#ddd",
-            tableBorderColor: "#4780BA",
+            // theme: "#0D194B",
+            // fontColor: "#37D0FA",
+            // btnColor: "#F8F4F4",
+            // btnBgColor: "#232B60",
+            // activeColor: "#4F9FFE",
+            // dateRangeBgColor: "#999",
+            // multiOptionBgColor: "#ddd",
+            // tableBorderColor: "#4780BA",
           },
         },
         listenKey: [],
@@ -318,7 +322,7 @@ export default {
                           ],
                           isGroup: false,
                           placeholder: "请选择",
-                          size: "",
+                          size: "medium",
                           disabled: false,
                           clearable: false,
                           multiple: false,
@@ -337,27 +341,13 @@ export default {
                       ],
                       [
                         {
-                          title: "选择工序",
-                          name: "group_code1p",
-                          widget: "select",
-                          options: [],
+                          widget: "button",
+                          name: "search",
+                          title: "搜索",
+                          showTitle: false,
+                          type: "primary",
+                          size: "small",
                           isGroup: false,
-                          placeholder: "请选择",
-                          size: "",
-                          disabled: false,
-                          clearable: false,
-                          multiple: false,
-                          collapseTags: false,
-                          filterable: false,
-                          allowCreate: false,
-                          defaultProp: {
-                            label: "label",
-                            value: "value",
-                          },
-                          filter: {
-                            key: null,
-                            value: null,
-                          },
                         },
                       ],
                     ],
@@ -534,7 +524,6 @@ export default {
                   seriesLayoutBy: "column",
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {
@@ -589,8 +578,7 @@ export default {
                   data: [150, 230, 224, 218, 135, 147, 260],
                   type: "line",
                 },
-              ],
-              backgroundColor: "#fff",
+              ]
             },
           },
           {
@@ -675,7 +663,6 @@ export default {
                   },
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {
@@ -760,7 +747,6 @@ export default {
                   },
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {

@@ -6,14 +6,18 @@
     background: "#F9F6F6", // 背景颜色
     theme: "#fff", // 面板主题颜色
     height: 1200, // 设计模式画布高度可调
-    filter: null, // 全局过滤条件
+    filter: {}, // 全局过滤条件
     dataSource: [ // 全局数据源，一次性获取所有图表的数据源
       {
         method: "get",
         url: "http://",
-        id: "1",
+        respProp: "", // 响应映射字段，用.隔开
       },
     ],
+    attribute: { // 全局属性
+      reqType: "action", // 或auto，请求类型
+    },
+    listenKey: [], // 监听filter中的字段，当reqType为auto时有效
     list: [
         { // 报表数据
               title: "图表名称",
@@ -164,7 +168,6 @@
 </template>
 <script>
 import Field from "./field";
-import short from "short-uuid";
 import { mergeDeepRight } from "ramda";
 import { Icon, Message } from "element-ui";
 import { chartApi, isUrl } from "./utils";
@@ -220,13 +223,15 @@ export default {
   watch: {
     "echarts.filter": {
       handler() {
-        this.loadGlobalData();
+        let reqType = this.friendEchart.attribute.reqType;
+        if (reqType == "auto") this.loadGlobalData();
       },
       deep: true,
     },
     "echarts.dataSource": {
       handler() {
-        this.loadGlobalData();
+        let reqType = this.friendEchart.attribute.reqType;
+        if (reqType == "auto") this.loadGlobalData();
       },
       deep: true,
     },
@@ -240,7 +245,7 @@ export default {
       activeChart: {}, // 目前点击的图表
       beforeActive: {},
       isMobile: true, // 是否是移动端
-      id: short.generate(), // id
+      id: Math.random().toString(16).slice(2, 12), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
       chartsHandle: {}, // 所有图表的句柄，用于注册事件
     };
@@ -266,6 +271,7 @@ export default {
       });
       return pickObj;
     },
+    // 加载全局数据
     async loadGlobalData() {
       try {
         let { listenKey, dataSource, filter } = this.friendEchart;
@@ -277,6 +283,7 @@ export default {
         let { method, url, respProp } = dataSource;
         if (!isUrl(url))
           url = sessionStorage.getItem("report-baseUrl") + "/" + url;
+        this.$emit("loading", true);
         let payload = await chartApi({ method, url, filter });
         if (payload) {
           this.hooks.responseData.globalData = this.deepPick(
@@ -287,6 +294,8 @@ export default {
       } catch (e) {
         Message({ type: "error", message: "加载全局数据失败" });
         console.error("加载全局数据失败", e);
+      } finally {
+        this.$emit("loading", false);
       }
     },
     // 监听图表dom的变化
@@ -355,7 +364,7 @@ export default {
     uniKey(arr) {
       if (!Array.isArray(arr)) return;
       arr.map((item) => {
-        item.id = short.generate();
+        item.id = Math.random().toString(16).slice(2, 12);
       });
     },
     // 获取画布的宽高
@@ -421,6 +430,9 @@ export default {
       eventbus.$on(`${this.chartId}:event`, this.chartEventParams);
     },
     chartEventParams(type, params) {
+      // form触发过滤
+      if (type == "form" && this.friendEchart.attribute.reqType == "action")
+        this.loadGlobalData();
       this.$emit("event", { type, params });
     },
     // 注销eventbus

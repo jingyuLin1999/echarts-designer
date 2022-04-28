@@ -3,7 +3,6 @@
 </template>
 
 <script>
-import short from "short-uuid";
 
 export default {
   name: "echarts-base",
@@ -17,7 +16,7 @@ export default {
   data() {
     return {
       chart: null,
-      uuid: short.generate(),
+      uuid: Math.random().toString(16).slice(2, 12),
     };
   },
   mounted() {

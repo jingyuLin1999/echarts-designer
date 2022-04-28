@@ -86,7 +86,6 @@ export default {
                     let attribute = this.echarts.attribute;
                     let responseData = this.hooks.responseData[id];
                     let globalData = this.hooks.responseData.globalData;
-                    codding = codding.replace(/return/g, "")
                     const result = eval(codding);
                     if (result) this.chartData.data = result;
                 }

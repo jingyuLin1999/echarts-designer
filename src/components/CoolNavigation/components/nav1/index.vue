@@ -166,7 +166,11 @@
         :class="[activeMenu == menuItem.path ? 'active-menu' : '']"
         @clickButton="onActiveMenu"
       />
-      <Button class="more-menu" v-if="moreMenu.length > 0" :size="menuSize">
+      <Button
+        class="more-menu"
+        v-if="moreMenu.length > 0"
+        :size="[takeUpMenuNum == 0 ? 90 : menuSize[0], menuSize[1]]"
+      >
         <dd
           v-for="(moreItem, index) in moreMenu"
           :key="index"
@@ -212,7 +216,7 @@ export default {
     rightMenu() {
       return this.menu.slice(
         this.takeUpMenuNum,
-        this.menu.length > 2 * this.takeUpMenuNum
+        this.menu.length > 2 * this.takeUpMenuNum && this.takeUpMenuNum // 不能为0
           ? 2 * this.takeUpMenuNum - 1
           : 2 * this.takeUpMenuNum
       );
@@ -221,7 +225,7 @@ export default {
       let moreMenu = [];
       if (this.menu.length > 2 * this.takeUpMenuNum) {
         moreMenu = this.menu.slice(
-          2 * this.takeUpMenuNum - 1,
+          2 * this.takeUpMenuNum - 1 > 0 ? 2 * this.takeUpMenuNum - 1 : 0,
           this.menu.length
         );
       }

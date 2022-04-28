@@ -123,6 +123,7 @@
             :echartsId="id"
             :authorization="authorization"
             @designItem="onClickedChart"
+            @loading="loading"
           />
         </template>
         <!-- 报表属性 -->
@@ -134,6 +135,7 @@
                 :form="attrForm"
                 :schema="attrSchema"
                 :values="attrValues"
+                :hooks="attrHooks"
                 @action="attrActions"
               />
               <modal
@@ -152,7 +154,7 @@
                     v-if="isCodding"
                     size="small"
                     type="primary"
-                    @click="onRunCode"
+                    @click="refreshCode"
                     >运行</Button
                   >
                   <Button
@@ -214,7 +216,6 @@
   </div>
 </template>
 <script>
-import short from "short-uuid";
 import ClipboardJS from "clipboard";
 import { Modal } from "vxe-table";
 import "vxe-table/lib/style.css";
@@ -269,7 +270,7 @@ export default {
   },
   data() {
     return {
-      id: short.generate(),
+      id: Math.random().toString(16).slice(2, 12),
       design: true,
       coddingModal: false, // 打开代码弹窗
       viewJson: false, // 查看json
@@ -295,6 +296,7 @@ export default {
       attrSchema: {},
       attrValues: {},
       attrForm: {},
+      attrHooks: {},
       // 弹窗表单
       submitValues: {},
       submitSchema: {},
@@ -306,12 +308,11 @@ export default {
       clickedChart: {}, // 点击的图表数据
       clickReportNode: {}, // 点击报表节点
       codding: "",
-      viewCode: "",
       codeTitle: "编辑数据源",
       isCodding: true,
       // 代码编辑器提示语
       codeTips:
-        "// http请求响应数据在responseData中，试试打印：console.log(responseData);或console.log(globalData);或console.log(attribute);并运行看看。\n// 当前图表模板，可根据responseData做数据组装逻辑，并将最终结果return，该编辑器只能有一个返回结果，多个return以最后一个为准\n",
+        "// http请求响应数据在responseData中，试试打印：console.log(responseData);或console.log(globalData);或console.log(attribute);并运行看看。\n// 当前图表模板，可根据responseData或globalData或attribute做数据组装逻辑。\n",
     };
   },
   computed: {
@@ -364,7 +365,7 @@ export default {
         return;
       }
       if (chart.id.indexOf("echarts-designer") > -1)
-        chart.id = "echarts-designer" + short.generate();
+        chart.id = "echarts-designer" + Math.random().toString(16).slice(2, 12);
       let { offsetX, offsetY } = event;
       chart.px.x = offsetX - chart.px.width / 2;
       chart.px.y = offsetY - chart.px.height / 2;
@@ -390,10 +391,10 @@ export default {
       let { data, codding } = this.clickedChart;
       if (codding) {
         // TODO 要先获取richform的脏数据
+        // console.log(this.attrHooks.dirtyValues);
         // let attribute = this.echarts.attribute;
         // let globalData = this.hooks.responseData.globalData;
         // let responseData = this.hooks.responseData[this.clickedChart.id];
-        // let friendCode = codding.replace(/return/g, "");
         // let evalCode = eval(friendCode);
         // let mergeData = mergeDeepRight(evalCode, this.clickedChart);
         // // https://wenku.baidu.com/view/ddf1070b463610661ed9ad51f01dc281e53a56a9.html
@@ -411,7 +412,7 @@ export default {
         // }
       } else {
         let strData = JSON.stringify(data);
-        codding = `let defaultData = ${strData};\nreturn defaultData;`;
+        codding = `let defaultData = ${strData};\nmodule.exports = defaultData;`;
       }
       let code = this.codeTips + codding;
       this.initCodemirror({ el: "code-textarea", code });
@@ -539,6 +540,9 @@ export default {
       fakerBtn.click();
       Message({ type: "success", message: "复制成功" });
     },
+    loading(status) {
+      this.$emit("loading", status);
+    },
   },
   beforeMount() {
     window.addEventListener("resize", this.$_resizeHandler);
@@ -550,7 +554,6 @@ export default {
 </script>
 
 <style lang="scss">
-@import "./codemirros.scss"; // 直接子js中import进来，打包后失效
 @font-face {
   font-family: "iconfont";
   src: url("./iconfont/iconfont.woff2?t=1635472525124") format("woff2"),

@@ -118,7 +118,7 @@ import autoResize from "@/mixins/autoResize";
 
 import { clone, mergeDeepRight } from "ramda";
 
-import { fade } from "@jiaminghi/color";
+import { fade } from "@/utils/color";
 
 export default {
   name: "DvBorderBox12",

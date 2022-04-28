@@ -150,6 +150,7 @@ export const chartWidgets = [
                 ],
                 codding: "",
                 data: {
+                    tooltip: {},
                     title: {
                         text: "折线图",
                         left: "left",
@@ -244,7 +245,7 @@ export const chartWidgets = [
                 },
             },
             {
-                id: "form-4",
+                id: "echarts-designer-form",
                 title: "富表单",
                 widget: "form",
                 listenKey: [],
@@ -321,7 +322,7 @@ export const chartWidgets = [
                 },
             },
             {
-                id: "table",
+                id: "echarts-designer-table",
                 title: "表组件",
                 widget: "table",
                 listenKey: [""],

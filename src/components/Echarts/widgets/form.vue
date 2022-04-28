@@ -6,6 +6,7 @@
         :schema="chartData.data.schema"
         :values="echarts.filter"
         :authorization="authorization"
+        @action="formAction"
       />
     </div>
   </div>
@@ -59,6 +60,11 @@ export default {
       let { height, disHeight } = this;
       if (disHeight == 0 || height == 0) return;
       this.moveWidgetY(height);
+    },
+    formAction(event) {
+      let { widget } = event;
+      if (widget != "button") return;
+      this.emit("event", "form", event);
     },
   },
   data() {

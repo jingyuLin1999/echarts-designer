@@ -189,7 +189,6 @@ export default {
                   seriesLayoutBy: "column",
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
         ],

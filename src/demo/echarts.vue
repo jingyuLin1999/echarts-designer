@@ -13,14 +13,26 @@ export default {
       charts: {
         title: "图表名称",
         theme: "dark",
-        background: "#110C2A",
+        background: "#0D194B",
         widget: "canvas",
         dataSource: {
           method: "get",
           url: "",
         },
         listenKey: [],
-        attribute: {},
+        attribute: {
+          colors: {
+            // 全局颜色设置
+            theme: "#0D194B",
+            fontColor: "#37D0FA",
+            btnColor: "#F8F4F4",
+            btnBgColor: "#232B60",
+            activeColor: "#4F9FFE",
+            dateRangeBgColor: "#999",
+            multiOptionBgColor: "#ddd",
+            tableBorderColor: "#4780BA",
+          },
+        },
         list: [
           {
             id: "-1",
@@ -374,7 +386,6 @@ export default {
                   seriesLayoutBy: "column",
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {
@@ -430,7 +441,6 @@ export default {
                   type: "line",
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {
@@ -515,7 +525,6 @@ export default {
                   },
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {
@@ -600,7 +609,6 @@ export default {
                   },
                 },
               ],
-              backgroundColor: "#fff",
             },
           },
           {

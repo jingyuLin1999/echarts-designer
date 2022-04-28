@@ -1,4 +1,3 @@
-import short from "short-uuid";
 import hotkeys from "hotkeys-js";
 import { Message } from "element-ui";
 import { _debounce } from "./index"
@@ -51,7 +50,7 @@ export default {
             let { activeItem } = this;
             let cloneItem = JSON.parse(JSON.stringify(activeItem));
             hotkeys("ctrl+c", (event, handler) => {
-                cloneItem.id = short.generate();
+                cloneItem.id = sMath.random().toString(16).slice(2, 12);
                 cloneItem.px.x += 10;
                 cloneItem.px.y += 10;
                 this.cloneItem = cloneItem

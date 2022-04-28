@@ -11,8 +11,10 @@ export const defaultContainer = {
         respProp: "", // 响应映射字段，用.隔开
     },
     attribute: { // 全局属性，比如颜色配置，该属性在代码编辑器中可获得
+        reqType: "auto", // auto|action，请求类型
         colors: {}, // 颜色
-    }, 
+    },
+    listenKey: [], // 监听filter中的字段，当reqType为auto时有效
     list: [] // 报表列表
 }
 

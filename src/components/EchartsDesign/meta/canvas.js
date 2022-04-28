@@ -25,8 +25,8 @@ export const form = {
             size: "small",
             placeholder: "post或get",
             options: [
-                { label: "Get", value: 'get' },
-                { label: "Post", value: 'post' },
+                { label: "get", value: 'get' },
+                { label: "post", value: 'post' },
             ]
         },
         {
@@ -85,14 +85,6 @@ export const form = {
                 ],
             ],
         },
-        // { // todo richform json editor
-        //     title: "过滤字段",
-        //     widget: "input",
-        //     type: "textarea",
-        //     name: "filter",
-        //     size: "small",
-        //     rows: 3
-        // },
     ],
 }
 

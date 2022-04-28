@@ -4,7 +4,7 @@ import { Message } from 'element-ui'
 // create an axios instance
 const service = axios.create({
   baseURL: sessionStorage.getItem("report-baseUrl"),
-  timeout: 5000 // request timeout
+  timeout: 120000 // request timeout
 })
 
 // request interceptor

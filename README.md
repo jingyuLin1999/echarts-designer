@@ -89,6 +89,7 @@ export default {
           method: "get",
           url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
         },
+        listenKey: [],
         widget: "canvas",
         list: [
                {
@@ -188,8 +189,7 @@ export default {
                   type: "line",
                   seriesLayoutBy: "column",
                 },
-              ],
-              backgroundColor: "#fff",
+              ]
             },
           },
         ],

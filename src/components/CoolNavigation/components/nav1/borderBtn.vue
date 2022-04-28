@@ -103,8 +103,7 @@ $moreMenuBorder: #2fb3b5;
     & > dd {
       display: none;
       width: var(--width);
-      height: 33px;
-      line-height: 33px;
+      min-height: 33px;
       text-align: left;
       margin-left: -18px;
       box-sizing: border-box;

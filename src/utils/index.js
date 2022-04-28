@@ -45,3 +45,4 @@ export function uuid(hasHyphen) {
     return v.toString(16)
   })
 }
+

@@ -29,6 +29,7 @@ export default {
         dataSource: [],
         codding: "",
         data: {
+          tooltip: {},
           title: {
             text: "",
             left: "left",
