@@ -1,6 +1,6 @@
 {
   "name": "echarts-designer",
-  "version": "0.3.9",
+  "version": "0.4.0",
   "description": "基于echarts的图表设计器",
   "main": "lib/echarts-designer.umd.min.js",
   "directories": {
@@ -20,7 +20,7 @@
     "js-beautify": "^1.14.3",
     "ramda": "^0.27.1",
     "ready-table": "0.0.8",
-    "richform": "^0.6.4",
+    "richform": "^0.6.6",
     "vue-draggable-resizable-gorkys": "^2.4.8",
     "vue-router": "^3.5.1",
     "vue-count-to": "^1.0.13",
