@@ -261,6 +261,7 @@ export default {
       this.onAuthorize();
       this._registerEvents();
       this.watchCanvasDom();
+      this.actionInitLoad();
     },
     deepPick(keys = [], obj) {
       if (keys.length == 0) return obj;
@@ -270,6 +271,16 @@ export default {
         if (pickObj && keys.length != index + 1) obj = pickObj;
       });
       return pickObj;
+    },
+    // 手动，初始化数据
+    actionInitLoad() {
+      // TODO filter还没初始化就去请求，空请求参数
+      let reqType = this.friendEchart.attribute.reqType;
+      if (reqType == "action") {
+        setTimeout(() => {
+          this.loadGlobalData();
+        }, 500);
+      }
     },
     // 加载全局数据
     async loadGlobalData() {

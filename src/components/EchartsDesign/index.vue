@@ -323,6 +323,9 @@ export default {
       return this.chartTree;
     },
   },
+  created() {
+    this.loadStorage();
+  },
   mounted() {
     this.load();
   },
@@ -330,7 +333,6 @@ export default {
     load() {
       this.initHook();
       this.getCanvasWh();
-      this.loadStorage();
     },
     loadStorage() {
       try {
@@ -518,7 +520,6 @@ export default {
     toStorage() {
       if (this.editorInstance) {
         let codeStr = this.editorInstance.getValue();
-        codeStr = codeStr.replace(/return/g, "");
         let runResult = eval(codeStr);
         localStorage.setItem("echarts-designer", JSON.stringify(runResult));
         Message({ type: "success", message: "缓存成功，刷新看看" });
