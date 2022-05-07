@@ -251,7 +251,7 @@ export default {
     };
   },
   created() {
-    this.$set(this.hooks, "responseData", { globalData: null });
+    this.$set(this.hooks, "responseData", { globalData: {} });
   },
   mounted() {
     this.init();
@@ -442,8 +442,10 @@ export default {
     },
     chartEventParams(type, params) {
       // form触发过滤
-      if (type == "form" && this.friendEchart.attribute.reqType == "action")
-        this.loadGlobalData();
+      if (type == "form" && this.friendEchart.attribute.reqType == "action") {
+        this.loadGlobalData(); // 重新加载全局
+        this.$set(this.hooks.responseData, "action", Math.random()); // base.mixin监听该字段，子组件重新请求
+      }
       this.$emit("event", { type, params });
     },
     // 注销eventbus

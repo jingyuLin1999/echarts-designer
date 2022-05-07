@@ -44,6 +44,9 @@ export default {
             },
             deep: true,
         },
+        "hooks.responseData.action"() {
+            this.pickAsyncData();
+        },
     },
     created() {
         this.load();
