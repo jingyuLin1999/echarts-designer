@@ -341,7 +341,7 @@ export const chartWidgets = [
                     width: 0.673,
                     height: 0.35965848452508004,
                 },
-                dataSource: [{ method: "get", url: "" }],
+                dataSource: [{ method: "get", url: "", params: "" }],
                 codding: "",
                 data: {
                     fields: [

@@ -3,7 +3,6 @@
 </template>
 
 <script>
-
 export default {
   name: "echarts-base",
   props: {
@@ -23,6 +22,7 @@ export default {
     this.createChart();
     this.hooks.resize = this.resize;
     this.hooks.redraw = this.redraw;
+    this.hooks.$echart = this.$echart;
   },
   watch: {
     "chartData.px.width"() {

@@ -514,7 +514,9 @@ export default {
       this.codeTitle = "JSON数据";
       this.initCodemirror({
         el: "code-textarea",
-        code: `let data = ${JSON.stringify(this.echarts)};\n return data;`,
+        code: `let data = ${JSON.stringify(
+          this.echarts
+        )};\n module.exports = data;`,
       });
     },
     toStorage() {

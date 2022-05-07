@@ -10,7 +10,7 @@ export function chartApi(config = {}) {
   return http({
     url: url || "",
     method: method || 'post',
-    [method == 'get' ? "params" : "data"]: { params, ...filter }
+    [method == 'get' ? "params" : "data"]: { ...params, ...filter }
   })
 }
 

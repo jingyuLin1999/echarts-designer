@@ -66,7 +66,7 @@ export default {
             asyncPaths.map((pathItem) => {
                 let { method, url, params } = pathItem;
                 let queryCondition = Object.assign({ ...pathItem },
-                    { params: strToObj(params), filter: Object.assign({}, this.echarts.filter, this.echarts.customField) });
+                    { params: strToObj(params), filter: Object.assign({}, this.echarts.filter) });
                 if (method && url) promiseAll.push(chartApi(queryCondition));
             });
             if (promiseAll.length == 0) return;
@@ -86,6 +86,7 @@ export default {
                     let attribute = this.echarts.attribute;
                     let responseData = this.hooks.responseData[id];
                     let globalData = this.hooks.responseData.globalData;
+                    let $echart = this.hooks.$echart;
                     const result = eval(codding);
                     if (result) this.chartData.data = result;
                 }

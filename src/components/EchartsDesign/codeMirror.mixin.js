@@ -90,6 +90,7 @@ export default {
             let responseData = this.hooks.responseData[this.clickedChart.id];
             let globalData = this.hooks.responseData.globalData;
             let attribute = this.echarts.attribute;
+            let $echart = this.hooks.$echart;
             let codeStr = this.editorInstance.getValue();
             let runResult = eval(codeStr);
             if (setData) this.$set(this.clickedChart, "data", runResult);
