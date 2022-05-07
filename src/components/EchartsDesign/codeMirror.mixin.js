@@ -18,6 +18,9 @@ import 'codemirror/addon/dialog/dialog.js'
 import 'codemirror/addon/dialog/dialog.css'
 import 'codemirror/addon/search/searchcursor.js'
 import 'codemirror/addon/search/search.js'
+// 匹配结束符号
+import 'codemirror/keymap/sublime' //sublime编辑器效果
+
 
 export default {
     mounted() {
@@ -35,6 +38,7 @@ export default {
                     // smartInden: true,
                     lineNumbers: true,
                     lineWrapping: true,
+                    styleActiveLine: true,
                     matchBrackets: true,// 匹配结束符号，比如"]、}"
                     extraKeys: { "Ctrl-Q": function (cm) { cm.foldCode(cm.getCursor()); } },
                     foldGutter: true,
