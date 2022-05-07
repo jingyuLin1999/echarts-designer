@@ -5,6 +5,7 @@ export const defaultContainer = {
     theme: "light",
     height: 1200,
     filter: {}, // 过滤条件
+    ignoreFilter: [],
     dataSource: { // 全局数据源
         method: "",
         url: "",

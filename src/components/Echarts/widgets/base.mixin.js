@@ -66,10 +66,17 @@ export default {
             if (asyncPaths.length == 0) return;
             let promiseAll = [];
             if (!this.hooks.responseData[this.chartData.id]) this.hooks.responseData[this.chartData.id] = {};
+            // 排除不需要的字段
+            let { filter, ignoreFilter } = this.echarts;
+            let cloneFilter = JSON.parse(JSON.stringify(filter));
+            ignoreFilter.map(key => {
+                this.$delete(cloneFilter, key)
+            })
+            // 组装并获取数据
             asyncPaths.map((pathItem) => {
                 let { method, url, params } = pathItem;
                 let queryCondition = Object.assign({ ...pathItem },
-                    { params: strToObj(params), filter: Object.assign({}, this.echarts.filter) });
+                    { params: strToObj(params), filter: cloneFilter });
                 if (method && url) promiseAll.push(chartApi(queryCondition));
             });
             if (promiseAll.length == 0) return;

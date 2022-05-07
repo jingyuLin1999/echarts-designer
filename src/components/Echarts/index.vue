@@ -285,17 +285,23 @@ export default {
     // 加载全局数据
     async loadGlobalData() {
       try {
-        let { listenKey, dataSource, filter } = this.friendEchart;
+        let { listenKey, dataSource, filter, ignoreFilter } = this.friendEchart;
+        // 排除不需要的字段
+        let cloneFilter = JSON.parse(JSON.stringify(filter));
+        ignoreFilter.map((key) => {
+          this.$delete(cloneFilter, key);
+        });
+        // 请求前校验
         let reqParamsErr = listenKey.find(
-          (key) => !filter[key] || filter[key].length == 0
+          (key) => !cloneFilter[key] || cloneFilter[key].length == 0
         );
         if (!dataSource || !dataSource.url || reqParamsErr) return;
-
+        // 请求数据
         let { method, url, respProp } = dataSource;
         if (!isUrl(url))
           url = sessionStorage.getItem("report-baseUrl") + "/" + url;
         this.$emit("loading", true);
-        let payload = await chartApi({ method, url, filter });
+        let payload = await chartApi({ method, url, filter: cloneFilter });
         if (payload) {
           this.hooks.responseData.globalData = this.deepPick(
             respProp ? respProp.split(".") : [],
