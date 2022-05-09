@@ -73,7 +73,7 @@ export default {
                   url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
                 },
               ],
-              codding: "",
+              codding: "let defaultData = {};\n defaultData;",
               data: {
                 title: {
                   text: "工厂良率统计",
@@ -217,7 +217,7 @@ export default {
                 id: "2",
               },
             ],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: {
               form: {
                 border: false,
@@ -398,7 +398,7 @@ export default {
                 id: "2",
               },
             ],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: [
               {
                 title: "登入次数",
@@ -459,7 +459,7 @@ export default {
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: {
               title: {
                 text: "IPQC白班良率统计",
@@ -559,7 +559,7 @@ export default {
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: {
               title: {
                 text: "一周出勤人数",
@@ -578,7 +578,7 @@ export default {
                   data: [150, 230, 224, 218, 135, 147, 260],
                   type: "line",
                 },
-              ]
+              ],
             },
           },
           {
@@ -614,7 +614,7 @@ export default {
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: {
               title: {
                 text: "Referer of a Website",
@@ -698,7 +698,7 @@ export default {
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: {
               title: {
                 text: "Referer of a Website",
@@ -764,7 +764,7 @@ export default {
               height: 0.35965848452508004,
             },
             dataSource: [{ method: "get", url: "" }],
-            codding: "",
+            codding: "let defaultData = {};\n defaultData;",
             data: {
               fields: [
                 {

@@ -2,6 +2,7 @@ import Base from "../widgets/base.vue";
 import { chartApi, isUrl, strToObj } from "../utils";
 import { mergeDeepRight } from "ramda";
 import eventbus from "../utils/eventbus";
+
 export default {
     components: { Base },
     props: {
@@ -64,7 +65,6 @@ export default {
         async pickAsyncData() {
             let asyncPaths = this.chartData.dataSource;
             if (asyncPaths.length == 0) return;
-            let promiseAll = [];
             if (!this.hooks.responseData[this.chartData.id]) this.hooks.responseData[this.chartData.id] = {};
             // 排除不需要的字段
             let { filter, ignoreFilter } = this.echarts;
@@ -73,34 +73,36 @@ export default {
                 this.$delete(cloneFilter, key)
             })
             // 组装并获取数据
-            asyncPaths.map((pathItem) => {
+            let responseArr = [];
+            for (let index = 0; index < asyncPaths.length; index++) {
+                let pathItem = asyncPaths[index];
                 let { method, url, params } = pathItem;
                 let queryCondition = Object.assign({ ...pathItem },
                     { params: strToObj(params), filter: cloneFilter });
-                if (method && url) promiseAll.push(chartApi(queryCondition));
-            });
-            if (promiseAll.length == 0) return;
-            await Promise.all(promiseAll)
-                .then((response) => {
-                    this.hooks.responseData[this.chartData.id] = response.payload || response;
-                    if (response) this.runCode();
-                }).catch((e) => {
-                    // console.warn("url获取异步数据失败", e)
-                });
+                if (method && url && isUrl(url)) {
+                    let response = await chartApi(queryCondition);
+                    responseArr.push(response);
+                };
+            }
+            if (responseArr.length == 0) return;
+            this.hooks.responseData[this.chartData.id] = responseArr;
+            this.runCode();
         },
         runCode() {
             try {
                 let { codding, id } = this.chartData;
-                if (codding.length > 0) {
+                if (codding) {
                     let filter = this.echarts.filter;
                     let attribute = this.echarts.attribute;
                     let responseData = this.hooks.responseData[id];
                     let globalData = this.hooks.responseData.globalData;
                     let $echart = this.hooks.$echart;
-                    const result = eval(codding);
+                    let result = eval(codding);
                     if (result) this.chartData.data = result;
                 }
-            } catch (e) { }
+            } catch (e) {
+                console.log(e)
+            }
         },
         checkEchartField(fields) {
             // TODO 需要对responseData格式进行校验，符合echarts标准数据格式才能赋值，否则报错

@@ -251,6 +251,7 @@ export default {
     };
   },
   created() {
+    if (!this.hooks.responseData) this.hooks.responseData = {};
     this.$set(this.hooks, "responseData", { globalData: {} });
   },
   mounted() {

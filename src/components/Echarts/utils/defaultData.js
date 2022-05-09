@@ -24,3 +24,8 @@ export const defaultAuthorization = {
     value: "Authorization",
     baseUrl: "http://localhost:8080",
 }
+
+export const defaultHooks = {
+    responseData: {},
+    
+}

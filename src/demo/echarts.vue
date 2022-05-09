@@ -58,13 +58,7 @@ export default {
               y: 0.011739594450373533,
               height: 0.07257203842049093,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://",
-                id: "2",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: {
               form: {
@@ -252,14 +246,7 @@ export default {
               y: 0.10672358591248667,
               height: 0.12166488794023479,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://",
-                params: "",
-                id: "2",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: [
               {
@@ -631,7 +618,7 @@ export default {
               width: 0.673,
               height: 0.35965848452508004,
             },
-            dataSource: [{ method: "get", url: "" }],
+            dataSource: [],
             codding: "",
             data: {
               fields: [
@@ -715,10 +702,6 @@ export default {
   height: 100%;
   display: flex;
   justify-content: space-between;
-  .right {
-    width: 100%;
-    height: 100%;
-  }
 }
 </style>
 

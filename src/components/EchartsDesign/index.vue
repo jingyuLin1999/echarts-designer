@@ -414,7 +414,7 @@ export default {
         // }
       } else {
         let strData = JSON.stringify(data);
-        codding = `let defaultData = ${strData};\nmodule.exports = defaultData;`;
+        codding = `let defaultData = ${strData};\n defaultData;`;
       }
       let code = this.codeTips + codding;
       this.initCodemirror({ el: "code-textarea", code });
@@ -514,9 +514,7 @@ export default {
       this.codeTitle = "JSON数据";
       this.initCodemirror({
         el: "code-textarea",
-        code: `let data = ${JSON.stringify(
-          this.echarts
-        )};\n module.exports = data;`,
+        code: `let data = ${JSON.stringify(this.echarts)};\n data;`,
       });
     },
     toStorage() {
