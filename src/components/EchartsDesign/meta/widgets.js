@@ -146,6 +146,7 @@ export const chartWidgets = [
                     {
                         method: "get",
                         url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+                        params: "",
                     },
                 ],
                 codding: "",
@@ -206,6 +207,7 @@ export const chartWidgets = [
                     {
                         method: "get",
                         url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+                        params: "",
                     },
                 ],
                 codding: "",

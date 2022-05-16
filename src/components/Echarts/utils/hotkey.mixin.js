@@ -25,7 +25,7 @@ export default {
         initHotKey(activeItem, echartList) {
             this.activeItem = activeItem;
             this.echartList = echartList;
-            // this.onKeyDown();
+            this.onKeyDown();
             this.onCopy();
             this.onStick();
             this.onDelete();
@@ -33,41 +33,34 @@ export default {
         },
         /**-----------------键盘事件--------------------- **/
         onKeyDown() {
-            let { activeItem } = this;
-            document.addEventListener('keydown', (event) => {
+            hotkeys("*", (event, handler) => {
                 switch (event.key) {
-                    case "ArrowLeft": event.preventDefault(); activeItem.px.x -= 1; break;
-                    case "ArrowRight": event.preventDefault(); activeItem.px.x += 1; break;
-                    case "ArrowUp": event.preventDefault(); activeItem.px.y -= 1; break;
-                    case "ArrowDown": event.preventDefault(); activeItem.px.y += 1; break;
+                    case "ArrowLeft": event.preventDefault(); this.activeItem.px.x -= 1; break;
+                    case "ArrowRight": event.preventDefault(); this.activeItem.px.x += 1; break;
+                    case "ArrowUp": event.preventDefault(); this.activeItem.px.y -= 1; break;
+                    case "ArrowDown": event.preventDefault(); this.activeItem.px.y += 1; break;
                 }
             });
         },
-        onKeyUp(activeItem) {
-            document.addEventListener('keyup', (event) => { });
-        },
         onCopy() {
-            let { activeItem } = this;
-            let cloneItem = JSON.parse(JSON.stringify(activeItem));
+            let cloneItem = JSON.parse(JSON.stringify(this.activeItem));
             hotkeys("ctrl+c", (event, handler) => {
                 cloneItem.id = Math.random().toString(16).slice(2, 12);
-                cloneItem.px.x += 10;
-                cloneItem.px.y += 10;
+                cloneItem.px.x += 0.5;
+                cloneItem.px.y += 0.5;
                 this.cloneItem = cloneItem
             });
         },
         onStick() {
-            let { echartList } = this;
             hotkeys("ctrl+v", (event, handler) => {
-                let hasItem = echartList.find(item => item.id == this.cloneItem.id)
-                if (!hasItem) echartList.push(this.cloneItem)
+                let hasItem = this.echartList.find(item => item.id == this.cloneItem.id)
+                if (!hasItem) this.echartList.push(this.cloneItem)
             });
         },
         onDelete() {
-            let { activeItem, echartList } = this;
             hotkeys("del", () => {
-                const chartIndex = echartList.findIndex(item => item.id == activeItem.id)
-                echartList.splice(chartIndex, 1);
+                const chartIndex = this.echartList.findIndex(item => item.id == this.activeItem.id)
+                this.echartList.splice(chartIndex, 1);
             })
         },
         onSave() {
