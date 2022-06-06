@@ -21,6 +21,7 @@ export default {
         },
         listenKey: [],
         attribute: {
+          gridW: "10px",
           colors: {
             // 全局颜色设置
             theme: "#0D194B",
@@ -49,7 +50,6 @@ export default {
               x: 0,
               width: 1125.4974146845916,
               y: 11,
-              z: 999,
               height: 72,
             },
             pct: {
@@ -533,7 +533,6 @@ export default {
               y: 596,
               width: 349.9573699421966,
               height: 337,
-              z: 1,
             },
             pct: {
               x: 0,

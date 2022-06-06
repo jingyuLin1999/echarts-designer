@@ -12,6 +12,7 @@ export default {
         echarts: { type: Object, default: () => ({}) },
         chartsHandle: { type: Object, default: () => ({}) },
         isMobile: { type: Boolean, default: false },
+        context: { type: Object, default: () => ({}) },
     },
     inject: ["chartId"],
     data() {
@@ -48,6 +49,9 @@ export default {
         "hooks.responseData.action"() {
             this.pickAsyncData();
         },
+        "context.clientWidth"() {
+            this.clientSizeChanged();
+        }
     },
     created() {
         this.load();
@@ -86,34 +90,27 @@ export default {
             }
             if (responseArr.length == 0) return;
             this.hooks.responseData[this.chartData.id] = responseArr;
+            this.$set(this.context, "responseHttpNum", this.context.responseHttpNum + 1)
             this.runCode();
         },
         runCode() {
             try {
                 let { codding, id } = this.chartData;
-                if (codding) {
-                    let filter = this.echarts.filter;
-                    let attribute = this.echarts.attribute;
-                    let responseData = this.hooks.responseData[id];
-                    let globalData = this.hooks.responseData.globalData;
-                    let $echart = this.hooks.$echart;
+                let filter = this.echarts.filter;
+                let attribute = this.echarts.attribute;
+                let responseData = this.hooks.responseData[id];
+                let globalData = this.hooks.responseData.globalData;
+                let $echart = this.hooks.$echart;
+                if (typeof codding == "function") { // 有可能是function,代码字符创修改很不方便
+                    let result = codding({ filter, attribute, responseData, globalData, $echart });
+                    if (result) this.chartData.data = result;
+                } else if (codding.length > 0) { // 有可能是代码字符，因为function无法保存到服务器上
                     let result = eval(codding);
                     if (result) this.chartData.data = result;
                 }
             } catch (e) {
                 console.log(e)
             }
-        },
-        checkEchartField(fields) {
-            // TODO 需要对responseData格式进行校验，符合echarts标准数据格式才能赋值，否则报错
-            let validate = true;
-            const echartMustFields = ["xAxis", "yAxis", "series", "dataset"];
-            for (let index = 0; index < echartMustFields.length; index++) {
-                const key = echartMustFields[index];
-                if (!fields[key]) validate = false;
-                if (!fields[key]) break;
-            }
-            return validate;
         },
         emit() {
             // 全局总线
@@ -135,27 +132,18 @@ export default {
             let { id, attribute } = this.chartData;
             this.emit("event", attribute.name || id, params);
         },
-        // 画布宽高
-        async reCalcuWH(item) {
-            await this.$nextTick();
-            const canvas = document.getElementById(this.chartId);
-            if (!canvas) return;
-            const canvasW = canvas.offsetWidth || 1;
-            const canvasH = canvas.offsetHeight || 1;
-            const { pct, px } = item;
-            pct.height = px.height / canvasH;
-            pct.y = px.y / canvasH;
-            // pct.x = px.x / canvasW;
-        },
-        // 
-        moveWidgetY(newHeight = 0) {
-            let { chartData, echarts, reCalcuWH } = this
+        // 设置其他widget的高度
+        setOtherWidgetH(newHeight = 0) {
+            let { chartData, echarts } = this
             let disHeight = newHeight - chartData.px.height;
             this.chartData.px.height = newHeight;
             let baseY = chartData.px.y
             echarts.list.map(item => {
-                if (item.px.y > baseY) item.px.y += disHeight;
+                if (item.px.y > baseY && chartData.id != item.id)
+                    item.px.y += disHeight;
             })
-        }
+        },
+        // 宽度已改变
+        clientSizeChanged() { },
     },
 }

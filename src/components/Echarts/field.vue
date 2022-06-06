@@ -23,6 +23,7 @@
       :echarts="echarts"
       :chartsHandle="chartsHandle"
       :isMobile="isMobile"
+      :context="context"
       :style="{ height: chartData.showTitle ? `calc(100% - 22px)` : '100%' }"
     />
   </PerfectBorder>
@@ -40,6 +41,7 @@ export default {
     echarts: { type: Object, default: () => ({}) },
     chartsHandle: { type: Object, default: () => ({}) },
     isMobile: { type: Boolean, default: false },
+    context: { type: Object, default: () => ({}) },
   },
   computed: {
     asyncComponent() {

@@ -30,8 +30,8 @@
         fill="#34D4FC"
         :points="`${halfWidth * 0.761},${height} 
         ${halfWidth * 0.861},${height - 2} 
-        ${halfWidth},${height - 3}
-        ${halfWidth},${height}
+        ${halfWidth + 5},${height - 3}
+        ${halfWidth + 5},${height}
         `"
       />
       <!-- 线上两个矩形 -->

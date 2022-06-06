@@ -1,23 +1,19 @@
 <template>
-  <div class="richform-widget">
-    <div :ref="ref" class="form">
-      <RichForm
-        :form="friendForm"
-        :schema="chartData.data.schema"
-        :values="echarts.filter"
-        :authorization="authorization"
-        @action="formAction"
-      />
-    </div>
-  </div>
+  <RichForm
+    class="richform-widget"
+    :form="friendForm"
+    :schema="chartData.data.schema"
+    :values="echarts.filter"
+    :authorization="authorization"
+    @action="formAction"
+  />
 </template>
 <script>
 import { RichForm } from "richform";
 import BaseMixin from "./base.mixin";
-import autoResize from "@/mixins/autoResize";
 export default {
-  name: "richform",
-  mixins: [BaseMixin, autoResize],
+  name: "filterForm",
+  mixins: [BaseMixin],
   components: { RichForm },
   computed: {
     authorization() {
@@ -56,30 +52,28 @@ export default {
         },
       };
     },
-    onResize() {
-      let { height, disHeight } = this;
-      if (disHeight == 0 || height == 0) return;
-      this.moveWidgetY(height);
-    },
     formAction(event) {
-      let { widget } = event;
-      if (widget != "button") return;
+      if (event.widget != "button") return;
       this.emit("event", "form", event);
+    },
+    clientSizeChanged() {
+      this.$nextTick(() => {
+        let dom = document.querySelector(".richform-widget");
+        dom = document.querySelector(".ps");
+        this.setOtherWidgetH(dom.offsetHeight);
+      });
     },
   },
   data() {
     return {
       ref: "formWidget",
-      debounceTime: 50,
     };
   },
 };
 </script>
 <style lang="scss">
 .richform-widget {
-  .form {
-    padding-bottom: 4px;
-    box-sizing: border-box;
-  }
+  padding-bottom: 4px;
+  box-sizing: border-box;
 }
 </style>

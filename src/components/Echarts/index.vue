@@ -63,11 +63,7 @@
       'dnd-drop-wrapper',
       design ? 'echarts--grid' : 'echarts--background',
     ]"
-    :style="{
-      '--gridW': `10px`,
-      '--gridH': `10px`,
-      '--background': echarts.background,
-    }"
+    :style="injectStyles"
   >
     <div class="scrollbar" :style="{ height: cH + 'px' }">
       <!-- 移动端 只显示，不做设计 -->
@@ -82,6 +78,7 @@
           :echarts="friendEchart"
           :isMobile="isMobile"
           :chartsHandle="chartsHandle"
+          :context="context"
           :style="{
             width: item.px.width + 'px',
             height: item.px.height + 'px',
@@ -129,6 +126,7 @@
             :echarts="friendEchart"
             :isMobile="isMobile"
             :chartsHandle="chartsHandle"
+            :context="context"
           />
         </vue-draggable-resizable>
         <!--辅助线-->
@@ -219,6 +217,19 @@ export default {
       Object.assign(this.echarts, mergeEcharts);
       return this.echarts;
     },
+    injectStyles() {
+      let injectStyles = {};
+      let colors = this.friendEchart.attribute.colors;
+      for (let key in colors) {
+        injectStyles[`--${key}`] = colors[key];
+      }
+      Object.assign(injectStyles, {
+        "--gridW": `10px`,
+        "--gridH": `10px`,
+        "--background": this.friendEchart.background,
+      });
+      return injectStyles;
+    },
   },
   watch: {
     "echarts.filter": {
@@ -235,6 +246,12 @@ export default {
       },
       deep: true,
     },
+    "context.responseHttpNum"(newVal, oldVal) {
+      if (newVal == 1) this.$emit("loading", true);
+      else if (this.context.childrenHttpNum == newVal) {
+        this.$emit("loading", true);
+      }
+    },
   },
   data() {
     return {
@@ -248,9 +265,16 @@ export default {
       id: Math.random().toString(16).slice(2, 12), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
       chartsHandle: {}, // 所有图表的句柄，用于注册事件
+      context: {
+        // 组件内部上下文
+        clientWidth: 0,
+        childrenHttpNum: 0,
+        responseHttpNum: 0,
+      },
     };
   },
   created() {
+    this.calcuMobileWidth();
     if (!this.hooks.responseData) this.$set(this.hooks, "responseData", {});
     this.$set(this.hooks, "responseData", { globalData: {}, action: null });
   },
@@ -260,6 +284,7 @@ export default {
   methods: {
     init() {
       this.onAuthorize();
+      this.pickChildrenHttpNum();
       this._registerEvents();
       this.watchCanvasDom();
       this.actionInitLoad();
@@ -327,6 +352,7 @@ export default {
           // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
           window.dispatchEvent(new Event("resize"));
         }
+        this.$set(this.context, "clientWidth", document.body.clientWidth);
       });
     },
     calcuMobileWh() {
@@ -351,7 +377,7 @@ export default {
     },
     // 根据屏宽判断是否移动端
     async calcuMobileWidth() {
-      await this.getCanvasWh();
+      this.getCanvasWh();
       this.isMobile = this.cW < 500;
     },
     // 画布全局参数
@@ -386,17 +412,14 @@ export default {
       });
     },
     // 获取画布的宽高
-    async getCanvasWh() {
-      await this.$nextTick();
-      const canvas = document.getElementById(this.chartId);
-      if (!canvas) return;
-      this.cW = canvas.offsetWidth || 1;
-      this.cH = canvas.offsetHeight || 1;
+    getCanvasWh() {
+      this.cW = document.body.clientWidth;
+      this.cH = document.body.clientHeight;
     },
     // 计算百分比 percentage：pct
-    async calcuPct(data) {
+    calcuPct(data) {
       if (!Object.keys(data).length) return;
-      await this.getCanvasWh();
+      this.getCanvasWh();
       let px = data["px"];
       let pct = data["pct"];
       pct.x = Math.round((px.x * 10000) / this.cW) / 10000;
@@ -432,8 +455,8 @@ export default {
       this.friendEchart.list.splice(chartIndex, 1);
     },
     // 根据百分比和画布大小重新计算px
-    async calcuPctToPx() {
-      await this.getCanvasWh();
+    calcuPctToPx() {
+      this.getCanvasWh();
       this.friendEchart.list.map((chartItem) => {
         let px = chartItem["px"];
         let pct = chartItem["pct"];
@@ -458,6 +481,16 @@ export default {
     // 注销eventbus
     _unregisterEvents() {
       eventbus.$off(`${this.chartId}:event`);
+    },
+    // 获取子请求数量
+    pickChildrenHttpNum() {
+      let childrenHttpNum = 0;
+      this.friendEchart.list.map((item) => {
+        item.dataSource.map((httpItem) => {
+          if (httpItem.url) childrenHttpNum++;
+        });
+      });
+      this.$set(this.context, "childrenHttpNum", childrenHttpNum);
     },
   },
   beforeDestroy() {
@@ -486,17 +519,23 @@ export default {
   .scrollbar {
     overflow-y: auto;
     overflow-x: hidden;
+    scrollbar-width: thin;
     &::-webkit-scrollbar {
       width: 0px;
-      height: 10px;
+      height: 14px;
+      border-radius: 2px;
     }
-    &::-moz-scrollbar {
-      width: 0px;
-      height: 10px;
+    &::-webkit-scrollbar-track {
+      background: var(--theme);
     }
-    &::-ms-scrollbar {
-      width: 0px;
-      height: 10px;
+    &::-webkit-scrollbar-thumb {
+      background: var(--btnBgColor);
+    }
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--tableBorderColor);
+    }
+    &::-webkit-scrollbar-corner {
+      background: #179a16;
     }
   }
   .click-canvas {

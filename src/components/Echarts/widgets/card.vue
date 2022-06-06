@@ -96,8 +96,8 @@ export default {
       };
     },
     onDomResize({ height: newHeight, disHeight }) {
-      // if (disHeight == 0) return;
-      this.moveWidgetY(newHeight);
+      if (disHeight == 0) return;
+      this.setOtherWidgetH(newHeight);
     },
   },
 };
