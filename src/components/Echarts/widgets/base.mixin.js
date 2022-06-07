@@ -74,18 +74,21 @@ export default {
             // 组装并获取数据
             let responseArr = [];
             for (let index = 0; index < asyncPaths.length; index++) {
-                let pathItem = asyncPaths[index];
-                let { method, url, params } = pathItem;
-                let queryCondition = Object.assign({ ...pathItem },
-                    { params: strToObj(params), filter: cloneFilter });
-                if (method && url && isUrl(url)) {
-                    let response = await chartApi(queryCondition);
-                    responseArr.push(response);
-                };
+                try {
+                    let pathItem = asyncPaths[index];
+                    let { method, url, params } = pathItem;
+                    let queryCondition = Object.assign({ ...pathItem },
+                        { params: strToObj(params), filter: cloneFilter });
+                    if (method && url && isUrl(url)) {
+                        let response = await chartApi(queryCondition);
+                        responseArr.push(response);
+                    };
+                } catch (e) { } finally {
+                    this.$set(this.context, "responseHttpNum", this.context.responseHttpNum + 1)
+                }
             }
             if (responseArr.length == 0) return;
             this.hooks.responseData[this.chartData.id] = responseArr;
-            this.$set(this.context, "responseHttpNum", this.context.responseHttpNum + 1)
             this.runCode();
         },
         runCode() {
@@ -144,12 +147,12 @@ export default {
         // 注册全局总线
         _registerEvents() {
             eventbus.$on(`${this.chartId}:resize`, this.clientSizeChanged);
-            eventbus.$on(`${this.chartId}:action`, this.pickAsyncData());
+            eventbus.$on(`${this.chartId}:search`, this.pickAsyncData);
         },
         // 注销eventbus
         _unregisterEvents() {
             eventbus.$off(`${this.chartId}:resize`);
-            eventbus.$off(`${this.chartId}:action`);
+            eventbus.$off(`${this.chartId}:search`);
         },
     },
     beforeDestroy() {

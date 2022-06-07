@@ -168,17 +168,21 @@
 </template>
 <script>
 import Field from "./field";
-import { mergeDeepRight } from "ramda";
 import { Icon, Message } from "element-ui";
-import { chartApi, isUrl } from "./utils";
 import eventbus from "./utils/eventbus";
 import SplitLayout from "../SplitLayout";
+import { mergeDeepRight, clone } from "ramda";
 import "element-ui/lib/theme-chalk/index.css";
 import hotkeyMixin from "./utils/hotkey.mixin";
+import { chartApi, isUrl } from "./utils";
 import VueDraggableResizable from "vue-draggable-resizable-gorkys";
 import "vue-draggable-resizable-gorkys/dist/VueDraggableResizable.css";
 import elementResizeDetectorMaker from "element-resize-detector";
-import { defaultAuthorization, defaultContainer } from "./utils/defaultData";
+import {
+  defaultAuthorization,
+  defaultContainer,
+  defaultHooks,
+} from "./utils/defaultData";
 
 export default {
   name: "echart",
@@ -250,16 +254,25 @@ export default {
       deep: true,
     },
     "context.responseHttpNum"(newVal, oldVal) {
-      if (newVal == 1) this.$emit("loading", true);
-      else if (this.context.childrenHttpNum == newVal) {
-        this.$emit("loading", true);
-      }
+      if (newVal == 0) return;
+      if (this.context.childrenHttpNum == newVal) {
+        this.$emit("loading", false);
+        this.context.responseHttpNum = 0;
+      } else if (newVal == 1) this.$emit("loading", true);
+      // http加载错误时，强制关闭加载状态
+      if (this.forceCloseLoading) clearTimeout(this.forceCloseLoading);
+      if (this.context.childrenHttpNum == newVal) return;
+      this.forceCloseLoading = setTimeout(() => {
+        this.$emit("loading", false);
+        this.context.responseHttpNum = 0;
+        console.warn("http加载数量不对或某些http加载时间超过十秒");
+      }, 10000);
     },
   },
   data() {
     return {
-      cW: 1, // client宽
-      cH: 1, // client高
+      cW: 1, // 画布宽
+      cH: 1, // 画布高
       vLine: [], // x辅助线
       hLine: [], // y辅助线
       activeChart: {}, // 目前点击的图表
@@ -268,6 +281,7 @@ export default {
       id: "A" + Math.random().toString(16).slice(2, 12), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
       chartsHandle: {}, // 所有图表的句柄，用于注册事件
+      forceCloseLoading: null, // 强制关闭加载状态
       context: {
         // 组件内部上下文
         clientWidth: 0,
@@ -278,8 +292,7 @@ export default {
   },
   created() {
     this.calcuMobileWidth();
-    if (!this.hooks.responseData) this.$set(this.hooks, "responseData", {});
-    this.$set(this.hooks, "responseData", { globalData: {} });
+    Object.assign(this.hooks, clone(defaultHooks));
   },
   mounted() {
     this.init();
@@ -329,7 +342,6 @@ export default {
         let { method, url, respProp } = dataSource;
         if (!isUrl(url))
           url = sessionStorage.getItem("report-baseUrl") + "/" + url;
-        this.$emit("loading", true);
         let payload = await chartApi({ method, url, filter: cloneFilter });
         if (payload) {
           this.hooks.responseData.globalData = this.deepPick(
@@ -341,7 +353,11 @@ export default {
         Message({ type: "error", message: "加载全局数据失败" });
         console.error("加载全局数据失败", e);
       } finally {
-        this.$emit("loading", false);
+        this.$set(
+          this.context,
+          "responseHttpNum",
+          this.context.responseHttpNum + 1
+        );
       }
     },
     // 监听图表dom的变化
@@ -481,7 +497,7 @@ export default {
       // form触发过滤
       if (type == "form" && this.friendEchart.attribute.reqType == "action") {
         this.loadGlobalData(); // 重新加载全局
-        this.emit("action");
+        this.emit("search");
       }
       this.$emit("event", { type, params });
     },
@@ -499,11 +515,15 @@ export default {
     // 获取子请求数量
     pickChildrenHttpNum() {
       let childrenHttpNum = 0;
-      this.friendEchart.list.map((item) => {
+      // 列表http数
+      let { dataSource, list } = this.friendEchart;
+      list.map((item) => {
         item.dataSource.map((httpItem) => {
           if (httpItem.url) childrenHttpNum++;
         });
       });
+      if (dataSource.url) childrenHttpNum++; // 全局http数
+      if (childrenHttpNum > 0) this.$emit("loading", true);
       this.$set(this.context, "childrenHttpNum", childrenHttpNum);
     },
   },

@@ -1,6 +1,6 @@
 <template>
   <div class="echarts-demo-page">
-    <Echarts :echarts="charts" />
+    <Echarts :echarts="charts" @loading="onLoading" />
   </div>
 </template>
 
@@ -8,6 +8,11 @@
 import Echarts from "@/components/Echarts";
 export default {
   components: { Echarts },
+  methods: {
+    onLoading(status) {
+      console.log(status);
+    },
+  },
   data() {
     return {
       charts: {
@@ -17,10 +22,11 @@ export default {
         widget: "canvas",
         dataSource: {
           method: "get",
-          url: "",
+          url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
         },
         listenKey: [],
         attribute: {
+          reqType: "action",
           gridW: "10px",
           colors: {
             // 全局颜色设置
@@ -292,7 +298,6 @@ export default {
               y: 238,
               width: 349.9573699421966,
               height: 337,
-              z: 1,
             },
             pct: {
               x: 0,
@@ -381,8 +386,8 @@ export default {
             attribute: {
               name: "",
               tooltip: {
-                alwaysShow: true, 
-                seriesIndex: 0, 
+                alwaysShow: true,
+                seriesIndex: 0,
                 dataIndex: 1,
               },
             },

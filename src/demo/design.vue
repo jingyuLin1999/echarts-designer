@@ -28,7 +28,7 @@ export default {
       console.log(type, data);
     },
     isLoading(status) {
-      // console.log(status);
+      console.log(status);
     },
   },
   data() {
@@ -209,14 +209,7 @@ export default {
               y: 0.011739594450373533,
               height: 0.07257203842049093,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://",
-                params: "",
-                id: "2",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: {
               form: {
@@ -390,14 +383,7 @@ export default {
               y: 0.10672358591248667,
               height: 0.12166488794023479,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://",
-                params: "",
-                id: "2",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: [
               {
@@ -763,7 +749,7 @@ export default {
               width: 0.6734333627537511,
               height: 0.35965848452508004,
             },
-            dataSource: [{ method: "get", url: "" }],
+            dataSource: [],
             codding: "",
             data: {
               fields: [

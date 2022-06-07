@@ -60,9 +60,10 @@ export default {
     clientSizeChanged() {
       if (this.design) return;
       this.$nextTick(() => {
-        let dom = this.$refs.filterForm.$el;
-        dom = document.querySelector(".ps");
+        let dom = this.$refs.filterForm;
         if (!dom) return;
+        dom = this.$refs.filterForm.$el;
+        dom = document.querySelector(".ps");
         this.setOtherWidgetH(dom.offsetHeight);
       });
     },
