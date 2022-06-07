@@ -1,5 +1,6 @@
 <template>
   <RichForm
+    ref="filterForm"
     class="richform-widget"
     :form="friendForm"
     :schema="chartData.data.schema"
@@ -57,9 +58,11 @@ export default {
       this.emit("event", "form", event);
     },
     clientSizeChanged() {
+      if (this.design) return;
       this.$nextTick(() => {
-        let dom = document.querySelector(".richform-widget");
+        let dom = this.$refs.filterForm.$el;
         dom = document.querySelector(".ps");
+        if (!dom) return;
         this.setOtherWidgetH(dom.offsetHeight);
       });
     },

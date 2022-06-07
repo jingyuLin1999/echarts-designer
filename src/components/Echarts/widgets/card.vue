@@ -1,23 +1,22 @@
 <template>
-  <div class="card-widget">
+  <div class="card-widget" ref="card">
     <FlexBoxContainer
-      :boxSize="[120, 108]"
       :style="styles"
+      :boxSize="chartData.attribute.cardSize"
       :margin="chartData.attribute.distance"
-      @domResize="onDomResize"
     >
       <div
         class="card"
         v-for="(cardItem, index) in chartData.data"
         :key="index"
-        @mouseover="cardIdx = index"
-        @mouseout="cardIdx = -1"
+        @mouseover="activeCardIndex = index"
+        @mouseout="activeCardIndex = -1"
       >
         <div
           class="card-icon"
           :style="{
-            color: cardIdx == index ? '#fff' : cardItem.iconColor,
-            background: cardIdx == index ? cardItem.iconColor : '',
+            color: activeCardIndex == index ? '#fff' : cardItem.iconColor,
+            background: activeCardIndex == index ? cardItem.iconColor : '',
           }"
         >
           <i :class="cardItem.icon"></i>
@@ -27,7 +26,7 @@
             class="msg-title"
             :style="{
               color:
-                cardIdx == index
+                activeCardIndex == index
                   ? cardItem.iconColor
                   : chartData.attribute.titleColor,
               fontSize: chartData.attribute.titleSize,
@@ -38,7 +37,7 @@
           <countTo
             :style="{
               color:
-                cardIdx == index
+                activeCardIndex == index
                   ? cardItem.iconColor
                   : chartData.attribute.valueColor,
               fontSize: chartData.attribute.valueSize,
@@ -63,8 +62,7 @@ export default {
   components: { countTo, FlexBoxContainer },
   data() {
     return {
-      cardIdx: -1,
-      height: 0,
+      activeCardIndex: -1, // 已触发的下标
     };
   },
   computed: {
@@ -84,6 +82,7 @@ export default {
           valueColor: "#333",
           titleSize: "15px",
           valueSize: "23px",
+          cardSize: [120, 108],
         },
         data: [
           {
@@ -95,9 +94,9 @@ export default {
         ],
       };
     },
-    onDomResize({ height: newHeight, disHeight }) {
-      if (disHeight == 0) return;
-      this.setOtherWidgetH(newHeight);
+    clientSizeChanged() {
+      let dom = this.$refs.card.$el;
+      if (dom) this.setOtherWidgetH(dom.offsetHeight);
     },
   },
 };

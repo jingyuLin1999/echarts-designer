@@ -27,5 +27,36 @@ export const defaultAuthorization = {
 
 export const defaultHooks = {
     responseData: {},
-    
+}
+
+export const defaultChartConfig = {
+    listenKey: [], // 监听过滤条件的字段
+    dataSource: [], // 数据源
+    codding: "", // 代码编辑器
+    attribute: { // 属性
+        name: "", // 自定义标识
+        tooltip: { // 提示框属性
+            alwaysShow: false, // 一直显示提示框
+            seriesIndex: 0, // 显示第几个series
+            dataIndex: 1, // 显示第几个数据
+        },
+    },
+    data: {
+        // 渲染数据
+        tooltip: {
+            trigger: "axis",
+        },
+        title: {
+            text: "",
+            left: "left",
+            textStyle: {
+                fontStyle: "normal",
+                color: "",
+            },
+            subtext: "",
+        },
+        legend: {
+            orient: "horizontal",
+        },
+    },
 }

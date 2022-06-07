@@ -45,12 +45,6 @@ export default {
                 this.runCode();
             },
             deep: true,
-        },
-        "hooks.responseData.action"() {
-            this.pickAsyncData();
-        },
-        "context.clientWidth"() {
-            this.clientSizeChanged();
         }
     },
     created() {
@@ -60,6 +54,7 @@ export default {
         load() {
             this.$setFieldAttr();
             this.pickAsyncData();
+            this._registerEvents();
         },
         $setFieldAttr() {
             const defaultFieldAttr = this.defaultFieldAttr();
@@ -136,8 +131,9 @@ export default {
         setOtherWidgetH(newHeight = 0) {
             let { chartData, echarts } = this
             let disHeight = newHeight - chartData.px.height;
+            if (disHeight == 0) return;
             this.chartData.px.height = newHeight;
-            let baseY = chartData.px.y
+            let baseY = chartData.px.y;
             echarts.list.map(item => {
                 if (item.px.y > baseY && chartData.id != item.id)
                     item.px.y += disHeight;
@@ -145,5 +141,18 @@ export default {
         },
         // 宽度已改变
         clientSizeChanged() { },
+        // 注册全局总线
+        _registerEvents() {
+            eventbus.$on(`${this.chartId}:resize`, this.clientSizeChanged);
+            eventbus.$on(`${this.chartId}:action`, this.pickAsyncData());
+        },
+        // 注销eventbus
+        _unregisterEvents() {
+            eventbus.$off(`${this.chartId}:resize`);
+            eventbus.$off(`${this.chartId}:action`);
+        },
+    },
+    beforeDestroy() {
+        this._unregisterEvents();
     },
 }

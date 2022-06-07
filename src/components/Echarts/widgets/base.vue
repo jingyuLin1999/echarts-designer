@@ -54,10 +54,21 @@ export default {
           document.getElementById(this.uuid),
           theme
         );
+        const { id, data, attribute } = this.chartData;
         this.chart.setOption(
-          Object.assign(this.chartData.data, { backgroundColor: background })
+          Object.assign(data, { backgroundColor: background })
         );
-        this.chartsHandle[this.chartData.id] = this.chart;
+        const { alwaysShow, seriesIndex, dataIndex } = attribute.tooltip;
+        if (alwaysShow) {
+          setTimeout(() => {
+            this.chart.dispatchAction({
+              type: "showTip",
+              seriesIndex: seriesIndex,
+              dataIndex: dataIndex,
+            });
+          });
+        }
+        this.chartsHandle[id] = this.chart;
         this.$emit("initialized", this.chart);
       });
     },

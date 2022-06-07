@@ -13,7 +13,9 @@
   </div>
 </template>
 <script>
+import { clone } from "ramda";
 import BaseMixin from "./base.mixin";
+import { defaultChartConfig } from "../utils/defaultData";
 export default {
   name: "basicline",
   mixins: [BaseMixin],
@@ -24,25 +26,7 @@ export default {
   methods: {
     defaultFieldAttr() {
       return {
-        listenKey: [""],
-        attribute: { name: "" },
-        dataSource: [],
-        codding: "",
-        data: {
-          tooltip: {},
-          title: {
-            text: "",
-            left: "left",
-            textStyle: {
-              fontStyle: "normal",
-              color: "",
-            },
-            subtext: "",
-          },
-          legend: {
-            orient: "horizontal",
-          },
-        },
+        ...clone(defaultChartConfig),
       };
     },
   },

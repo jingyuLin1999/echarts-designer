@@ -65,7 +65,7 @@
     ]"
     :style="injectStyles"
   >
-    <div class="scrollbar" :style="{ height: cH + 'px' }">
+    <div class="scrollbar">
       <!-- 移动端 只显示，不做设计 -->
       <div class="mobile-wrapper" v-if="isMobile && !design">
         <Field
@@ -81,7 +81,9 @@
           :context="context"
           :style="{
             width: item.px.width + 'px',
-            height: item.px.height + 'px',
+            height: ['form', 'card'].includes(item.widget)
+              ? '100%'
+              : item.px.height + 'px',
           }"
         >
         </Field>
@@ -226,6 +228,7 @@ export default {
       Object.assign(injectStyles, {
         "--gridW": `10px`,
         "--gridH": `10px`,
+        "--canvasH": this.cH + "px",
         "--background": this.friendEchart.background,
       });
       return injectStyles;
@@ -262,7 +265,7 @@ export default {
       activeChart: {}, // 目前点击的图表
       beforeActive: {},
       isMobile: true, // 是否是移动端
-      id: Math.random().toString(16).slice(2, 12), // id
+      id: "A" + Math.random().toString(16).slice(2, 12), // id
       erd: elementResizeDetectorMaker(), // 监听dom变化
       chartsHandle: {}, // 所有图表的句柄，用于注册事件
       context: {
@@ -276,7 +279,7 @@ export default {
   created() {
     this.calcuMobileWidth();
     if (!this.hooks.responseData) this.$set(this.hooks, "responseData", {});
-    this.$set(this.hooks, "responseData", { globalData: {}, action: null });
+    this.$set(this.hooks, "responseData", { globalData: {} });
   },
   mounted() {
     this.init();
@@ -352,7 +355,7 @@ export default {
           // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
           window.dispatchEvent(new Event("resize"));
         }
-        this.$set(this.context, "clientWidth", document.body.clientWidth);
+        this.emit("resize");
       });
     },
     calcuMobileWh() {
@@ -378,7 +381,7 @@ export default {
     // 根据屏宽判断是否移动端
     async calcuMobileWidth() {
       this.getCanvasWh();
-      this.isMobile = this.cW < 500;
+      this.isMobile = document.body.clientWidth < 500;
     },
     // 画布全局参数
     clickCanvas() {
@@ -412,9 +415,12 @@ export default {
       });
     },
     // 获取画布的宽高
-    getCanvasWh() {
-      this.cW = document.body.clientWidth;
-      this.cH = document.body.clientHeight;
+    async getCanvasWh() {
+      await this.$nextTick();
+      const canvas = document.getElementById(this.chartId);
+      if (!canvas) return;
+      this.cW = canvas.offsetWidth || 1;
+      this.cH = canvas.offsetHeight || 1;
     },
     // 计算百分比 percentage：pct
     calcuPct(data) {
@@ -467,6 +473,7 @@ export default {
         // px.height = pct.height * this.cH;
       });
     },
+    // 注册全局总线
     _registerEvents() {
       eventbus.$on(`${this.chartId}:event`, this.chartEventParams);
     },
@@ -474,9 +481,16 @@ export default {
       // form触发过滤
       if (type == "form" && this.friendEchart.attribute.reqType == "action") {
         this.loadGlobalData(); // 重新加载全局
-        this.$set(this.hooks.responseData, "action", Math.random()); // base.mixin监听该字段，子组件重新请求
+        this.emit("action");
       }
       this.$emit("event", { type, params });
+    },
+    // 发送全局总线
+    emit() {
+      if (arguments.length > 0) {
+        arguments[0] = `${this.chartId}:${arguments[0]}`;
+        eventbus.$emit(...arguments);
+      }
     },
     // 注销eventbus
     _unregisterEvents() {
@@ -520,6 +534,7 @@ export default {
     overflow-y: auto;
     overflow-x: hidden;
     scrollbar-width: thin;
+    height: var(--canvasH);
     &::-webkit-scrollbar {
       width: 0px;
       height: 14px;

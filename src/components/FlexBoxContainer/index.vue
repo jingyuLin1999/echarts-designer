@@ -93,7 +93,7 @@ export default {
 
       childrenEl: null,
 
-      debounceFunc: debounce(80, this.onResize),
+      debounceFunc: debounce(10, this.onResize),
     };
   },
 };

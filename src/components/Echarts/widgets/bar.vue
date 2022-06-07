@@ -12,31 +12,16 @@
   </div>
 </template>
 <script>
+import { clone } from "ramda";
 import BaseMixin from "./base.mixin";
+import { defaultChartConfig } from "../utils/defaultData";
 export default {
   name: "bar",
   mixins: [BaseMixin],
   methods: {
     defaultFieldAttr() {
       return {
-        listenKey: [""],
-        attribute: { name: "" },
-        dataSource: [],
-        codding: "",
-        data: {
-          title: {
-            text: "",
-            left: "left",
-            textStyle: {
-              fontStyle: "normal",
-              color: "",
-            },
-            subtext: "",
-          },
-          legend: {
-            orient: "horizontal",
-          },
-        },
+        ...clone(defaultChartConfig),
       };
     },
   },

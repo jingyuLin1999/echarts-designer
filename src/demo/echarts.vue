@@ -237,7 +237,6 @@ export default {
               x: 0,
               width: 1125.736994219653,
               y: 100,
-              z: 1,
               height: 114,
             },
             pct: {
@@ -282,7 +281,6 @@ export default {
             listenKey: [""],
             attribute: {
               name: "",
-              padding: 0,
             },
             border: {
               type: "12",
@@ -382,7 +380,11 @@ export default {
             listenKey: [""],
             attribute: {
               name: "",
-              padding: 0,
+              tooltip: {
+                alwaysShow: true, 
+                seriesIndex: 0, 
+                dataIndex: 1,
+              },
             },
             border: {
               type: "8",
@@ -394,7 +396,6 @@ export default {
               y: 238,
               width: 439.69002890173414,
               height: 337,
-              z: 1,
             },
             pct: {
               x: 0.32418069087688217,
@@ -415,6 +416,9 @@ export default {
                 subtext: "",
                 left: "center",
               },
+              tooltip: {
+                trigger: "axis",
+              },
               xAxis: {
                 type: "category",
                 data: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
@@ -427,6 +431,10 @@ export default {
                   data: [150, 230, 224, 218, 135, 147, 260],
                   type: "line",
                 },
+                {
+                  data: [10, 310, 24, 518, 133, 187, 660],
+                  type: "line",
+                },
               ],
             },
           },
@@ -437,7 +445,6 @@ export default {
             listenKey: [""],
             attribute: {
               name: "",
-              padding: 0,
             },
             border: {
               type: "1",
@@ -521,7 +528,6 @@ export default {
             listenKey: [""],
             attribute: {
               name: "",
-              padding: 0,
             },
             border: {
               type: "8",
