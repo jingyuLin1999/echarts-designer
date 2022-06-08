@@ -242,31 +242,16 @@ export default {
     "echarts.filter": {
       handler() {
         let reqType = this.friendEchart.attribute.reqType;
-        if (reqType == "auto") this.loadGlobalData();
+        if (reqType == "auto") this.reloadGlobalData();
       },
       deep: true,
     },
     "echarts.dataSource": {
       handler() {
         let reqType = this.friendEchart.attribute.reqType;
-        if (reqType == "auto") this.loadGlobalData();
+        if (reqType == "auto") this.reloadGlobalData();
       },
       deep: true,
-    },
-    "context.responseHttpNum"(newVal, oldVal) {
-      if (newVal == 0) return;
-      if (this.context.childrenHttpNum == newVal) {
-        this.$emit("loading", false);
-        this.context.responseHttpNum = 0;
-      } else if (newVal == 1) this.$emit("loading", true);
-      // http加载错误时，强制关闭加载状态
-      if (this.forceCloseLoading) clearTimeout(this.forceCloseLoading);
-      if (this.context.childrenHttpNum == newVal) return;
-      this.forceCloseLoading = setTimeout(() => {
-        this.$emit("loading", false);
-        this.context.responseHttpNum = 0;
-        console.warn("http加载数量不对或某些http加载时间超过十秒");
-      }, 10000);
     },
   },
   data() {
@@ -303,7 +288,6 @@ export default {
       this.pickChildrenHttpNum();
       this._registerEvents();
       this.watchCanvasDom();
-      this.actionInitLoad();
     },
     deepPick(keys = [], obj) {
       if (keys.length == 0) return obj;
@@ -314,20 +298,11 @@ export default {
       });
       return pickObj;
     },
-    // 手动，初始化数据
-    actionInitLoad() {
-      // TODO filter还没初始化就去请求，空请求参数
-      let reqType = this.friendEchart.attribute.reqType;
-      if (reqType == "action") {
-        setTimeout(() => {
-          this.loadGlobalData();
-        }, 500);
-      }
-    },
     // 加载全局数据
     async loadGlobalData() {
+      let { listenKey, dataSource, filter, ignoreFilter } = this.friendEchart;
+      if (!dataSource.url) return; // 无全局数据，不需要请求
       try {
-        let { listenKey, dataSource, filter, ignoreFilter } = this.friendEchart;
         // 排除不需要的字段
         let cloneFilter = JSON.parse(JSON.stringify(filter));
         ignoreFilter.map((key) => {
@@ -353,11 +328,7 @@ export default {
         Message({ type: "error", message: "加载全局数据失败" });
         console.error("加载全局数据失败", e);
       } finally {
-        this.$set(
-          this.context,
-          "responseHttpNum",
-          this.context.responseHttpNum + 1
-        );
+        this.emit("responseHttpNum", 1);
       }
     },
     // 监听图表dom的变化
@@ -371,7 +342,7 @@ export default {
           // https://github.com/mauricius/vue-draggable-resizable/issues/133#issuecomment-446781986
           window.dispatchEvent(new Event("resize"));
         }
-        this.emit("resize");
+        this.emit("canvasResize");
       });
     },
     calcuMobileWh() {
@@ -387,6 +358,7 @@ export default {
       this.sortByPx(this.friendEchart.list, sort1);
       this.sortByPx(this.friendEchart.list, sort2);
     },
+    // 排序
     sortByPx(toSortArr, key) {
       toSortArr.sort((a, b) => {
         if (a.px[key] > b.px[key]) return 1;
@@ -489,17 +461,44 @@ export default {
         // px.height = pct.height * this.cH;
       });
     },
-    // 注册全局总线
-    _registerEvents() {
-      eventbus.$on(`${this.chartId}:event`, this.chartEventParams);
+    // 收集http请求响应数目
+    responseHttpNum() {
+      this.context.responseHttpNum += 1;
+      let { responseHttpNum, childrenHttpNum } = this.context;
+      if (childrenHttpNum == responseHttpNum) {
+        this.$emit("loading", false);
+        this.context.responseHttpNum = 0;
+      } else if (responseHttpNum == 1) this.$emit("loading", true);
+      // http加载错误时，强制关闭加载状态
+      if (this.forceCloseLoading) clearTimeout(this.forceCloseLoading);
+      if (childrenHttpNum == responseHttpNum) return;
+      this.forceCloseLoading = setTimeout(() => {
+        this.$emit("loading", false);
+        this.context.responseHttpNum = 0;
+        console.warn(
+          "http加载数量不对或某个http加载时间超过十秒",
+          `共请求数:${childrenHttpNum},只有请求数:${responseHttpNum}`
+        );
+      }, 10000);
+    },
+    // 重新加载全局数据，新写方法是因为chartEventParams不支持异步
+    async reloadGlobalData() {
+      if (this.context.childrenHttpNum == 1) this.$emit("loading", true);
+      await this.loadGlobalData(); // 重新加载全局
+      this.emit("dispacthToSearch");
     },
     chartEventParams(type, params) {
       // form触发过滤
-      if (type == "form" && this.friendEchart.attribute.reqType == "action") {
-        this.loadGlobalData(); // 重新加载全局
-        this.emit("search");
+      const reqType = this.friendEchart.attribute.reqType;
+      if (type == "searchAction" && reqType == "action") {
+        this.reloadGlobalData();
       }
       this.$emit("event", { type, params });
+    },
+    // 注册全局总线
+    _registerEvents() {
+      eventbus.$on(`${this.chartId}:event`, this.chartEventParams);
+      eventbus.$on(`${this.chartId}:responseHttpNum`, this.responseHttpNum);
     },
     // 发送全局总线
     emit() {
@@ -511,6 +510,7 @@ export default {
     // 注销eventbus
     _unregisterEvents() {
       eventbus.$off(`${this.chartId}:event`);
+      eventbus.$off(`${this.chartId}:responseHttpNum`, this.responseHttpNum);
     },
     // 获取子请求数量
     pickChildrenHttpNum() {
@@ -524,7 +524,7 @@ export default {
       });
       if (dataSource.url) childrenHttpNum++; // 全局http数
       if (childrenHttpNum > 0) this.$emit("loading", true);
-      this.$set(this.context, "childrenHttpNum", childrenHttpNum);
+      this.context.childrenHttpNum = childrenHttpNum;
     },
   },
   beforeDestroy() {

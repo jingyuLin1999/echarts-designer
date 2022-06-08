@@ -1,7 +1,7 @@
 import Base from "../widgets/base.vue";
-import { chartApi, isUrl, strToObj } from "../utils";
 import { mergeDeepRight } from "ramda";
 import eventbus from "../utils/eventbus";
+import { chartApi, isUrl, strToObj } from "../utils";
 
 export default {
     components: { Base },
@@ -18,6 +18,12 @@ export default {
     data() {
         return {
             filterHistory: { ...this.chartData.filter },
+        }
+    },
+    computed: {
+        // 是否有全局的http
+        isGlobalHttp() {
+            return this.echarts.dataSource.url.length > 0
         }
     },
     watch: {
@@ -40,12 +46,6 @@ export default {
             },
             deep: true,
         },
-        "hooks.responseData.globalData": {
-            handler(newVal, oldVal) {
-                this.runCode();
-            },
-            deep: true,
-        }
     },
     created() {
         this.load();
@@ -53,13 +53,17 @@ export default {
     methods: {
         load() {
             this.$setFieldAttr();
-            this.pickAsyncData();
+            this.reqWidgetData();
             this._registerEvents();
         },
         $setFieldAttr() {
             const defaultFieldAttr = this.defaultFieldAttr();
             const mergeData = mergeDeepRight(defaultFieldAttr, this.chartData);
             Object.assign(this.chartData, mergeData)
+        },
+        reqWidgetData() {
+            if (this.isGlobalHttp) return;
+            this.pickAsyncData();
         },
         async pickAsyncData() {
             let asyncPaths = this.chartData.dataSource;
@@ -84,7 +88,7 @@ export default {
                         responseArr.push(response);
                     };
                 } catch (e) { } finally {
-                    this.$set(this.context, "responseHttpNum", this.context.responseHttpNum + 1)
+                    this.emit("responseHttpNum", 1);
                 }
             }
             if (responseArr.length == 0) return;
@@ -144,15 +148,21 @@ export default {
         },
         // 宽度已改变
         clientSizeChanged() { },
+        // 触发搜索
+        dispacthToSearch() {
+            if (this.chartData.dataSource.length > 0)
+                this.pickAsyncData();
+            else this.runCode(); // 子组件依赖全局变量时，当全局变量改变了，不需请求，但逻辑需要重新执行
+        },
         // 注册全局总线
         _registerEvents() {
-            eventbus.$on(`${this.chartId}:resize`, this.clientSizeChanged);
-            eventbus.$on(`${this.chartId}:search`, this.pickAsyncData);
+            eventbus.$on(`${this.chartId}:canvasResize`, this.clientSizeChanged);
+            eventbus.$on(`${this.chartId}:dispacthToSearch`, this.dispacthToSearch);
         },
         // 注销eventbus
         _unregisterEvents() {
-            eventbus.$off(`${this.chartId}:resize`);
-            eventbus.$off(`${this.chartId}:search`);
+            eventbus.$off(`${this.chartId}:canvasResize`);
+            eventbus.$off(`${this.chartId}:dispacthToSearch`);
         },
     },
     beforeDestroy() {

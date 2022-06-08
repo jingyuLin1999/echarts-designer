@@ -20,11 +20,19 @@ export default {
         theme: "dark",
         background: "#0D194B",
         widget: "canvas",
+        filter: {
+          date: "2022/06/06",
+          group_code: "",
+          product_code: "C05-YN-CNC2",
+          shopCode: "j6-3-9",
+        },
         dataSource: {
-          method: "get",
-          url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+          method: "post",
+          url: "http://192.168.100.217:8899/ae_cnc/oee/oee_calculate2",
+          respProp: "",
         },
         listenKey: [],
+        ignoreFilter: ["group_code2", "group_code3", "search"],
         attribute: {
           reqType: "action",
           gridW: "10px",
@@ -60,9 +68,9 @@ export default {
             },
             pct: {
               x: 0,
-              width: 0.9968976215098242,
-              y: 0.011739594450373533,
-              height: 0.07257203842049093,
+              width: 0.996897621,
+              y: 0.01173959,
+              height: 0.07257203,
             },
             dataSource: [],
             codding: "",
@@ -109,31 +117,7 @@ export default {
                               value: "工厂二",
                             },
                           ],
-                          isGroup: false,
-                          placeholder: "请选择",
-                          size: "",
-                          disabled: false,
-                          clearable: false,
-                          multiple: false,
-                          collapseTags: false,
-                          filterable: false,
-                          allowCreate: false,
-                          defaultProp: {
-                            label: "label",
-                            value: "value",
-                          },
-                          filter: {
-                            key: null,
-                            value: null,
-                          },
-                        },
-                      ],
-                      [
-                        {
-                          title: "选择工序",
-                          name: "group_code1",
-                          widget: "select",
-                          options: [],
+                          forceType: "string",
                           isGroup: false,
                           placeholder: "请选择",
                           size: "",
@@ -156,7 +140,7 @@ export default {
                       [
                         {
                           title: "选择工厂",
-                          name: "group_code1",
+                          name: "group_code2",
                           widget: "select",
                           options: [
                             {
@@ -190,7 +174,7 @@ export default {
                       [
                         {
                           title: "选择工序",
-                          name: "group_code1",
+                          name: "group_code3",
                           widget: "select",
                           options: [],
                           isGroup: false,
@@ -212,14 +196,33 @@ export default {
                           },
                         },
                       ],
+                      [
+                        {
+                          widget: "button",
+                          name: "search",
+                          title: "搜索",
+                          showTitle: false,
+                          type: "primary",
+                          isGroup: false,
+                        },
+                      ],
                     ],
                   },
                 ],
               },
-              schema: {},
+              schema: {
+                $schema: "http://json-schema.org/draft-07/schema#",
+                type: "object",
+                properties: {
+                  group_code: {
+                    type: "string",
+                  },
+                  group_code1: {
+                    type: "string",
+                  },
+                },
+              },
             },
-            layout: [],
-            schema: {},
           },
           {
             id: "0",
@@ -251,7 +254,12 @@ export default {
               y: 0.10672358591248667,
               height: 0.12166488794023479,
             },
-            dataSource: [],
+            dataSource: [
+              {
+                method: "get",
+                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
+              },
+            ],
             codding: "",
             data: [
               {
@@ -284,7 +292,7 @@ export default {
             id: "1",
             title: "柱形图",
             widget: "bar",
-            listenKey: [""],
+            listenKey: [],
             attribute: {
               name: "",
             },
@@ -311,7 +319,9 @@ export default {
                 url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
               },
             ],
-            codding: "",
+            codding: function ({ globalData }) {
+              console.log(globalData);
+            },
             data: {
               title: {
                 text: "IPQC白班良率统计",
@@ -408,12 +418,7 @@ export default {
               width: 0.38945086705202314,
               height: 0.35965848452508004,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: {
               title: {
@@ -469,12 +474,7 @@ export default {
               width: 0.26878612716763006,
               height: 0.35965848452508004,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: {
               title: {
@@ -551,12 +551,7 @@ export default {
               width: 0.309971098265896,
               height: 0.35965848452508004,
             },
-            dataSource: [
-              {
-                method: "get",
-                url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
-              },
-            ],
+            dataSource: [],
             codding: "",
             data: {
               title: {

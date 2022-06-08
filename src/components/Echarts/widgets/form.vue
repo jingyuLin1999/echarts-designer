@@ -2,7 +2,7 @@
   <RichForm
     ref="filterForm"
     class="richform-widget"
-    :form="friendForm"
+    :form="friendlyForm"
     :schema="chartData.data.schema"
     :values="echarts.filter"
     :authorization="authorization"
@@ -23,16 +23,27 @@ export default {
         value: sessionStorage.getItem("report-value"),
       };
     },
-    friendForm() {
+    friendlyForm() {
       let colors = this.echarts.attribute.colors;
       if (colors) this.chartData.data.form.colors = colors;
       return this.chartData.data.form;
     },
   },
+  watch: {
+    "echarts.filter": {
+      handler() {
+        if (this.hasEmit) return;
+        this.hasEmit = true;
+        // 有全局需要派发
+        if (this.isGlobalHttp) this.emit("event", "searchAction", {});
+      },
+      deep: true,
+    },
+  },
   methods: {
     defaultFieldAttr() {
       return {
-        listenKey: [""],
+        listenKey: [],
         attribute: { name: "" },
         dataSource: [],
         codding: "",
@@ -55,7 +66,7 @@ export default {
     },
     formAction(event) {
       if (event.widget != "button") return;
-      this.emit("event", "form", event);
+      this.emit("event", "searchAction", event);
     },
     clientSizeChanged() {
       if (this.design) return;
@@ -70,7 +81,7 @@ export default {
   },
   data() {
     return {
-      ref: "formWidget",
+      hasEmit: false,
     };
   },
 };

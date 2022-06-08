@@ -26,7 +26,9 @@ export const defaultAuthorization = {
 }
 
 export const defaultHooks = {
-    responseData: {},
+    responseData: {
+        globalData: {}
+    },
 }
 
 export const defaultChartConfig = {
