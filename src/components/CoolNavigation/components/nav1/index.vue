@@ -1,5 +1,5 @@
 <template>
-  <div class="cool-navigation-1" :ref="ref">
+  <div class="cool-navigation-1" :ref="ref" :style="injectStyles">
     <svg
       v-for="item in ['line', 'line-reverse']"
       :key="item"
@@ -170,6 +170,7 @@
         class="more-menu"
         v-if="moreMenu.length > 0"
         :size="[takeUpMenuNum == 0 ? 90 : menuSize[0], menuSize[1]]"
+        :isFlashing="inMoreMenu"
       >
         <dd
           v-for="(moreItem, index) in moreMenu"
@@ -194,14 +195,15 @@ export default {
   components: { Button },
   props: {
     menu: { type: Array, default: () => [] },
-    colors: { type: Array, default: () => [] },
-    navTitle: { type: String, default: "工厂看板" },
     menuSize: { type: Array, default: () => [120, 34] },
+    activeMenu: { type: String, default: "" }, // 已触发的菜单
+    navTitle: { type: String, default: "工厂看板" },
     bgColor: { type: String, default: "" },
-    defaultActiveMenu: { type: String, default: "" },
-  },
-  mounted() {
-    this.activeMenu = this.defaultActiveMenu;
+    textColor: { type: String, default: "#C0CBD9" }, // 文本颜色
+    hoverTextColor: { type: String, default: "#1bcbf5" }, // 聚焦文本颜色
+    activeTextColor: { type: String, default: "#56f3f5" }, // 激活的文本颜色
+    defaultProp: { type: Object, default: () => ({}) },
+    navHeight: { type: String, default: "65px" },
   },
   computed: {
     halfWidth() {
@@ -211,10 +213,10 @@ export default {
       return Math.floor((this.halfWidth * 0.58) / (this.menuSize[0] + 10));
     },
     leftMenu() {
-      return this.menu.slice(0, this.takeUpMenuNum);
+      return this.friendlyMenus.slice(0, this.takeUpMenuNum);
     },
     rightMenu() {
-      return this.menu.slice(
+      return this.friendlyMenus.slice(
         this.takeUpMenuNum,
         this.menu.length > 2 * this.takeUpMenuNum && this.takeUpMenuNum // 不能为0
           ? 2 * this.takeUpMenuNum - 1
@@ -223,24 +225,75 @@ export default {
     },
     moreMenu() {
       let moreMenu = [];
-      if (this.menu.length > 2 * this.takeUpMenuNum) {
-        moreMenu = this.menu.slice(
+      if (this.friendlyMenus.length > 2 * this.takeUpMenuNum) {
+        moreMenu = this.friendlyMenus.slice(
           2 * this.takeUpMenuNum - 1 > 0 ? 2 * this.takeUpMenuNum - 1 : 0,
-          this.menu.length
+          this.friendlyMenus.length
         );
       }
       return moreMenu;
     },
+    inMoreMenu() {
+      if (!this.activeMenu || this.moreMenu.length == 0) return false;
+      let activeMenu = this.moreMenu.find(
+        (item) => item.path == this.activeMenu
+      );
+      return activeMenu ? true : false;
+    },
+    friendlyMenus() {
+      return this.createMenus(this.menu);
+    },
+    injectStyles() {
+      return {
+        "--bgColor": this.bgColor,
+        "--textColor": this.textColor,
+        "--hoverTextColor": this.hoverTextColor,
+        "--activeTextColor": this.activeTextColor,
+        "--navHeight": this.navHeight,
+      };
+    },
   },
   methods: {
+    deepPick(keys = [], obj) {
+      let pickObj = null;
+      if (keys.length == 0 || !keys[0]) return obj;
+      keys.map((key, index) => {
+        pickObj = obj[key];
+        if (pickObj && keys.length != index + 1) obj = pickObj;
+      });
+      return pickObj;
+    },
     onActiveMenu(menuInfo) {
-      this.activeMenu = menuInfo.path;
+      this.$emit("activeMenu", menuInfo.path);
+    },
+    createMenus(routers, path = "", menu = []) {
+      routers.map((item) => {
+        path +=
+          (path[path.length - 1] != "/" && item[this.defaultProp.path][0] != "/"
+            ? "/"
+            : "") + item[this.defaultProp.path];
+        if (
+          Array.isArray(item[this.defaultProp.children]) &&
+          item[this.defaultProp.children].length > 0
+        ) {
+          this.createMenus(item[this.defaultProp.children], path, menu);
+          // 往上爬需要减掉一个节点的path
+          path = path.substr(0, path.lastIndexOf("/"));
+        } else {
+          if (this.deepPick(this.defaultProp.hidden.split("."), item) != true) {
+            let title = this.deepPick(this.defaultProp.title.split("."), item);
+            menu.push({ path, title: title });
+          }
+          // 同级拼接完后需截断一个
+          path = path.substr(0, path.lastIndexOf("/"));
+        }
+      });
+      return menu;
     },
   },
   data() {
     return {
       ref: "cool-navigation-1",
-      activeMenu: "", // 已触发的菜单
       topRectColor: [
         "#2ec9ff",
         "#26c4ff",
@@ -262,9 +315,12 @@ export default {
 .cool-navigation-1 {
   position: relative;
   width: 100%;
-  height: 100%;
-  .active-menu a {
-    color: #56f3f5;
+  height: var(--navHeight);
+  background: var(--bgColor) !important;
+  .active-menu {
+    a {
+      color: var(--activeTextColor);
+    }
   }
   .line-reverse {
     position: absolute;

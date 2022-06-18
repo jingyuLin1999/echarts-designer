@@ -1,11 +1,22 @@
 <template>
   <div class="border-btn">
     <svg :width="size[0]" :height="size[1]">
+      <!-- 左上小三角形 -->
       <polygon
         style="stroke-width: 1"
         fill="#11B2B5"
         :points="`0,0 ${size[1] / 2 - 5},0 0,${size[1] / 2 - 5}`"
-      />
+      >
+        <animate
+          v-if="isFlashing"
+          attributeName="fill"
+          :values="`${mergedColor[0]};${mergedColor[1]};${mergedColor[0]}`"
+          dur="0.7s"
+          begin="0s"
+          repeatCount="indefinite"
+        />
+      </polygon>
+      <!-- 多边体 -->
       <defs>
         <linearGradient id="borderLinear" x1="3%" y1="3%" x2="100%" y2="100%">
           <stop
@@ -30,7 +41,16 @@
         },3
         4,${size[1] / 2 + 1} 0,${size[1] / 2} 
         `"
-      />
+      >
+        <animate
+          v-if="isFlashing"
+          attributeName="fill"
+          :values="`${mergedColor[0]};${mergedColor[1]};${mergedColor[0]}`"
+          dur="0.7s"
+          begin="0s"
+          repeatCount="indefinite"
+        />
+      </polygon>
     </svg>
     <dl class="border-box-content" :style="styleObject">
       <dt @click="onClickBtn">
@@ -44,18 +64,17 @@
 <script>
 export default {
   props: {
-    btnInfo: {
-      type: Object,
-      default: () => ({ title: "更多菜单", path: "" }),
-    },
-    colors: { type: Array, default: () => ["#f1f3fe", "#1bcbf5"] }, // 颜色，0字体颜色1悬停的颜色
+    btnInfo: { type: Object, default: () => ({ title: "更多菜单", path: "" }) },
     size: { type: Array, default: () => [120, 34] },
+    isFlashing: { type: Boolean, default: false }, // 是否闪动
+    textColor: { type: String, default: "#f1f3fe" }, // 文本颜色
+    hoverTextColor: { type: String, default: "#1bcbf5" }, // 聚焦文本颜色
   },
   computed: {
     styleObject() {
       return {
-        "--color": this.colors[0],
-        "--color-hover": this.colors[1],
+        "--color": this.textColor,
+        "--color-hover": this.hoverTextColor,
         "--width": this.size[0] - 1 + "px",
       };
     },
@@ -64,6 +83,11 @@ export default {
     onClickBtn() {
       this.$emit("clickButton", this.btnInfo);
     },
+  },
+  data() {
+    return {
+      mergedColor: ["#4fd2dd", "#235fa7"],
+    };
   },
 };
 </script>
