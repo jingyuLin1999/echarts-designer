@@ -55,7 +55,6 @@ export default {
         {
           path: "/product",
           redirect: "/product-status",
-          meta: { icon: "el-icon-help", title: "产品" },
           children: [
             {
               name: "product-status",

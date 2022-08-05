@@ -117,6 +117,9 @@
           class-name-dragging="dragging-class"
         >
           <div class="tools-wrapper" v-if="design">
+            <span class="tool" @click="copyPosition(item)"
+              ><icon class="el-icon-location-outline"
+            /></span>
             <span class="delete-echart tool" @click="deleteChart(index)"
               ><icon class="el-icon-delete"
             /></span>
@@ -168,6 +171,7 @@
 </template>
 <script>
 import Field from "./field";
+import ClipboardJS from "clipboard";
 import { Icon, Message } from "element-ui";
 import eventbus from "./utils/eventbus";
 import SplitLayout from "../SplitLayout";
@@ -448,6 +452,16 @@ export default {
     deleteChart(chartIndex) {
       this.friendEchart.list.splice(chartIndex, 1);
     },
+    // 拷贝位置
+    copyPosition(item) {
+      let { pct, px } = item;
+      if (!pct || !px) return;
+      let str = "pct:" + JSON.stringify(pct) + ",px:" + JSON.stringify(px);
+      let fakerBtn = document.createElement("button");
+      new ClipboardJS(fakerBtn, { text: () => str });
+      fakerBtn.click();
+      Message({ type: "success", message: "复制成功" });
+    },
     // 根据百分比和画布大小重新计算px
     calcuPctToPx() {
       this.getCanvasWh();
@@ -604,8 +618,14 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        > span {
+        > .tool {
           cursor: pointer;
+          display: block;
+          width: 20px;
+          text-align: center;
+        }
+        > .tool:hover {
+          color: #f0696d;
         }
       }
     }

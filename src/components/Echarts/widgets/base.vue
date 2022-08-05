@@ -3,6 +3,7 @@
 </template>
 
 <script>
+import "echarts-gl";
 export default {
   name: "echarts-base",
   props: {

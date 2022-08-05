@@ -30,6 +30,7 @@ module.exports = {
       // "axios": "axios",
       // "clipboard": "clipboard",
       // "echarts": "echarts",
+      // "echarts-gl": "echarts-gl",
       // "element-ui": "element-ui",
       // "hotkeys-js": "hotkeys-js",
       // "jquery": "jquery",

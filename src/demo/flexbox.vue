@@ -1,7 +1,7 @@
 <template>
   <div class="flex-box-demo">
     <FlexBoxContainer
-      :boxSize="[280, 160]"
+      :boxSize="[510, 379]"
       :margin="5"
       @domResize="onDomResize"
     >
@@ -11,6 +11,7 @@
       <div class="card">13</div>
       <div class="card">13</div>
     </FlexBoxContainer>
+    <div class="test"></div>
   </div>
 </template>
 
@@ -36,6 +37,10 @@ export default {
   .card {
     background: #fff;
     border: 1px solid #f00;
+  }
+  .test{
+    height: 300px;
+    background: #f00;
   }
 }
 </style>
