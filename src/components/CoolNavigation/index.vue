@@ -14,6 +14,7 @@
     :hoverTextColor="hoverTextColor"
     @activeMenu="onActiveMenu"
   >
+    <template #logo> <slot name="logo"> </slot> </template>
   </component>
 </template>
 

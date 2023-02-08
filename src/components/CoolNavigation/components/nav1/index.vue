@@ -34,7 +34,7 @@
         ${halfWidth + 5},${height}
         `"
       />
-      <!-- 线上两个矩形 -->
+      <!-- 线上两个渐变矩形 -->
       <rect
         class="line-rect"
         :x="halfWidth * 0.35"

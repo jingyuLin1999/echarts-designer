@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "15838540",
+      "name": "time",
+      "font_class": "time",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    }
+  ]
+}
