@@ -1,6 +1,6 @@
 <template>
   <div class="echarts-demo-page">
-    <Echarts :echarts="charts" @loading="onLoading" />
+    <Echarts :echarts="charts" @loading="onLoading" :hooks="hooks" />
   </div>
 </template>
 
@@ -15,6 +15,7 @@ export default {
   },
   data() {
     return {
+      hooks: {},
       charts: {
         title: "图表名称",
         theme: "dark",

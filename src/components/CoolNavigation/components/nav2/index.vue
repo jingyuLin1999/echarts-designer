@@ -12,11 +12,15 @@
         <span class="title">{{ navTitle }}</span>
       </div>
       <div class="menus-content" :style="{ height: `${navHeight - 9}px` }">
-        <div class="menu" v-for="(menuItem, index) in showMenu" :key="index">
+        <div
+          class="menu"
+          v-for="(menuItem, index) in showMenu"
+          :key="index"
+          @click="onActiveMenu(menuItem)"
+        >
           <router-link
             :class="[activeMenu == menuItem.path ? 'active-menu' : '']"
             :to="menuItem.path"
-            @click="onActiveMenu(menuItem.path)"
           >
             {{ menuItem.title }}</router-link
           >
@@ -24,11 +28,15 @@
         <div v-if="moreMenu.length > 0" class="more-menu">
           <dl>
             <dt>更多菜单</dt>
-            <dd v-for="moreItem in moreMenu" :key="moreItem.path" class="menu">
+            <dd
+              class="menu"
+              v-for="moreItem in moreMenu"
+              :key="moreItem.path"
+              @click="onActiveMenu(moreItem)"
+            >
               <router-link
                 :to="moreItem.path"
                 :class="[activeMenu == moreMenu.path ? 'active-menu' : '']"
-                @click="onActiveMenu(moreMenu.path)"
               >
                 {{ moreItem.title }}
               </router-link>
@@ -118,7 +126,7 @@ export default {
     hoverTextColor: { type: String, default: "#1bcbf5" }, // 聚焦文本颜色
     activeTextColor: { type: String, default: "#56f3f5" }, // 激活的文本颜色
     defaultProp: { type: Object, default: () => ({}) },
-    navHeight: { type: String, default: "46px" },
+    navHeight: { type: String, default: "50px" },
   },
   computed: {
     friendlyMenus() {

@@ -329,7 +329,7 @@ export default {
           );
         }
       } catch (e) {
-        Message({ type: "error", message: "加载全局数据失败" });
+        // Message({ type: "error", message: "加载全局数据失败" });
         console.error("加载全局数据失败", e);
       } finally {
         this.emit("responseHttpNum", 1);

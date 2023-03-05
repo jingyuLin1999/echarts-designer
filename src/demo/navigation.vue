@@ -17,7 +17,6 @@
       :menuSize="[120, 34]"
       menuBgColor="#324156"
       textColor="#EFF0F6"
-      bgColor="#0A3A5E"
       defaultActiveMenu="/product/product-status"
     >
       <template #logo> <span></span></template>

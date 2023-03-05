@@ -20,10 +20,12 @@ export default {
     };
   },
   mounted() {
+    let chartId = this.chartData.id;
     this.createChart();
-    this.hooks.resize = this.resize;
-    this.hooks.redraw = this.redraw;
-    this.hooks.$echart = this.$echart;
+    this.hooks.resize[chartId] = this.resize;
+    this.hooks.redraw[chartId] = this.redraw;
+    this.hooks.chartData[chartId] = this.chartData;
+    this.hooks.$echart[chartId] = this.$echart;
   },
   watch: {
     "chartData.px.width"() {

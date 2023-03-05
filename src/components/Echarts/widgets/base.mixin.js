@@ -9,7 +9,7 @@ export default {
         chartData: { type: Object, default: () => ({}) },
         design: { type: Boolean, default: true }, // 是否是设计模式
         hooks: { type: Object, default: () => ({}) },
-        echarts: { type: Object, default: () => ({}) },
+        echarts: { type: Object, default: () => ({}) }, // 所有的数据
         chartsHandle: { type: Object, default: () => ({}) },
         isMobile: { type: Boolean, default: false },
         context: { type: Object, default: () => ({}) },
@@ -102,9 +102,9 @@ export default {
                 let attribute = this.echarts.attribute;
                 let responseData = this.hooks.responseData[id];
                 let globalData = this.hooks.responseData.globalData;
-                let $echart = this.hooks.$echart;
+                let $echart = this.hooks.$echart[id];
                 if (typeof codding == "function") { // 有可能是function,代码字符创修改很不方便
-                    let result = codding({ filter, attribute, responseData, globalData, $echart });
+                    let result = codding({ filter, attribute, responseData, globalData, $echart, allConfig: this.echarts });
                     if (result) this.chartData.data = result;
                 } else if (codding.length > 0) { // 有可能是代码字符，因为function无法保存到服务器上
                     let result = eval(codding);
@@ -125,7 +125,9 @@ export default {
         // TODO 事件拓展 
         _registerChartEvent() {
             let chartHandle = this.chartsHandle[this.chartData.id];
+            let allConfig = this.echarts;
             chartHandle.on("click", (params) => {
+                params.allConfig = allConfig;
                 this.emitEventParams(params);
             });
         },

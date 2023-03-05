@@ -29,6 +29,10 @@ export const defaultHooks = {
     responseData: {
         globalData: {}
     },
+    resize: {}, // 函数
+    redraw: {},
+    $echart: {},
+    chartData: {}, // 数据，可能套用太多层，方便获取
 }
 
 export const defaultChartConfig = {
