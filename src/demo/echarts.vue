@@ -8,6 +8,12 @@
 import Echarts from "@/components/Echarts";
 export default {
   components: { Echarts },
+  mounted() {
+    setTimeout(() => {
+      // this.hooks.reloadGlobalData();
+      // console.log(this.hooks);
+    }, 1000);
+  },
   methods: {
     onLoading(status) {
       console.log(status);
@@ -17,6 +23,7 @@ export default {
     return {
       hooks: {},
       charts: {
+        id: "myChart",
         title: "图表名称",
         theme: "dark",
         background: "#0D194B",
@@ -28,14 +35,14 @@ export default {
           shopCode: "j6-3-9",
         },
         dataSource: {
-          method: "post",
-          url: "http://192.168.100.217:8899/ae_cnc/oee/oee_calculate2",
+          method: "get",
+          url: "http://yapi.smart-xwork.cn/mock/99307/echarts/asyncPath",
           respProp: "",
         },
         listenKey: [],
         ignoreFilter: ["group_code2", "group_code3", "search"],
         attribute: {
-          reqType: "action",
+          reqType: "action", // action || auto || init
           gridW: "10px",
           colors: {
             // 全局颜色设置
@@ -51,7 +58,7 @@ export default {
         },
         list: [
           {
-            id: "-1",
+            id: "a1",
             title: "表单",
             widget: "form",
             listenKey: [],
@@ -106,18 +113,9 @@ export default {
                       [
                         {
                           title: "选择工厂",
-                          name: "group_code1",
+                          name: "factory",
                           widget: "select",
-                          options: [
-                            {
-                              label: "工厂一",
-                              value: "工厂一",
-                            },
-                            {
-                              label: "工厂二",
-                              value: "工厂二",
-                            },
-                          ],
+                          showError: false,
                           forceType: "string",
                           isGroup: false,
                           placeholder: "请选择",
@@ -128,6 +126,16 @@ export default {
                           collapseTags: false,
                           filterable: false,
                           allowCreate: false,
+                          options: [
+                            {
+                              label: "工厂一",
+                              value: "工厂一",
+                            },
+                            {
+                              label: "工厂二",
+                              value: "工厂二",
+                            },
+                          ],
                           defaultProp: {
                             label: "label",
                             value: "value",
@@ -143,6 +151,16 @@ export default {
                           title: "选择工厂",
                           name: "group_code2",
                           widget: "select",
+                          showError: false,
+                          isGroup: false,
+                          placeholder: "请选择",
+                          size: "",
+                          disabled: false,
+                          clearable: false,
+                          multiple: false,
+                          collapseTags: false,
+                          filterable: false,
+                          allowCreate: false,
                           options: [
                             {
                               label: "工厂一",
@@ -153,15 +171,6 @@ export default {
                               value: "工厂二",
                             },
                           ],
-                          isGroup: false,
-                          placeholder: "请选择",
-                          size: "",
-                          disabled: false,
-                          clearable: false,
-                          multiple: false,
-                          collapseTags: false,
-                          filterable: false,
-                          allowCreate: false,
                           defaultProp: {
                             label: "label",
                             value: "value",
@@ -215,11 +224,15 @@ export default {
                 $schema: "http://json-schema.org/draft-07/schema#",
                 type: "object",
                 properties: {
-                  group_code: {
+                  factory: {
                     type: "string",
+                    minLength: 1,
+                    require: true,
                   },
-                  group_code1: {
+                  group_code2: {
                     type: "string",
+                    minLength: 1,
+                    require: true,
                   },
                 },
               },

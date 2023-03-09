@@ -33,6 +33,7 @@ export const defaultHooks = {
     redraw: {},
     $echart: {},
     chartData: {}, // 数据，可能套用太多层，方便获取
+    pickAsyncData:{},
 }
 
 export const defaultChartConfig = {

@@ -246,14 +246,16 @@ export default {
     "echarts.filter": {
       handler() {
         let reqType = this.friendEchart.attribute.reqType;
-        if (reqType == "auto") this.reloadGlobalData();
+        if (reqType == "auto" && this.context.loadCompleted)
+          this.reloadGlobalData();
       },
       deep: true,
     },
     "echarts.dataSource": {
       handler() {
         let reqType = this.friendEchart.attribute.reqType;
-        if (reqType == "auto") this.reloadGlobalData();
+        if (reqType == "auto" && this.context.loadCompleted)
+          this.reloadGlobalData();
       },
       deep: true,
     },
@@ -276,12 +278,15 @@ export default {
         clientWidth: 0,
         childrenHttpNum: 0,
         responseHttpNum: 0,
+        loadCompleted: false, // 是否加载完成
+        loadCompletedTimeout: null,
       },
     };
   },
   created() {
     this.calcuMobileWidth();
     Object.assign(this.hooks, clone(defaultHooks));
+    this.hooks.reloadGlobalData = this.reloadGlobalData;
   },
   mounted() {
     this.init();
@@ -292,6 +297,11 @@ export default {
       this.pickChildrenHttpNum();
       this._registerEvents();
       this.watchCanvasDom();
+      // auto初始化就要加载，子项base.mixin.js也做了判断
+      if (this.friendEchart.attribute.reqType == "init") {
+        this.$emit("loading", true);
+        this.loadGlobalData();
+      }
     },
     deepPick(keys = [], obj) {
       if (keys.length == 0) return obj;
@@ -301,39 +311,6 @@ export default {
         if (pickObj && keys.length != index + 1) obj = pickObj;
       });
       return pickObj;
-    },
-    // 加载全局数据
-    async loadGlobalData() {
-      let { listenKey, dataSource, filter, ignoreFilter } = this.friendEchart;
-      if (!dataSource.url) return; // 无全局数据，不需要请求
-      try {
-        // 排除不需要的字段
-        let cloneFilter = JSON.parse(JSON.stringify(filter));
-        ignoreFilter.map((key) => {
-          this.$delete(cloneFilter, key);
-        });
-        // 请求前校验
-        let reqParamsErr = listenKey.find(
-          (key) => !cloneFilter[key] || cloneFilter[key].length == 0
-        );
-        if (!dataSource || !dataSource.url || reqParamsErr) return;
-        // 请求数据
-        let { method, url, respProp } = dataSource;
-        if (!isUrl(url))
-          url = sessionStorage.getItem("report-baseUrl") + "/" + url;
-        let payload = await chartApi({ method, url, filter: cloneFilter });
-        if (payload) {
-          this.hooks.responseData.globalData = this.deepPick(
-            respProp ? respProp.split(".") : [],
-            payload
-          );
-        }
-      } catch (e) {
-        // Message({ type: "error", message: "加载全局数据失败" });
-        console.error("加载全局数据失败", e);
-      } finally {
-        this.emit("responseHttpNum", 1);
-      }
     },
     // 监听图表dom的变化
     watchCanvasDom() {
@@ -471,8 +448,10 @@ export default {
         px.x = pct.x * this.cW;
         px.width = pct.width * this.cW;
         // form和card影响
-        // px.y = pct.y * this.cH;
-        // px.height = pct.height * this.cH;
+        if (this.echarts.autoY == true) {
+          px.y = pct.y * this.cH;
+          px.height = pct.height * this.cH;
+        }
       });
     },
     // 收集http请求响应数目
@@ -482,7 +461,7 @@ export default {
       if (childrenHttpNum == responseHttpNum) {
         this.$emit("loading", false);
         this.context.responseHttpNum = 0;
-      } else if (responseHttpNum == 1) this.$emit("loading", true);
+      }
       // http加载错误时，强制关闭加载状态
       if (this.forceCloseLoading) clearTimeout(this.forceCloseLoading);
       if (childrenHttpNum == responseHttpNum) return;
@@ -497,14 +476,49 @@ export default {
     },
     // 重新加载全局数据，新写方法是因为chartEventParams不支持异步
     async reloadGlobalData() {
-      if (this.context.childrenHttpNum == 1) this.$emit("loading", true);
+      this.$emit("loading", true);
+      this.context.responseHttpNum = 0;
+      // 子项可能要用到全局的数据，必须等全局加载完再派发
       await this.loadGlobalData(); // 重新加载全局
-      this.emit("dispacthToSearch");
+      this.emit("dispacthToSearch"); // 派发让子项去搜索
+    },
+    // 加载全局数据
+    async loadGlobalData() {
+      let { listenKey, dataSource, filter, ignoreFilter } = this.friendEchart;
+      if (!dataSource.url) return; // 无全局数据，不需要请求
+      try {
+        // 排除不需要的字段
+        let cloneFilter = JSON.parse(JSON.stringify(filter));
+        ignoreFilter.map((key) => {
+          this.$delete(cloneFilter, key);
+        });
+        // 请求前校验
+        let reqParamsErr = listenKey.find(
+          (key) => !cloneFilter[key] || cloneFilter[key].length == 0
+        );
+        if (!dataSource || !dataSource.url || reqParamsErr) return;
+        // 请求数据
+        let { method, url, respProp } = dataSource;
+        if (!isUrl(url))
+          url = sessionStorage.getItem("report-baseUrl") + "/" + url;
+        let payload = await chartApi({ method, url, filter: cloneFilter });
+        if (payload) {
+          this.hooks.responseData.globalData = this.deepPick(
+            respProp ? respProp.split(".") : [],
+            payload
+          );
+        }
+      } catch (e) {
+        // Message({ type: "error", message: "加载全局数据失败" });
+        console.error("加载全局数据失败", e);
+      } finally {
+        this.emit("responseHttpNum", 1);
+      }
     },
     chartEventParams(type, params) {
       // form触发过滤
       const reqType = this.friendEchart.attribute.reqType;
-      if (type == "searchAction" && reqType == "action") {
+      if (type == "searchAction") {
         this.reloadGlobalData();
       }
       this.$emit("event", { type, params });
@@ -537,7 +551,6 @@ export default {
         });
       });
       if (dataSource.url) childrenHttpNum++; // 全局http数
-      if (childrenHttpNum > 0) this.$emit("loading", true);
       this.context.childrenHttpNum = childrenHttpNum;
     },
   },

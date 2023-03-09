@@ -20,12 +20,6 @@ export default {
             filterHistory: { ...this.chartData.filter },
         }
     },
-    computed: {
-        // 是否有全局的http
-        isGlobalHttp() {
-            return this.echarts.dataSource.url.length > 0
-        }
-    },
     watch: {
         "chartData.dataSource": {
             handler(newVal, oldVal) {
@@ -52,18 +46,27 @@ export default {
     },
     methods: {
         load() {
+            let chartId = this.chartData.id;
             this.$setFieldAttr();
-            this.reqWidgetData();
             this._registerEvents();
+            this.pickAsyncData[chartId] = this.pickAsyncData;
+            this.loadCompleteDispatch();
+            if (this.echarts.attribute.reqType == "init") {
+                this.pickAsyncData()
+            }
+        },
+        loadCompleteDispatch() {
+            // 等所有字段都渲染完成在派发options依赖
+            if (this.context.loadCompletedTimeout)
+                clearTimeout(this.context.loadCompletedTimeout);
+            this.context.loadCompletedTimeout = setTimeout(() => {
+                this.context.loadCompleted = true;
+            }, 100)
         },
         $setFieldAttr() {
             const defaultFieldAttr = this.defaultFieldAttr();
             const mergeData = mergeDeepRight(defaultFieldAttr, this.chartData);
             Object.assign(this.chartData, mergeData)
-        },
-        reqWidgetData() {
-            if (this.isGlobalHttp) return;
-            this.pickAsyncData();
         },
         async pickAsyncData() {
             let asyncPaths = this.chartData.dataSource;

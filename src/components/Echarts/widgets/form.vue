@@ -6,6 +6,7 @@
     :schema="chartData.data.schema"
     :values="echarts.filter"
     :authorization="authorization"
+    :hooks="searchFormHooks"
     @action="formAction"
   />
 </template>
@@ -65,7 +66,8 @@ export default {
       };
     },
     formAction(event) {
-      if (event.widget != "button") return;
+      let validate = this.searchFormHooks.validate();
+      if (event.widget != "button" || !validate) return;
       this.emit("event", "searchAction", event);
     },
     clientSizeChanged() {
@@ -81,6 +83,7 @@ export default {
   },
   data() {
     return {
+      searchFormHooks: {},
       hasEmit: false,
     };
   },
