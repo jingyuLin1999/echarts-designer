@@ -16,12 +16,6 @@
 
 ## 预览
 
-### 线上预览
-
-[报表设计器](http://117.73.12.76/demo/echarts/#/)  
-
-[设计结果](http://117.73.12.76/demo/echarts/#/echarts)  
-
 ### 本地预览
 ```
 npm install
