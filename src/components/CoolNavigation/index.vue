@@ -29,7 +29,7 @@ export default {
     menuBgColor: { type: String, default: "" }, // 菜单颜色，移动端的菜单改变bgColor的颜色
     defaultActiveMenu: { type: String, default: "" }, // 默认激活的菜单
     mobileWidth: { type: Number, default: 700 }, // 移动端宽度
-    textColor: { type: String, default: "#C0CBD9" }, // 文本颜色
+    textColor: { type: String, default: "#fff" }, // 文本颜色
     activeTextColor: { type: String, default: "#67F4F5" }, // 激活的文本颜色
     hoverTextColor: { type: String, default: "#1bcbf5" }, // 聚焦文本颜色
     defaultProp: { type: Object, default: () => ({}) },

@@ -49,7 +49,7 @@ export default {
             let chartId = this.chartData.id;
             this.$setFieldAttr();
             this._registerEvents();
-            this.pickAsyncData[chartId] = this.pickAsyncData;
+            this.hooks.pickAsyncData[chartId] = this.pickAsyncData;
             this.loadCompleteDispatch();
             if (this.echarts.attribute.reqType == "init") {
                 this.pickAsyncData()
@@ -97,6 +97,8 @@ export default {
             if (responseArr.length == 0) return;
             this.hooks.responseData[this.chartData.id] = responseArr;
             this.runCode();
+            // 加载完成,必须放在runCode后，因为第一个请求的参数可能会被第二个请求用到，所以需要runCode赋值后才能发起第二个请求
+            this.emit("event", 'loadSuccess', this.chartData); 
         },
         runCode() {
             try {

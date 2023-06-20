@@ -1,6 +1,11 @@
 <template>
   <div class="echarts-demo-page">
-    <Echarts :echarts="charts" @loading="onLoading" :hooks="hooks" />
+    <Echarts
+      :echarts="charts"
+      @loading="onLoading"
+      :hooks="hooks"
+      @event="chartEvents"
+    />
   </div>
 </template>
 
@@ -18,6 +23,9 @@ export default {
     onLoading(status) {
       console.log(status);
     },
+    chartEvents({ type, params }) {
+      console.log(type, params)
+    }
   },
   data() {
     return {

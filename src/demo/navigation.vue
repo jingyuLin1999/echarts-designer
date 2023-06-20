@@ -1,6 +1,6 @@
 <template>
   <div class="border-demo-page">
-    <div class="title">导航一</div>
+    <!-- <div class="title">导航一</div>
     <CoolNavigation
       navTitle="工厂看板"
       widget="nav1"
@@ -22,6 +22,18 @@
       defaultActiveMenu="/product/product-status"
     >
       <template #logo> <span></span></template>
+    </CoolNavigation> -->
+
+    <CoolNavigation
+      class="nav3"
+      navTitle="数字化工厂"
+      widget="nav3"
+      :menu="menu"
+      :menuSize="[120, 34]"
+      menuBgColor="#324156"
+      textColor="#EFF0F6"
+      defaultActiveMenu="/tool-test30"
+    >
     </CoolNavigation>
   </div>
 </template>
@@ -40,7 +52,7 @@ export default {
             {
               name: "dashboard",
               path: "dashboard",
-              meta: { icon: "el-icon-help", title: "菜单一" },
+              meta: { icon: "el-icon-help", title: "设备实时OEE" },
             },
           ],
         },
@@ -91,6 +103,23 @@ export default {
                   name: "tool-test0",
                   path: "tool-test0",
                   meta: { icon: "el-icon-help", title: "菜单七" },
+                  children: [
+                    {
+                      name: "tool-test28",
+                      path: "tool-test28",
+                      meta: { icon: "el-icon-help", title: "菜单二八" },
+                    },
+                    {
+                      name: "tool-test29",
+                      path: "tool-test29",
+                      meta: { icon: "el-icon-help", title: "菜单二九" },
+                    },
+                    {
+                      name: "tool-test30",
+                      path: "tool-test30",
+                      meta: { icon: "el-icon-help", title: "菜单三十" },
+                    },
+                  ]
                 },
                 {
                   name: "tool-test1",
@@ -103,6 +132,23 @@ export default {
               name: "tool-offset",
               path: "tool-offset",
               meta: { icon: "el-icon-help", title: "菜单九" },
+              children: [
+                {
+                  name: "tool-test33",
+                  path: "tool-test33",
+                  meta: { icon: "el-icon-help", title: "菜单33" },
+                },
+                {
+                  name: "tool-test32",
+                  path: "tool-test32",
+                  meta: { icon: "el-icon-help", title: "菜单32" },
+                },
+                {
+                  name: "tool-test31",
+                  path: "tool-test31",
+                  meta: { icon: "el-icon-help", title: "菜单三十一" },
+                },
+              ]
             },
           ],
         },
@@ -179,7 +225,15 @@ export default {
 .border-demo-page {
   width: 100%;
   height: 100%;
-  background: #061f57;
+  // background: #061f57;
+  background: linear-gradient(
+    90deg,
+    #020c28 0,
+    #0b1e62 30%,
+    #0c2371 50%,
+    #0b1e62 70%,
+    #020c28 100%
+  );
   .title {
     font-size: 21px;
     color: #fff;
