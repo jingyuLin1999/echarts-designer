@@ -17,7 +17,7 @@
     </defs>
     <polyline
       style="stroke-width: 1.5"
-      stroke="url(#borderLineBtn)"
+      stroke="#37e9fe"
       fill="url(#bgcolor)"
       :points="`${menuSize[0] * 0.07627},1
             ${menuSize[0] * 0.923728},1

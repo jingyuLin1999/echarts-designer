@@ -10,10 +10,10 @@
       },
     ]"
   >
-    <a
+    <router-link
       class="menu-link"
       v-if="onlyOneChildren()"
-      :href="getPath(onlyItem.path)"
+      :to="resolvePath(onlyItem.path)"
     >
       <div
         :class="[
@@ -25,7 +25,7 @@
         {{ onlyItem.meta.title }}
         <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
       </div>
-    </a>
+    </router-link>
     <template v-else>
       <div
         v-if="item.meta"
@@ -52,7 +52,7 @@
           :item="child"
           className="sub-menu-item"
           :menuSize="menuSize"
-          :flatMenuSearchPool="flatMenuSearchPool"
+          :base-path="resolvePath(child.path)"
           @activeMenu="onActiveMenu"
         >
         </menuItem>
@@ -62,16 +62,16 @@
 </template>
 
 <script>
+import path from "path";
 import SvgBorder from "./svg-border.vue"
-import { clone } from "ramda"
 export default {
   name: 'menuItem',
   components: { SvgBorder },
   props: {
     item: { type: Object, required: true },
+    basePath: { type: String, default: "" },
     className: { type: String, default: () => "menu-item" },
     menuSize: { type: Array, default: () => [120, 34] },
-    flatMenuSearchPool: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -79,25 +79,10 @@ export default {
     }
   },
   methods: {
-    getPath(path) {
-      let toPath = [];
-      let itPath = path;
-      let flatMenuSearchPool = clone(this.flatMenuSearchPool)
-      while (itPath != "") {
-        let parentMenu = flatMenuSearchPool[itPath];
-        if (parentMenu) {
-          let sourcePath = parentMenu.path;
-          if (sourcePath && sourcePath[0] == "/")
-            sourcePath = sourcePath.substr(1, sourcePath.length)
-          toPath.unshift(sourcePath);
-          itPath = parentMenu.parentPath;
-        } else itPath = "";
-      }
-      if (!toPath[0]) toPath.shift();
-      let toPathStr = toPath.join("/");
-      if (toPathStr.indexOf("/#/") == -1)
-        toPathStr = "/#/" + toPathStr;
-      return toPathStr;
+    resolvePath(routePath) {
+      if (this.className == "menu-item") routePath = path.resolve(this.item.path, routePath);
+      if (this.basePath.indexOf(routePath) != -1) return this.basePath;
+      return path.resolve(this.basePath, routePath);
     },
     onClickMenu(item) {
       this.$emit("activeMenu", item)

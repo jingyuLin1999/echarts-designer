@@ -5,7 +5,6 @@
       :key="index"
       :item="menuItem"
       :menuSize="menuSize"
-      :flatMenuSearchPool="flatMenuSearchPool"
       @activeMenu="onActiveMenu"
     />
   </ul>
@@ -51,7 +50,6 @@ export default {
       let menu = this.flatMenuSearchPool[lastPath] || this.flatMenuSearchPool[`/${lastPath}`];
       if (menu) this.onActiveMenu(menu);
     })
-
   },
   methods: {
     onActiveMenu(menu) {
@@ -60,13 +58,14 @@ export default {
         this.$set(this.flatMenuSearchPool[key], "activeMenu", false);
       }
       // 向上爬，设置activeMenu
-      menu.activeMenu = true;
-      while (menu.parentPath != undefined) {
-        let parentMenu = this.flatMenuSearchPool[menu.parentPath];
+      this.$set(menu, "activeMenu", true);
+      let itPath = menu;
+      while (itPath) {
+        let parentMenu = this.flatMenuSearchPool[itPath.parentPath];
         if (parentMenu) {
-          menu = parentMenu
-          this.$set(menu, "activeMenu", true);
-        } else menu = {}
+          itPath = parentMenu
+          this.$set(itPath, "activeMenu", true);
+        } else itPath = null
       }
     },
   },

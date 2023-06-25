@@ -10,8 +10,8 @@
       textColor="#EFF0F6"
       defaultActiveMenu="/tool/tool-cut/tool-test0"
     ></CoolNavigation>
-    <!--<div class="title">导航二</div>
-     <CoolNavigation
+    <div class="title">导航二</div>
+    <CoolNavigation
       class="nav2"
       navTitle="数字化工厂"
       widget="nav2"
@@ -32,9 +32,9 @@
       :menuSize="[120, 34]"
       menuBgColor="#324156"
       textColor="#EFF0F6"
-      defaultActiveMenu="/tool-test30"
+      defaultActiveMenu="/dashboard"
     >
-    </CoolNavigation> -->
+    </CoolNavigation>
   </div>
 </template>
 
@@ -76,11 +76,17 @@ export default {
         {
           path: "/mac",
           redirect: "/mac-status",
+          meta: { icon: "el-icon-help", title: "菜单二11" },
           children: [
             {
               name: "mac-status",
               path: "mac-status",
               meta: { icon: "el-icon-help", title: "菜单三" },
+            },
+            {
+              name: "mac-history-status",
+              path: "mac-history-status",
+              meta: { icon: "el-icon-help", title: "菜单十七" },
             },
           ],
         },
@@ -192,17 +198,6 @@ export default {
               name: "mac-yieldrate",
               path: "mac-yieldrate",
               meta: { icon: "el-icon-help", title: "菜单十六" },
-            },
-          ],
-        },
-        {
-          path: "/mac-status",
-          redirect: "/mac-history-status",
-          children: [
-            {
-              name: "mac-history-status",
-              path: "mac-history-status",
-              meta: { icon: "el-icon-help", title: "菜单十七" },
             },
           ],
         },
