@@ -1,6 +1,20 @@
 <template>
-  <li :class="['menu-item-li', className]">
-    <router-link class="menu-link" v-if="onlyOneChildren()" :to="onlyItem.path">
+  <li
+    :class="[
+      item.meta && item.meta.className == 'leftExpand'
+        ? 'left-menu-item-li'
+        : 'menu-item-li',
+      className,
+      {
+        'left-menu-item-li': item.meta && item.meta.className == 'more',
+      },
+    ]"
+  >
+    <a
+      class="menu-link"
+      v-if="onlyOneChildren()"
+      :href="getPath(onlyItem.path)"
+    >
       <div
         :class="[
           className == 'menu-item' ? 'root-menu' : '',
@@ -11,7 +25,7 @@
         {{ onlyItem.meta.title }}
         <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
       </div>
-    </router-link>
+    </a>
     <template v-else>
       <div
         v-if="item.meta"
@@ -22,6 +36,13 @@
         ]"
       >
         {{ item.meta.title }}
+        <span
+          :class="[
+            'iconfont',
+            'icon-arrow',
+            className == 'menu-item' ? 'down-icon' : '',
+          ]"
+        ></span>
         <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
       </div>
       <ul class="menu-item-ul sub-menu-item">
@@ -31,6 +52,7 @@
           :item="child"
           className="sub-menu-item"
           :menuSize="menuSize"
+          :flatMenuSearchPool="flatMenuSearchPool"
           @activeMenu="onActiveMenu"
         >
         </menuItem>
@@ -41,6 +63,7 @@
 
 <script>
 import SvgBorder from "./svg-border.vue"
+import { clone } from "ramda"
 export default {
   name: 'menuItem',
   components: { SvgBorder },
@@ -48,6 +71,7 @@ export default {
     item: { type: Object, required: true },
     className: { type: String, default: () => "menu-item" },
     menuSize: { type: Array, default: () => [120, 34] },
+    flatMenuSearchPool: { type: Object, default: () => ({}) },
   },
   data() {
     return {
@@ -55,6 +79,26 @@ export default {
     }
   },
   methods: {
+    getPath(path) {
+      let toPath = [];
+      let itPath = path;
+      let flatMenuSearchPool = clone(this.flatMenuSearchPool)
+      while (itPath != "") {
+        let parentMenu = flatMenuSearchPool[itPath];
+        if (parentMenu) {
+          let sourcePath = parentMenu.path;
+          if (sourcePath && sourcePath[0] == "/")
+            sourcePath = sourcePath.substr(1, sourcePath.length)
+          toPath.unshift(sourcePath);
+          itPath = parentMenu.parentPath;
+        } else itPath = "";
+      }
+      if (!toPath[0]) toPath.shift();
+      let toPathStr = toPath.join("/");
+      if (toPathStr.indexOf("/#/") == -1)
+        toPathStr = "/#/" + toPathStr;
+      return toPathStr;
+    },
     onClickMenu(item) {
       this.$emit("activeMenu", item)
     },
@@ -95,6 +139,10 @@ export default {
     left: 0;
     top: 0;
     z-index: -1;
+  }
+
+  .down-icon {
+    transform: rotate(90deg);
   }
 }
 </style>

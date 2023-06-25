@@ -1,7 +1,7 @@
 // 容器必须字段
 export const defaultContainer = {
     unit: "px", // 单位 px(默认) | %
-    background: "#F9F6F6", // 背景颜色
+    background: "", // 背景颜色
     theme: "light",
     height: 1200,
     filter: {}, // 过滤条件

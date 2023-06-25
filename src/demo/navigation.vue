@@ -1,6 +1,6 @@
 <template>
   <div class="border-demo-page">
-    <!-- <div class="title">导航一</div>
+    <div class="title">导航一</div>
     <CoolNavigation
       navTitle="工厂看板"
       widget="nav1"
@@ -10,8 +10,8 @@
       textColor="#EFF0F6"
       defaultActiveMenu="/tool/tool-cut/tool-test0"
     ></CoolNavigation>
-    <div class="title">导航二</div>
-    <CoolNavigation
+    <!--<div class="title">导航二</div>
+     <CoolNavigation
       class="nav2"
       navTitle="数字化工厂"
       widget="nav2"
@@ -22,8 +22,8 @@
       defaultActiveMenu="/product/product-status"
     >
       <template #logo> <span></span></template>
-    </CoolNavigation> -->
-
+    </CoolNavigation>
+    <div class="title">导航三</div>
     <CoolNavigation
       class="nav3"
       navTitle="数字化工厂"
@@ -34,7 +34,7 @@
       textColor="#EFF0F6"
       defaultActiveMenu="/tool-test30"
     >
-    </CoolNavigation>
+    </CoolNavigation> -->
   </div>
 </template>
 
@@ -59,7 +59,13 @@ export default {
         {
           path: "/oee",
           redirect: "/oee-calcu",
+          meta: { icon: "el-icon-help", title: "OEE分析" },
           children: [
+            {
+              name: 'oee-shift',
+              path: 'oee-shift',
+              meta: { title: '工序班次OEE', icon: "el-icon-help" }
+            },
             {
               name: "oee-calcu",
               path: "oee-calcu",
@@ -203,11 +209,29 @@ export default {
         {
           path: "/export",
           redirect: "/export-data",
+          meta: { icon: "el-icon-help", title: "菜单八一" },
           children: [
             {
-              name: "export-data",
-              path: "export-data",
-              meta: { icon: "el-icon-help", title: "菜单十八" },
+              name: "export-82",
+              path: "export-82",
+              meta: { icon: "el-icon-help", title: "菜单82" },
+            },
+            {
+              name: "export-80",
+              path: "export-80",
+              meta: { icon: "el-icon-help", title: "菜单八二" },
+              children: [
+                {
+                  name: "export-81",
+                  path: "export-81",
+                  meta: { icon: "el-icon-help", title: "菜单81" },
+                },
+                {
+                  name: "export-83",
+                  path: "export-83",
+                  meta: { icon: "el-icon-help", title: "菜单83" },
+                },
+              ],
             },
           ],
         },
@@ -225,15 +249,15 @@ export default {
 .border-demo-page {
   width: 100%;
   height: 100%;
-  // background: #061f57;
-  background: linear-gradient(
-    90deg,
-    #020c28 0,
-    #0b1e62 30%,
-    #0c2371 50%,
-    #0b1e62 70%,
-    #020c28 100%
-  );
+  background: #061f57;
+  // background: linear-gradient(
+  //   90deg,
+  //   #020c28 0,
+  //   #0b1e62 30%,
+  //   #0c2371 50%,
+  //   #0b1e62 70%,
+  //   #020c28 100%
+  // );
   .title {
     font-size: 21px;
     color: #fff;

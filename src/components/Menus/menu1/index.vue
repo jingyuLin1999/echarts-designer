@@ -5,12 +5,14 @@
       :key="index"
       :item="menuItem"
       :menuSize="menuSize"
+      :flatMenuSearchPool="flatMenuSearchPool"
       @activeMenu="onActiveMenu"
     />
   </ul>
 </template>
 
 <script>
+import "./iconfont/iconfont.css"
 import menuItem from "./menuItem"
 export default {
   name: "button1",
@@ -104,6 +106,13 @@ export default {
     margin-right: 5px;
   }
 
+  .icon-arrow:not(.menu-item) {
+    padding: 2px;
+    line-height: 100%;
+    margin-bottom: -5px;
+  }
+
+  // 左侧
   .menu-item-li {
     position: relative;
     height: var(--menuHeight);
@@ -151,7 +160,7 @@ export default {
     display: none;
     left: 0;
     top: 100%;
-    z-index: 9999;
+    z-index: 99999;
   }
 
   .menu-item-li ul ul {
@@ -162,6 +171,61 @@ export default {
   }
 
   .menu-item-li:hover > ul {
+    display: inline-block;
+
+    :not(.menu-item) {
+      margin-top: -3px;
+    }
+
+    > li:first-of-type {
+      margin-top: 2px;
+    }
+  }
+
+  // 右侧
+  .left-menu-item-li {
+    position: relative;
+    height: var(--menuHeight);
+    min-width: var(--menuWidth);
+    box-sizing: border-box;
+  }
+
+  .left-menu-item-li ul li:not(.menu-item) {
+    border-right: 1px solid #2fb3b5;
+    border-left: 1px solid #2fb3b5;
+  }
+
+  .left-menu-item-li ul li:first-child {
+    border-top: 1px solid #2fb3b5;
+  }
+
+  .left-menu-item-li ul li:last-child {
+    border-bottom: 1px solid #2fb3b5;
+  }
+
+  .left-menu-item-li:hover > a {
+    color: var(--hoverTextColor);
+  }
+
+  .left-menu-item-li:hover > div {
+    color: var(--hoverTextColor);
+  }
+
+  .left-menu-item-li ul {
+    display: none;
+    left: 0;
+    top: 100%;
+    z-index: 9999;
+  }
+
+  .left-menu-item-li ul ul {
+    display: none;
+    left: -105%;
+    top: 0;
+    padding-left: 2px;
+  }
+
+  .left-menu-item-li:hover > ul {
     display: inline-block;
 
     :not(.menu-item) {

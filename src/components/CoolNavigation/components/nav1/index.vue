@@ -210,18 +210,14 @@ export default {
       return this.width / 2;
     },
     takeUpMenuNum() {
-      return Math.floor((this.halfWidth * 0.58) / (this.menuSize[0] + 10));
+      return Math.floor((this.halfWidth * 0.58) / (this.menuSize[0] || 1));
     },
     leftMenu() {
       return this.friendlyMenus.slice(0, this.takeUpMenuNum);
     },
     rightMenu() {
-      return this.friendlyMenus.slice(
-        this.takeUpMenuNum,
-        this.menu.length > 2 * this.takeUpMenuNum && this.takeUpMenuNum // 不能为0
-          ? 2 * this.takeUpMenuNum - 1
-          : 2 * this.takeUpMenuNum
-      );
+      let sss = this.friendlyMenus.length <= 2 * this.takeUpMenuNum;
+      return this.friendlyMenus.slice(this.takeUpMenuNum, this.takeUpMenuNum * 2 + (sss ? 0 : -1))
     },
     moreMenu() {
       let moreMenu = [];

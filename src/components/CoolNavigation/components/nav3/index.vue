@@ -238,7 +238,22 @@ export default {
     rightMenus() {
       let btnContianerWidth = this.halfWidth * (0.5 + this.titleWidthPct) - 5;
       let tackupNum = Math.floor(btnContianerWidth / (this.menuSize[0] + 5));
-      return this.menu.slice(tackupNum, this.menu.length)
+      let menus = [];
+      // 溢出
+      if (this.menu.length > tackupNum * 2) {
+        menus = this.menu.slice(tackupNum, tackupNum * 2 - 1);
+        let inMoreMenus = this.menu.slice(tackupNum * 2 - 1, this.menu.length);
+        inMoreMenus.map(item => {
+          if (item.meta) item.meta.className = "leftExpand";
+        })
+        let moreMenu = {
+          path: "/more-menu",
+          meta: { icon: "", title: "更多菜单", className: "leftExpand" },
+          children: inMoreMenus
+        }
+        menus.push(moreMenu)
+      } else menus = this.menu.slice(tackupNum, tackupNum * 2)
+      return menus
     },
     injectStyles() {
       return {
@@ -256,6 +271,7 @@ export default {
   methods: {
     iterationMenus(routers, menuMap = {}, parentPath = "",) {
       routers.map((item) => {
+        if (item.meta) item.meta.className = "";
         if (
           Array.isArray(item[this.defaultProp.children]) &&
           item[this.defaultProp.children].length > 0
@@ -305,7 +321,7 @@ export default {
     position: absolute;
     bottom: 7px;
     left: 5px;
-    z-index: 2;
+    z-index: 99999;
     height: var(--menuHeight);
 
     .menu-item {
@@ -317,7 +333,7 @@ export default {
     position: absolute;
     bottom: 7px;
     right: 5px;
-    z-index: 2;
+    z-index: 99999;
     height: var(--menuHeight);
 
     .menu-item {
@@ -326,7 +342,7 @@ export default {
   }
 
   .title {
-    z-index: 1;
+    z-index: 99999;
     height: calc(100% - 6px);
     color: #f9fffd;
     font-size: 2.636552em;
