@@ -127,6 +127,7 @@ export default {
     activeTextColor: { type: String, default: "#56f3f5" }, // 激活的文本颜色
     defaultProp: { type: Object, default: () => ({}) },
     navHeight: { type: String, default: "50px" },
+    internation: { type: Boolean, default: false, } // 是否国际化
   },
   computed: {
     friendlyMenus() {

@@ -16,7 +16,7 @@ export default {
   data() {
     return {
       chart: null,
-      uuid: Math.random().toString(16).slice(2, 12),
+      uuid: "ed_" + Math.random().toString(16).slice(2, 12),
     };
   },
   mounted() {
@@ -83,11 +83,11 @@ export default {
       this.chart.setOption(data, true);
     },
     resize() {
-      this.chart.resize();
+      if (this.chart) this.chart.resize();
     },
   },
   beforeDestroy() {
-    this.chart.dispose();
+    if (this.chart) this.chart.dispose();
   },
 };
 </script>

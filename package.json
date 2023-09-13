@@ -1,13 +1,15 @@
 {
   "name": "echarts-designer",
-  "version": "0.8.2",
-  "private": true,
+  "version": "0.9.3",
+  "private": false,
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
-    "product": "vue-cli-service build --target lib --name echarts-designer src/components/index.js",
+    "build:prod": "vue-cli-service build --target lib --name echarts-designer src/components/index.js",
     "lint": "vue-cli-service lint"
   },
+  "main": "dist/echarts-designer.common.js",
+  "module": "dist/echarts-designer.common.js",
   "dependencies": {
     "axios": "^0.21.4",
     "clipboard": "^2.0.8",
@@ -26,6 +28,7 @@
     "vue": "^2.6.11",
     "vue-count-to": "^1.0.13",
     "vue-draggable-resizable-gorkys": "^2.4.8",
+    "vue-i18n": "^8.28.2",
     "vue-router": "^3.5.1",
     "vxe-table": "^3.3.13"
   },
@@ -58,9 +61,21 @@
       "no-unused-vars": "off"
     }
   },
+  "files": [
+    "dist",
+    "package.json",
+    "README.md",
+    "src/i18n/lang"
+  ],
   "browserslist": [
     "> 1%",
     "last 2 versions",
     "not dead"
-  ]
+  ],
+  "author": "ljy",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jingyuLin1999/echarts-designer"
+  }
 }

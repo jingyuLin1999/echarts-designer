@@ -1,6 +1,6 @@
 <template>
   <div class="border-demo-page">
-    <div class="title">导航一</div>
+    <!-- <div class="title">导航一</div>
     <CoolNavigation
       navTitle="工厂看板"
       widget="nav1"
@@ -22,18 +22,10 @@
       defaultActiveMenu="/product/product-status"
     >
       <template #logo> <span></span></template>
-    </CoolNavigation>
+    </CoolNavigation> -->
     <div class="title">导航三</div>
-    <CoolNavigation
-      class="nav3"
-      navTitle="数字化工厂"
-      widget="nav3"
-      :menu="menu"
-      :menuSize="[120, 34]"
-      menuBgColor="#324156"
-      textColor="#EFF0F6"
-      defaultActiveMenu="/dashboard"
-    >
+    <CoolNavigation class="nav3" navTitle="数字化工厂" widget="nav3" :menu="menu" :menuSize="[120, 34]" menuBgColor="#324156"
+      textColor="#EFF0F6" :internation="true" defaultActiveMenu="/dashboard">
     </CoolNavigation>
   </div>
 </template>
@@ -52,14 +44,14 @@ export default {
             {
               name: "dashboard",
               path: "dashboard",
-              meta: { icon: "el-icon-help", title: "设备实时OEE" },
+              meta: { icon: "el-icon-help", title: "设备实时OEE士大夫是否" },
             },
           ],
         },
         {
           path: "/oee",
           redirect: "/oee-calcu",
-          meta: { icon: "el-icon-help", title: "OEE分析" },
+          meta: { icon: "el-icon-help", title: "OEE分析sdfsfds111111111" }, // coolMenu1  OEE分析
           children: [
             {
               name: 'oee-shift',
@@ -86,7 +78,7 @@ export default {
             {
               name: "mac-history-status",
               path: "mac-history-status",
-              meta: { icon: "el-icon-help", title: "菜单十七" },
+              meta: { icon: "el-icon-help", title: "菜单十七dffffffffffffffffffffffffffff" },
             },
           ],
         },
@@ -232,8 +224,9 @@ export default {
         },
         {
           path: "/echarts-designer",
-          meta: { icon: "el-icon-help", title: "设计器", hidden: true },
+          meta: { icon: "el-icon-help", title: "设计器", hidden: false },
         },
+        { path: '*', redirect: '/', hidden: true }
       ],
     };
   },
@@ -245,6 +238,7 @@ export default {
   width: 100%;
   height: 100%;
   background: #061f57;
+
   // background: linear-gradient(
   //   90deg,
   //   #020c28 0,

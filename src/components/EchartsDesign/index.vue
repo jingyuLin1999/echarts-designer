@@ -6,10 +6,7 @@
   <div class="echar-design-wrapper">
     <header class="design-header" v-if="showHeader">
       <div class="header-left">
-        <a
-          target="_blank"
-          href="https://github.com/jingyuLin1999/echarts-designer"
-        >
+        <a target="_blank" href="https://github.com/jingyuLin1999/echarts-designer">
           <span class="iconfont header-github-image">&#xe628;</span>
         </a>
         <h1 class="report-disigner-title">报表设计器</h1>
@@ -39,52 +36,26 @@
           </i>
         </div>
       </div>
-      <modal
-        v-model="openSubmitModal"
-        width="45%"
-        height="40%"
-        resize
-        showFooter
-        :title="modalType == 'chart' ? '保存图表' : '保存报表'"
-        :style="{ zIndex: 1000 }"
-      >
-        <RichForm
-          class="submit-form"
-          :form="submitForm"
-          :hooks="submitHooks"
-          :schema="submitSchema"
-          :values="submitValues"
-        />
+      <modal v-model="openSubmitModal" width="45%" height="40%" resize showFooter
+        :title="modalType == 'chart' ? '保存图表' : '保存报表'" :style="{ zIndex: 1000 }">
+        <RichForm class="submit-form" :form="submitForm" :hooks="submitHooks" :schema="submitSchema"
+          :values="submitValues" />
         <template #footer>
           <Button size="small" type="success" @click="sureSubmit">确定</Button>
-          <Button size="small" @click="openSubmitModal = !openSubmitModal"
-            >取消</Button
-          >
+          <Button size="small" @click="openSubmitModal = !openSubmitModal">取消</Button>
         </template>
       </modal>
     </header>
     <div class="split-layout">
-      <split-layout
-        first-panel-size="220px"
-        last-panel-size="300px"
-        :lastPanelCanResize="false"
-        :firstPanelCanResize="false"
-      >
+      <split-layout first-panel-size="220px" last-panel-size="300px" :lastPanelCanResize="false"
+        :firstPanelCanResize="false">
         <template slot="first">
           <!-- 左侧报表组件 -->
           <tabs v-model="activeLeftTab">
             <tab-pane label="图表组件" name="component" class="tab-pane">
               <tree :data="chartWidgets" default-expand-all>
-                <span
-                  class="tree-node"
-                  :data="onString(data)"
-                  slot-scope="{ node, data }"
-                  :style="{ fontSize: '13px' }"
-                >
-                  <icon
-                    v-if="node.childNodes.length > 0"
-                    :class="[data.icon]"
-                  ></icon>
+                <span class="tree-node" :data="onString(data)" slot-scope="{ node, data }" :style="{ fontSize: '13px' }">
+                  <icon v-if="node.childNodes.length > 0" :class="[data.icon]"></icon>
                   <span class="node-label">
                     {{ data.title || data.label }}
                   </span>
@@ -93,11 +64,7 @@
             </tab-pane>
             <tab-pane label="图表设计" name="chartTree">
               <tree :data="chartsTree" default-expand-all>
-                <div
-                  class="tree-node designer-tree-node"
-                  slot-scope="{ node, data }"
-                  :data="onString(data)"
-                >
+                <div class="tree-node designer-tree-node" slot-scope="{ node, data }" :data="onString(data)">
                   <div class="node-title" @click="clickChartNode(data)">
                     <icon :class="[data.icon]"></icon>
                     <span class="node-label">
@@ -105,10 +72,7 @@
                     </span>
                   </div>
                   <div class="node-tools">
-                    <i
-                      class="tool el-icon-delete"
-                      @click="onDelete(data, 'chart')"
-                    ></i>
+                    <i class="tool el-icon-delete" @click="onDelete(data, 'chart')"></i>
                   </div>
                 </div>
               </tree>
@@ -116,75 +80,25 @@
           </tabs>
         </template>
         <template slot="center">
-          <Echarts
-            :echarts="echarts"
-            :design="design"
-            :hooks="hooks"
-            :echartsId="id"
-            :authorization="authorization"
-            @designItem="onClickedChart"
-            @loading="loading"
-          />
+          <Echarts :echarts="echarts" :design="design" :hooks="hooks" :echartsId="id" :authorization="authorization"
+            @designItem="onClickedChart" @loading="loading" />
         </template>
         <!-- 报表属性 -->
         <template slot="last">
           <tabs v-model="activeRightTab">
             <tab-pane label="属性配置" name="attribute" class="tab-pane">
-              <RichForm
-                deepValues
-                :form="attrForm"
-                :schema="attrSchema"
-                :values="attrValues"
-                :hooks="attrHooks"
-                @action="attrActions"
-              />
-              <modal
-                class="codding-modal"
-                v-model="coddingModal"
-                width="95%"
-                height="95%"
-                showFooter
-                resize
-                :title="codeTitle"
-                @close="onCodeEdited"
-              >
+              <RichForm deepValues :form="attrForm" :schema="attrSchema" :values="attrValues" :hooks="attrHooks"
+                @action="attrActions" />
+              <modal class="codding-modal" v-model="coddingModal" width="95%" height="95%" showFooter resize
+                :title="codeTitle" @close="onCodeEdited">
                 <textarea id="code-textarea" v-model="codding"></textarea>
                 <template #footer>
-                  <Button
-                    v-if="isCodding"
-                    size="small"
-                    type="primary"
-                    @click="refreshCode"
-                    >运行</Button
-                  >
-                  <Button
-                    v-if="isCodding"
-                    size="small"
-                    type="success"
-                    @click="onCodeEdited"
-                    >确定</Button
-                  >
-                  <Button
-                    v-if="!isCodding"
-                    size="small"
-                    type="success"
-                    @click="toFormat"
-                    >格式化</Button
-                  >
-                  <Button
-                    v-if="!isCodding"
-                    size="small"
-                    type="primary"
-                    @click="toStorage"
-                    >缓存</Button
-                  >
-                  <Button
-                    v-if="!isCodding"
-                    size="small"
-                    type="danger"
-                    @click="toCopy(JSON.stringify(echarts))"
-                    >复制</Button
-                  >
+                  <Button v-if="isCodding" size="small" type="primary" @click="refreshCode">运行</Button>
+                  <Button v-if="isCodding" size="small" type="success" @click="onCodeEdited">确定</Button>
+                  <Button v-if="!isCodding" size="small" type="success" @click="toFormat">格式化</Button>
+                  <Button v-if="!isCodding" size="small" type="primary" @click="toStorage">缓存</Button>
+                  <Button v-if="!isCodding" size="small" type="danger"
+                    @click="toCopy(JSON.stringify(echarts))">复制</Button>
                 </template>
               </modal>
             </tab-pane>
@@ -201,10 +115,7 @@
                     <span @click="toCopy(data.id)" class="copy-label">
                       复制ID
                     </span>
-                    <i
-                      class="tool el-icon-delete"
-                      @click="onDelete(data, 'report')"
-                    ></i>
+                    <i class="tool el-icon-delete" @click="onDelete(data, 'report')"></i>
                   </div>
                 </div>
               </tree>
@@ -356,7 +267,9 @@ export default {
       return JSON.parse(this.onString(obj));
     },
     onDragstart(source, event) {
-      return source.getAttribute("data");
+      if (source && source.getAttribute) {
+        return source.getAttribute("data");
+      }
     },
     onDrop(target, data, event) {
       let chart = JSON.parse(data);
@@ -561,6 +474,7 @@ export default {
     url("./iconfont/iconfont.woff?t=1635472525124") format("woff"),
     url("./iconfont/iconfont.ttf?t=1635472525124") format("truetype");
 }
+
 .iconfont {
   font-family: "iconfont" !important;
   font-size: 16px;
@@ -568,18 +482,22 @@ export default {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
 .vxe-modal--content {
   height: 100%;
 }
+
 .echar-design-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
   background: #fff;
+
   .codding-modal {
     position: relative;
     z-index: 10;
   }
+
   .design-header {
     height: 55px;
     line-height: 55px;
@@ -593,9 +511,11 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding: 0 15px;
+
     .disabled-submit {
       position: relative;
     }
+
     .disabled-submit::after {
       content: "";
       width: 100%;
@@ -606,6 +526,7 @@ export default {
       z-index: 99;
       cursor: not-allowed;
     }
+
     .report-disigner-title {
       margin: 0;
       padding: 0;
@@ -613,13 +534,16 @@ export default {
       height: 55px;
       line-height: 55px;
     }
+
     .submit-form {
       font-weight: 500;
       font-size: 13px;
+
       .title {
         font-size: 12px;
       }
     }
+
     .header-left {
       .header-github-image {
         color: #000;
@@ -627,76 +551,96 @@ export default {
         margin-right: 12px;
       }
     }
+
     .tools-right,
     .header-left {
       display: flex;
       font-size: 14px;
       align-items: center;
-      > div {
+
+      >div {
         cursor: pointer;
         margin-left: 10px;
       }
     }
   }
+
   .split-layout {
     height: 100%;
     position: relative;
+
     .designer-tree-node {
       width: 100%;
       display: flex;
       justify-content: space-between;
       align-items: center;
+
       .node-title {
         width: 100%;
         font-size: 13px;
       }
+
       .node-tools {
         display: none;
         margin-right: 10px;
+
         .copy-label {
           font-size: 12px;
         }
+
         .copy-label:hover {
           color: #f60;
         }
-        > * {
+
+        >* {
           margin-left: 10px;
         }
       }
     }
-    .designer-tree-node:hover > .node-tools {
+
+    .designer-tree-node:hover>.node-tools {
       display: block;
     }
+
     .first {
+
       // 修复element ui tab的样式
       .el-tabs__item {
         width: 110px;
         text-align: center;
       }
+
       .el-tabs__header {
         height: 28px;
       }
+
       .tab-pane {
         width: "120px";
         height: "100%";
       }
     }
+
     .center {
       position: relative;
     }
+
     .last {
+
       // 修复element ui tab的样式
       .el-tabs__item {
         width: 150px;
         text-align: center;
       }
+
       .el-tabs__header {
         height: 28px;
       }
+
       .tab-pane {
         width: 100%;
         height: "100%";
       }
+
       .cm-s-default {
         width: 100%;
         height: 99%;

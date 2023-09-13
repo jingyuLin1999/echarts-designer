@@ -1,60 +1,45 @@
 <template>
-  <li
-    :class="[
-      item.meta && item.meta.className == 'leftExpand'
-        ? 'left-menu-item-li'
-        : 'menu-item-li',
-      className,
-      {
-        'left-menu-item-li': item.meta && item.meta.className == 'more',
-      },
-    ]"
-  >
-    <router-link
-      class="menu-link"
-      v-if="onlyOneChildren()"
-      :to="resolvePath(onlyItem.path)"
-    >
-      <div
-        :class="[
-          className == 'menu-item' ? 'root-menu' : '',
-          onlyItem.activeMenu ? 'active-menu' : '',
-        ]"
-        @click="onClickMenu(onlyItem)"
-      >
-        {{ onlyItem.meta.title }}
+  <li v-if="isShow()" :class="[
+    item.meta && item.meta.className == 'leftExpand'
+      ? 'left-menu-item-li'
+      : 'menu-item-li',
+    className,
+    {
+      'left-menu-item-li': item.meta && item.meta.className == 'more',
+    },
+  ]">
+    <router-link class="menu-link" v-if="onlyOneChildren()" :to="resolvePath(onlyItem.path)">
+      <div :class="[
+        className == 'menu-item' ? 'root-menu' : '',
+        onlyItem.activeMenu ? 'active-menu' : '',
+      ]" @click="onClickMenu(onlyItem)">
+        <div class="menu-title"
+          :style="{ width: menuSize[0] - 15 + 'px', height: menuSize[1] + 'px', lineHeight: menuSize[1] + 'px' }">
+          {{ internation ? $t(onlyItem.meta.title) : onlyItem.meta.title }}
+        </div>
         <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
       </div>
     </router-link>
     <template v-else>
-      <div
-        v-if="item.meta"
-        :class="[
-          'menu-link',
-          className == 'menu-item' ? 'root-menu' : '',
-          item.activeMenu ? 'active-menu' : '',
-        ]"
-      >
-        {{ item.meta.title }}
-        <span
-          :class="[
+      <div v-if="item.meta" :class="[
+        'menu-link',
+        className == 'menu-item' ? 'root-menu' : '',
+        item.activeMenu ? 'active-menu' : '',
+      ]">
+        <div class="menu-title"
+          :style="{ maxWidth: menuSize[0] - 15 + 'px', height: menuSize[1] + 'px', lineHeight: menuSize[1] + 'px' }">
+          {{ internation ? $t(item.meta.title) : item.meta.title }}
+          <span :class="[
             'iconfont',
             'icon-arrow',
             className == 'menu-item' ? 'down-icon' : '',
-          ]"
-        ></span>
+          ]"></span>
+        </div>
         <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
       </div>
-      <ul class="menu-item-ul sub-menu-item">
-        <menuItem
-          v-for="(child, index) in item.children"
-          :key="index"
-          :item="child"
-          className="sub-menu-item"
-          :menuSize="menuSize"
-          :base-path="resolvePath(child.path)"
-          @activeMenu="onActiveMenu"
-        >
+      <ul class="menu-item-ul sub-menu-item" v-if="item.children">
+        <menuItem v-for="(child, index) in item.children" :key="index" :item="child" :internation="internation"
+          className="sub-menu-item" :menuSize="menuSize" :base-path="resolvePath(child.path)" @activeMenu="onActiveMenu">
         </menuItem>
       </ul>
     </template>
@@ -72,6 +57,7 @@ export default {
     basePath: { type: String, default: "" },
     className: { type: String, default: () => "menu-item" },
     menuSize: { type: Array, default: () => [120, 34] },
+    internation: { type: Boolean, default: false, } // 是否国际化
   },
   data() {
     return {
@@ -89,6 +75,15 @@ export default {
     },
     onActiveMenu(item) {
       this.$emit("activeMenu", item)
+    },
+    isShow() {
+      let { children } = this.item;
+      if (!children &&
+        (this.item.hidden == true ||
+          (this.item.meta &&
+            this.item.meta.hidden == true)
+        )) return false;
+      return true;
     },
     onlyOneChildren() {
       let { redirect, children } = this.item;
@@ -110,6 +105,19 @@ export default {
 </script>
 
 <style lang="scss">
+.menu-title {
+  text-align: center;
+  white-space: nowrap;
+  overflow-y: hidden;
+  overflow-x: auto;
+  //user-select: none;
+
+  &::-webkit-scrollbar {
+    width: 10px;
+    height: 1px;
+  }
+}
+
 .root-menu {
   position: relative;
   width: 100%;
@@ -117,7 +125,18 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
-  > .svg-border {
+  overflow: hidden;
+
+  &::after {
+    content: "";
+    display: block;
+    height: 0;
+    overflow: hidden;
+    visibility: hidden;
+    clear: both,
+  }
+
+  >.svg-border {
     width: 100%;
     height: 100%;
     position: absolute;

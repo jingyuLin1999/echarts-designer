@@ -1,20 +1,11 @@
 <template>
-  <component
-    :is="asyncComponent"
-    :menu="menu"
-    :menuSize="menuSize"
-    :navTitle="navTitle"
-    :bgColor="bgColor"
-    :menuBgColor="menuBgColor"
-    :activeMenu="activeMenu"
-    :defaultProp="friendlyProps"
-    :defaultActiveMenu="defaultActiveMenu"
-    :textColor="textColor"
-    :activeTextColor="activeTextColor"
-    :hoverTextColor="hoverTextColor"
-    @activeMenu="onActiveMenu"
-  >
-    <template #logo> <slot name="logo"> </slot> </template>
+  <component :is="asyncComponent" :menu="menu" :menuSize="menuSize" :navTitle="navTitle" :bgColor="bgColor"
+    :menuBgColor="menuBgColor" :activeMenu="activeMenu" :defaultProp="friendlyProps"
+    :defaultActiveMenu="defaultActiveMenu" :textColor="textColor" :activeTextColor="activeTextColor" :internation="internation"
+    :hoverTextColor="hoverTextColor" @activeMenu="onActiveMenu">
+    <template #logo>
+      <slot name="logo"> </slot>
+    </template>
   </component>
 </template>
 
@@ -33,6 +24,7 @@ export default {
     activeTextColor: { type: String, default: "#67F4F5" }, // 激活的文本颜色
     hoverTextColor: { type: String, default: "#1bcbf5" }, // 聚焦文本颜色
     defaultProp: { type: Object, default: () => ({}) },
+    internation: { type: Boolean, default: false, } // 是否国际化
   },
   computed: {
     asyncComponent() {
@@ -84,5 +76,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

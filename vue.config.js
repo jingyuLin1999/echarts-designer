@@ -1,5 +1,6 @@
 const webpack = require("webpack");
 const path = require('path');
+const isBuild = process.argv.includes("build")
 
 function resolve(dir) {
   return path.join(__dirname, dir);
@@ -7,7 +8,7 @@ function resolve(dir) {
 
 module.exports = {
   publicPath: '',
-  outputDir: 'dist/lib',
+  outputDir: 'dist',
   assetsDir: 'static',
   productionSourceMap: false,
   css: { extract: false },
@@ -26,7 +27,7 @@ module.exports = {
       }
     },
     plugins: [],
-    externals: {
+    externals: isBuild ? {
       // "axios": "axios",
       // "clipboard": "clipboard",
       // "echarts": "echarts",
@@ -45,7 +46,7 @@ module.exports = {
       // "vxe-table": "vxe-table",
       // "vue-count-to": "vue-count-to",
       // "element-resize-detector": "element-resize-detector",
-    }
+    } : {},
   },
   // to handle element icon error in build. 
   chainWebpack: config => {

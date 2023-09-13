@@ -1,12 +1,7 @@
 <template>
   <ul class="menu-wrapper" :style="injectStyles">
-    <menuItem
-      v-for="(menuItem, index) in menu"
-      :key="index"
-      :item="menuItem"
-      :menuSize="menuSize"
-      @activeMenu="onActiveMenu"
-    />
+    <menuItem v-for="(menuItem, index) in menu" :key="index" :item="menuItem" :menuSize="menuSize"
+      :internation="internation" @activeMenu="onActiveMenu" />
   </ul>
 </template>
 
@@ -29,6 +24,7 @@ export default {
     defaultProp: { type: Object, default: () => ({}) },
     navHeight: { type: String, default: "40px" },
     flatMenuSearchPool: { type: Object, default: () => ({}) },
+    internation: { type: Boolean, default: false, } // 是否国际化
   },
   computed: {
     injectStyles() {
@@ -106,7 +102,7 @@ export default {
   }
 
   .icon-arrow:not(.menu-item) {
-    padding: 2px;
+    // padding: 2px;
     line-height: 100%;
     margin-bottom: -5px;
   }
@@ -132,16 +128,17 @@ export default {
     border-bottom: 1px solid #2fb3b5;
   }
 
-  .menu-item-li:hover > a {
+  .menu-item-li:hover>a {
     color: var(--hoverTextColor);
   }
 
-  .menu-item-li:hover > div {
+  .menu-item-li:hover>div {
     color: var(--hoverTextColor);
   }
 
   .menu-link {
     height: 100%;
+    width: 100%;
     display: inline-block;
     display: flex;
     align-items: center;
@@ -169,14 +166,14 @@ export default {
     padding-left: 2px;
   }
 
-  .menu-item-li:hover > ul {
+  .menu-item-li:hover>ul {
     display: inline-block;
 
     :not(.menu-item) {
       margin-top: -3px;
     }
 
-    > li:first-of-type {
+    >li:first-of-type {
       margin-top: 2px;
     }
   }
@@ -202,11 +199,11 @@ export default {
     border-bottom: 1px solid #2fb3b5;
   }
 
-  .left-menu-item-li:hover > a {
+  .left-menu-item-li:hover>a {
     color: var(--hoverTextColor);
   }
 
-  .left-menu-item-li:hover > div {
+  .left-menu-item-li:hover>div {
     color: var(--hoverTextColor);
   }
 
@@ -224,14 +221,14 @@ export default {
     padding-left: 2px;
   }
 
-  .left-menu-item-li:hover > ul {
+  .left-menu-item-li:hover>ul {
     display: inline-block;
 
     :not(.menu-item) {
       margin-top: -3px;
     }
 
-    > li:first-of-type {
+    >li:first-of-type {
       margin-top: 2px;
     }
   }
