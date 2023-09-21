@@ -20,12 +20,14 @@ export default {
     };
   },
   mounted() {
-    let chartId = this.chartData.id;
-    this.createChart();
-    this.hooks.resize[chartId] = this.resize;
-    this.hooks.redraw[chartId] = this.redraw;
-    this.hooks.chartData[chartId] = this.chartData;
-    this.hooks.$echart[chartId] = this.$echart;
+    this.$nextTick(() => {
+      let chartId = this.chartData.id;
+      this.createChart();
+      this.hooks.resize[chartId] = this.resize;
+      this.hooks.redraw[chartId] = this.redraw;
+      this.hooks.chartData[chartId] = this.chartData;
+      this.hooks.$echart[chartId] = this.$echart;
+    })
   },
   watch: {
     "chartData.px.width"() {
@@ -42,7 +44,7 @@ export default {
       deep: true,
     },
     "echarts.theme"() {
-      this.chart.dispose();
+      if (this.chart) this.chart.dispose();
       this.createChart();
     },
     "chartData.attribute.padding"() {
@@ -52,6 +54,7 @@ export default {
   methods: {
     createChart() {
       this.$nextTick(() => {
+        if (!document.getElementById(this.uuid)) return;
         const { theme, background } = this.echarts;
         this.chart = this.$echart.init(
           document.getElementById(this.uuid),
@@ -76,11 +79,13 @@ export default {
       });
     },
     redraw() {
-      const { background } = this.echarts;
-      let data = Object.assign(this.chartData.data, {
-        backgroundColor: background,
-      });
-      this.chart.setOption(data, true);
+      if (this.chart) {
+        const { background } = this.echarts;
+        let data = Object.assign(this.chartData.data, {
+          backgroundColor: background,
+        });
+        this.chart.setOption(data, true);
+      }
     },
     resize() {
       if (this.chart) this.chart.resize();
