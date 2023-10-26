@@ -1,11 +1,6 @@
 <template>
   <div class="echarts-demo-page">
-    <Echarts
-      :echarts="charts"
-      @loading="onLoading"
-      :hooks="hooks"
-      @event="chartEvents"
-    />
+    <Echarts :echarts="charts" @loading="onLoading" :hooks="hooks" @event="chartEvents" />
   </div>
 </template>
 

@@ -1,9 +1,5 @@
 <template>
-  <div
-    class="flex-box-container"
-    :width="`${width}px`"
-    :style="{ '--margin': margin + 'px', height: `${height}px` }"
-  >
+  <div class="flex-box-container" :width="`${width}px`" :style="{ '--margin': margin + 'px', height: `${height}px` }">
     <div :ref="ref" class="box-container" :width="`${width}px`">
       <slot></slot>
     </div>
@@ -48,7 +44,8 @@ export default {
       this.disHeight = newHeight - this.height;
       this.height = newHeight;
 
-      childrenEl.forEach((element, index) => {
+      for (let index = 0; index < childrenEl.length; index++) {
+        const element = childrenEl[index];
         let marginRight = (index + 1) % rowBoxCount ? margin : 0;
         let marginBottom = index + 1 > (rows - 1) * rowBoxCount ? 0 : margin;
         element.setAttribute(
@@ -59,8 +56,7 @@ export default {
             margin-bottom:${marginBottom}px;
           `
         );
-      });
-
+      }
       if (this.disHeight == boxH) return;
       this.$emit("domResize", {
         width: this.width,
@@ -103,10 +99,12 @@ export default {
 .flex-box-container {
   height: 20px;
   overflow: hidden;
+
   .box-container {
     display: flex;
     flex-wrap: wrap;
-    > * {
+
+    >* {
       box-sizing: border-box;
       margin-bottom: var(--margin);
     }
