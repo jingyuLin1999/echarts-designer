@@ -24,8 +24,8 @@
       <template #logo> <span></span></template>
     </CoolNavigation> -->
     <div class="title">导航三</div>
-    <CoolNavigation class="nav3" navTitle="数字化工厂" widget="nav3" :menu="menu" :menuSize="[120, 34]" menuBgColor="#324156"
-      textColor="#EFF0F6" :internation="true" defaultActiveMenu="/dashboard">
+    <CoolNavigation class="nav3" navTitle="数字化工厂" widget="nav3" :menu="menu" :menuSize="menuSize" menuBgColor="#324156"
+      textColor="#EFF0F6" :internation="false" defaultActiveMenu="/dashboard">
     </CoolNavigation>
   </div>
 </template>
@@ -36,6 +36,7 @@ export default {
   components: { CoolNavigation },
   data() {
     return {
+      menuSize: [120, 34],
       menu: [
         {
           path: "/",
@@ -44,14 +45,14 @@ export default {
             {
               name: "dashboard",
               path: "dashboard",
-              meta: { icon: "el-icon-help", title: "设备实时OEE士大夫是否" },
+              meta: { icon: "el-icon-help", title: "设备实时OEE" },
             },
           ],
         },
         {
           path: "/oee",
           redirect: "/oee-calcu",
-          meta: { icon: "el-icon-help", title: "OEE分析sdfsfds111111111" }, // coolMenu1  OEE分析
+          meta: { icon: "el-icon-help", title: "OEE分析" }, // coolMenu1  OEE分析
           children: [
             {
               name: 'oee-shift',

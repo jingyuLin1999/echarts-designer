@@ -156,7 +156,7 @@ export default {
     display: none;
     left: 0;
     top: 100%;
-    z-index: 99999;
+    z-index: 99;
   }
 
   .menu-item-li ul ul {
@@ -170,11 +170,11 @@ export default {
     display: inline-block;
 
     :not(.menu-item) {
-      margin-top: -3px;
+      // margin-top: -3px;
     }
 
     >li:first-of-type {
-      margin-top: 2px;
+      margin-top: 1px;
     }
   }
 
@@ -211,7 +211,7 @@ export default {
     display: none;
     left: 0;
     top: 100%;
-    z-index: 9999;
+    z-index: 99;
   }
 
   .left-menu-item-li ul ul {

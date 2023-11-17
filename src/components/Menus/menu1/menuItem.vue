@@ -14,10 +14,11 @@
         onlyItem.activeMenu ? 'active-menu' : '',
       ]" @click="onClickMenu(onlyItem)">
         <div class="menu-title"
-          :style="{ width: menuSize[0] - 15 + 'px', height: menuSize[1] + 'px', lineHeight: menuSize[1] + 'px' }">
-          {{ internation ? $t(onlyItem.meta.title) : onlyItem.meta.title }}
+          :style="{ width: menuSize[0] - 15 + 'px', height: menuSize[1] + 'px', ...onlyItem.meta.style }">
+          <!--  lineHeight: menuSize[1] / 2 + 'px' -->
+          <span v-html="(internation ? $t(onlyItem.meta.title) : onlyItem.meta.title)"></span>
         </div>
-        <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
+        <SvgBorder v-if="className == 'menu-item'" :menuSize="menuSize"> </SvgBorder>
       </div>
     </router-link>
     <template v-else>
@@ -26,16 +27,15 @@
         className == 'menu-item' ? 'root-menu' : '',
         item.activeMenu ? 'active-menu' : '',
       ]">
-        <div class="menu-title"
-          :style="{ maxWidth: menuSize[0] - 15 + 'px', height: menuSize[1] + 'px', lineHeight: menuSize[1] + 'px' }">
-          {{ internation ? $t(item.meta.title) : item.meta.title }}
+        <div class="menu-title" :style="{ maxWidth: menuSize[0] - 15 + 'px', height: menuSize[1] + 'px' }">
+          <span v-html="internation ? $t(item.meta.title) : item.meta.title" :style="{ ...item.meta.style }"></span>
           <span :class="[
             'iconfont',
             'icon-arrow',
             className == 'menu-item' ? 'down-icon' : '',
           ]"></span>
         </div>
-        <SvgBorder v-if="className == 'menu-item'"> </SvgBorder>
+        <SvgBorder v-if="className == 'menu-item'" :menuSize="menuSize"> </SvgBorder>
       </div>
       <ul class="menu-item-ul sub-menu-item" v-if="item.children">
         <menuItem v-for="(child, index) in item.children" :key="index" :item="child" :internation="internation"
@@ -110,6 +110,10 @@ export default {
   white-space: nowrap;
   overflow-y: hidden;
   overflow-x: auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  // font-size: 13px;
   //user-select: none;
 
   &::-webkit-scrollbar {
