@@ -98,7 +98,7 @@ export default {
             this.hooks.responseData[this.chartData.id] = responseArr;
             this.runCode();
             // 加载完成,必须放在runCode后，因为第一个请求的参数可能会被第二个请求用到，所以需要runCode赋值后才能发起第二个请求
-            this.emit("event", 'loadSuccess', this.chartData); 
+            this.emit("event", 'loadSuccess', this.chartData);
         },
         runCode() {
             try {
@@ -130,11 +130,13 @@ export default {
         // TODO 事件拓展 
         _registerChartEvent() {
             let chartHandle = this.chartsHandle[this.chartData.id];
-            let allConfig = this.echarts;
-            chartHandle.on("click", (params) => {
-                params.allConfig = allConfig;
-                this.emitEventParams(params);
-            });
+            if (chartHandle) {
+                let allConfig = this.echarts;
+                chartHandle.on("click", (params) => {
+                    params.allConfig = allConfig;
+                    this.emitEventParams(params);
+                });
+            }
         },
         // 发送图表事件参数
         emitEventParams(params) {

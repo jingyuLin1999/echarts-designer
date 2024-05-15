@@ -3,7 +3,9 @@
 </template>
 
 <script>
+let chart = null;
 import "echarts-gl";
+import "zrender/lib/svg/svg";
 export default {
   name: "echarts-base",
   props: {
@@ -15,19 +17,19 @@ export default {
   },
   data() {
     return {
-      chart: null,
       uuid: "ed_" + Math.random().toString(16).slice(2, 12),
     };
   },
   mounted() {
     this.$nextTick(() => {
+      window.addEventListener("beforeunload", this.clearChart);
       let chartId = this.chartData.id;
       this.createChart();
       this.hooks.resize[chartId] = this.resize;
       this.hooks.redraw[chartId] = this.redraw;
       this.hooks.chartData[chartId] = this.chartData;
       this.hooks.$echart[chartId] = this.$echart;
-    })
+    });
   },
   watch: {
     "chartData.px.width"() {
@@ -44,7 +46,10 @@ export default {
       deep: true,
     },
     "echarts.theme"() {
-      if (this.chart) this.chart.dispose();
+      if (chart) {
+        chart.clear();
+        chart = null;
+      }
       this.createChart();
     },
     "chartData.attribute.padding"() {
@@ -55,44 +60,51 @@ export default {
     createChart() {
       this.$nextTick(() => {
         if (!document.getElementById(this.uuid)) return;
-        const { theme, background } = this.echarts;
-        this.chart = this.$echart.init(
-          document.getElementById(this.uuid),
-          theme
-        );
+        const { theme, background, renderType } = this.echarts;
+        chart = this.$echart.init(document.getElementById(this.uuid), theme, {
+          renderer: renderType || "canvas", // canvas  svg
+        });
         const { id, data, attribute } = this.chartData;
-        this.chart.setOption(
-          Object.assign(data, { backgroundColor: background })
-        );
+        chart.setOption(Object.assign(data, { backgroundColor: background }));
         const { alwaysShow, seriesIndex, dataIndex } = attribute.tooltip;
         if (alwaysShow) {
           setTimeout(() => {
-            this.chart.dispatchAction({
+            chart.dispatchAction({
               type: "showTip",
               seriesIndex: seriesIndex,
               dataIndex: dataIndex,
             });
           });
         }
-        this.chartsHandle[id] = this.chart;
-        this.$emit("initialized", this.chart);
+        this.chartsHandle[id] = chart;
+        this.$emit("initialized", chart);
       });
     },
     redraw() {
-      if (this.chart) {
+      if (chart) {
         const { background } = this.echarts;
         let data = Object.assign(this.chartData.data, {
           backgroundColor: background,
         });
-        this.chart.setOption(data, true);
+        chart.setOption(data, true);
       }
     },
     resize() {
-      if (this.chart) this.chart.resize();
+      if (chart) chart.resize();
+    },
+    clearChart() {
+      // 手动触发 destroy 相关的生命周期
+      this.$destroy();
     },
   },
   beforeDestroy() {
-    if (this.chart) this.chart.dispose();
+    // 清空 beforeunload 事件处理函数
+    window.removeEventListener("beforeunload", this.clearChart);
+    if (chart) {
+      // chart.dispose();
+      chart.clear();
+      chart = null;
+    }
   },
 };
 </script>

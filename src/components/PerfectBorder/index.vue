@@ -3,6 +3,7 @@
     :is="asyncComponent"
     :color="border.color"
     :reverse="border.reverse"
+    :border="border"
   >
     <slot> </slot>
   </component>

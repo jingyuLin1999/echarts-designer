@@ -580,7 +580,7 @@ export default {
   .scrollbar {
     overflow-y: auto;
     overflow-x: hidden;
-    scrollbar-width: thin;
+    // scrollbar-width: thin;
     height: var(--canvasH);
     &::-webkit-scrollbar {
       width: 0px;
