@@ -16,45 +16,20 @@ export default {
 
 <style lang="scss">
 .perfect-border {
-  --borderWidth: 2px;
-  padding: var(--borderWidth);
-  box-sizing: border-box;
   width: 100%;
   height: 100%;
 
   .box {
     width: 100%;
     height: 100%;
+    overflow: hidden;
+    padding: 1px;
+    box-sizing: border-box;
   }
 
   .border--0 {
-    width: 100%;
-    height: 100%;
-    background: #1d1f20;
-    position: relative;
-    box-sizing: border-box;
-    border-radius: var(--borderWidth);
-  }
-
-  .border--0:after {
-    content: "";
-    position: absolute;
-    top: calc(-1 * var(--borderWidth));
-    left: calc(-1 * var(--borderWidth));
-    height: calc(100% + var(--borderWidth) * 2);
-    width: calc(100% + var(--borderWidth) * 2);
-    background: linear-gradient(
-      60deg,
-      #2e6099,
-      #a166ab,
-      #5073b8,
-      #1098ad,
-      #07b39b,
-      #6fba82
-    );
-    border-radius: calc(2 * var(--borderWidth));
-    z-index: -1;
-    background-size: 300% 300%;
+    border: 2px solid #4452b4;
+    border-radius: 2px;
   }
 }
 </style>
