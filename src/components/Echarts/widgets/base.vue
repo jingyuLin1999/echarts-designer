@@ -3,9 +3,7 @@
 </template>
 
 <script>
-let chart = null;
 import "echarts-gl";
-import "zrender/lib/svg/svg";
 export default {
   name: "echarts-base",
   props: {
@@ -17,6 +15,7 @@ export default {
   },
   data() {
     return {
+      chart: null,
       uuid: "ed_" + Math.random().toString(16).slice(2, 12),
     };
   },
@@ -46,9 +45,9 @@ export default {
       deep: true,
     },
     "echarts.theme"() {
-      if (chart) {
-        chart.clear();
-        chart = null;
+      if (this.chart) {
+        this.chart.clear();
+        this.chart = null;
       }
       this.createChart();
     },
@@ -60,37 +59,37 @@ export default {
     createChart() {
       this.$nextTick(() => {
         if (!document.getElementById(this.uuid)) return;
-        const { theme, background, renderType } = this.echarts;
-        chart = this.$echart.init(document.getElementById(this.uuid), theme, {
-          renderer: renderType || "canvas", // canvas  svg
+        const { theme, background } = this.echarts;
+        this.chart = this.$echart.init(document.getElementById(this.uuid), theme, {
+          renderer: "canvas", // canvas  svg
         });
         const { id, data, attribute } = this.chartData;
-        chart.setOption(Object.assign(data, { backgroundColor: background }));
+        this.chart.setOption(Object.assign(data, { backgroundColor: background }));
         const { alwaysShow, seriesIndex, dataIndex } = attribute.tooltip;
         if (alwaysShow) {
           setTimeout(() => {
-            chart.dispatchAction({
+            this.chart.dispatchAction({
               type: "showTip",
               seriesIndex: seriesIndex,
               dataIndex: dataIndex,
             });
           });
         }
-        this.chartsHandle[id] = chart;
-        this.$emit("initialized", chart);
+        this.chartsHandle[id] = this.chart;
+        this.$emit("initialized", this.chart);
       });
     },
     redraw() {
-      if (chart) {
+      if (this.chart) {
         const { background } = this.echarts;
         let data = Object.assign(this.chartData.data, {
           backgroundColor: background,
         });
-        chart.setOption(data, true);
+        this.chart.setOption(data, true);
       }
     },
     resize() {
-      if (chart) chart.resize();
+      if (this.chart) this.chart.resize();
     },
     clearChart() {
       // 手动触发 destroy 相关的生命周期
@@ -100,10 +99,10 @@ export default {
   beforeDestroy() {
     // 清空 beforeunload 事件处理函数
     window.removeEventListener("beforeunload", this.clearChart);
-    if (chart) {
+    if (this.chart) {
       // chart.dispose();
-      chart.clear();
-      chart = null;
+      this.chart.clear();
+      this.chart = null;
     }
   },
 };
