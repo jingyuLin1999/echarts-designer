@@ -100,8 +100,8 @@ export default {
     // 清空 beforeunload 事件处理函数
     window.removeEventListener("beforeunload", this.clearChart);
     if (this.chart) {
-      // chart.dispose();
-      this.chart.clear();
+      this.chart.dispose();
+      // this.chart.clear();
       this.chart = null;
     }
   },

@@ -36,7 +36,7 @@
           </i>
         </div>
       </div>
-      <modal v-model="openSubmitModal" width="45%" height="40%" resize showFooter
+      <VxeModal v-model="openSubmitModal" width="45%" height="40%" resize showFooter
         :title="modalType == 'chart' ? '保存图表' : '保存报表'" :style="{ zIndex: 1000 }">
         <RichForm class="submit-form" :form="submitForm" :hooks="submitHooks" :schema="submitSchema"
           :values="submitValues" />
@@ -44,7 +44,7 @@
           <Button size="small" type="success" @click="sureSubmit">确定</Button>
           <Button size="small" @click="openSubmitModal = !openSubmitModal">取消</Button>
         </template>
-      </modal>
+      </VxeModal>
     </header>
     <div class="split-layout">
       <split-layout first-panel-size="220px" last-panel-size="300px" :lastPanelCanResize="false"
@@ -89,7 +89,7 @@
             <tab-pane label="属性配置" name="attribute" class="tab-pane">
               <RichForm deepValues :form="attrForm" :schema="attrSchema" :values="attrValues" :hooks="attrHooks"
                 @action="attrActions" />
-              <modal class="codding-modal" v-model="coddingModal" width="95%" height="95%" showFooter resize
+              <VxeModal class="codding-modal" v-model="coddingModal" width="95%" height="95%" showFooter resize
                 :title="codeTitle" @close="onCodeEdited">
                 <textarea id="code-textarea" v-model="codding"></textarea>
                 <template #footer>
@@ -100,7 +100,7 @@
                   <Button v-if="!isCodding" size="small" type="danger"
                     @click="toCopy(JSON.stringify(echarts))">复制</Button>
                 </template>
-              </modal>
+              </VxeModal>
             </tab-pane>
             <tab-pane label="报表排版" name="reportTree">
               <tree :data="reportTree" default-expand-all>
@@ -128,7 +128,7 @@
 </template>
 <script>
 import ClipboardJS from "clipboard";
-import { Modal } from "vxe-table";
+import { VxeModal } from "vxe-pc-ui";
 import "vxe-table/lib/style.css";
 import { mergeDeepRight } from "ramda";
 import { RichForm } from "richform";
@@ -163,7 +163,7 @@ export default {
     Icon,
     Tree,
     TabPane,
-    Modal,
+    VxeModal,
     Button,
     Message,
     MessageBox,

@@ -27,6 +27,11 @@ const routes = [
         path: '/flexbox',
         name: 'flexbox',
         component: () => import('@/demo/flexbox')
+    },
+    {
+        path: '/echart-3d',
+        name: 'echart-3d',
+        component: () => import('@/demo/echart-3d')
     }
 ]
 
