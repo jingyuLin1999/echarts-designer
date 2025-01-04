@@ -1,5 +1,5 @@
 # Echarts Designer
-弄得版本16.13.0
+node版本 14.15.4
 ## 说明
 * echarts渲染组件
   * 基于百度echarts的图表渲染器，widgets下可自定义图表子组件    
