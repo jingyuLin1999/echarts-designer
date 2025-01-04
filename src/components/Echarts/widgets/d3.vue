@@ -13,7 +13,9 @@ export default {
   name: "d3Chart",
   mixins: [BaseMixin],
   data() {
-    return {};
+    return {
+      
+    };
   },
   mounted() { },
   watch: {
