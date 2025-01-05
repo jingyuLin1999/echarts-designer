@@ -11,8 +11,12 @@ export default {
   mounted() {
     setTimeout(() => {
       // this.hooks.reloadGlobalData();
-      // console.log(this.hooks);
-    }, 1000);
+
+      this.hooks.chartData.tableId.data.tableData = [{ code: "code000", name: "name1" }];
+      console.log(this.hooks.chartData.tableId.data.tableData )
+      // this.hooks.chartData.tableId.data.tableData.push({ code: "code11", name: "name11" })
+      // console.log(this.hooks.chartData.tableId.data.tableData);
+    }, 2000);
   },
   methods: {
     onLoading(status) {
@@ -544,7 +548,7 @@ export default {
             },
           },
           {
-            id: "echarts-designer4Da3zEQ9VmjjuhLGGncnma",
+            id: "5",
             title: "饼状图",
             widget: "pie",
             listenKey: [""],
@@ -621,8 +625,8 @@ export default {
             },
           },
           {
-            id: "dtqgkHot8TZf5xcCQJ5FvG",
-            title: "柱形图",
+            id: "tableId",
+            title: "表",
             widget: "table",
             listenKey: [""],
             attribute: { name: "", padding: 0 },
@@ -722,9 +726,7 @@ export default {
 .echarts-demo-page {
   width: 100%;
   height: 100%;
-  display: flex;
-  justify-content: space-between;
+  // display: flex;
+  // justify-content: space-between;
 }
 </style>
-
-

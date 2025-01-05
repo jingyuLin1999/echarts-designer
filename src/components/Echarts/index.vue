@@ -98,7 +98,7 @@
           :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
           v-for="(item, index) in echartsList"
           :key="item.id"
-          :parent="true"
+          :parent="false"
           :active="false"
           :draggable="design"
           :resizable="design"

@@ -1,25 +1,13 @@
 <template>
   <div class="table-widget">
-    <ready-table
-      :showToolBar="chartData.data.showToolBar"
-      :showToolBtns="chartData.data.showToolBtns"
-      :colors="colors"
-      :addConfig="chartData.data.addConfig"
-      :deleteConfig="chartData.data.deleteConfig"
-      :updateConfig="chartData.data.updateConfig"
-      :selectConfig="chartData.data.selectConfig"
-      :importConfig="chartData.data.importConfig"
-      :token="chartData.data.token"
-      :defaultProp="chartData.data.defaultProp"
-      :formRules="chartData.data.formRules"
-      :hooks="tableHooks"
-      :fields="chartData.data.fields"
-      :tableData="chartData.data.tableData"
-      :showPageBar="chartData.data.showPageBar"
-      :showCheckbox="chartData.data.showCheckbox"
-      :showHeader="chartData.data.showHeader"
-      :showSeq="chartData.data.showSeq"
-    >
+    <ready-table :showToolBar="chartData.data.showToolBar" :showToolBtns="chartData.data.showToolBtns" :colors="colors"
+      :addConfig="chartData.data.addConfig" :deleteConfig="chartData.data.deleteConfig"
+      :updateConfig="chartData.data.updateConfig" :selectConfig="chartData.data.selectConfig"
+      :importConfig="chartData.data.importConfig" :token="chartData.data.token"
+      :defaultProp="chartData.data.defaultProp" :formRules="chartData.data.formRules" :hooks="tableHooks"
+      :fields="chartData.data.fields" :tableData="chartData.data.tableData" :showPageBar="chartData.data.showPageBar"
+      :showCheckbox="chartData.data.showCheckbox" :showHeader="chartData.data.showHeader"
+      :showSeq="chartData.data.showSeq">
     </ready-table>
   </div>
 </template>
@@ -34,6 +22,10 @@ export default {
     return {
       tableHooks: {},
     };
+  },
+  mounted() {
+    let chartId = this.chartData.id;
+    this.hooks.chartData[chartId] = this.chartData;
   },
   computed: {
     colors() {
@@ -89,5 +81,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>
