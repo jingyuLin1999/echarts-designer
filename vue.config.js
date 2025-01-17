@@ -39,14 +39,15 @@ module.exports = {
       "js-beautify": "js-beautify",
       "ramda": "ramda",
       "ready-table": "ready-table",
-      // "richform": "richform", // 别放开，不然报错
+      "richform": "richform", // 别放开，不然报错
       "vue-i18n": "vue-i18n",
       "vue-draggable-resizable-gorkys": "vue-draggable-resizable-gorkys",
       "vue": "vue",
       "vue-router": "vue-router",
       "vue2-perfect-scrollbar": "vue2-perfect-scrollbar",
       "vue-count-to": "vue-count-to",
-      "element-resize-detector": "element-resize-detector"
+      "element-resize-detector": "element-resize-detector",
+      "vxe-table": "vxe-table",
     } : {},
   },
   // to handle element icon error in build. 

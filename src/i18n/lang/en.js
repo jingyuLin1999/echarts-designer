@@ -3,6 +3,7 @@ export default {
     lang: "english",
     ...readyTableEnUS,
     menus: {
-        moreMenu: "More menus",
+        moreMenu: "More menu",
+        macRealtimeOee: "设备实时OEE",
     }
 }

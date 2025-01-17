@@ -4,5 +4,6 @@ export default {
     ...readyTableZhCN,
     menus: {
         moreMenu: "更多菜单",
+        macRealtimeOee: "设备实时OEE",
     }
 }

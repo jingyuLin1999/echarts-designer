@@ -45,7 +45,7 @@ export default {
             {
               name: "dashboard",
               path: "dashboard",
-              meta: { icon: "el-icon-help", title: "设备实时OEE" },
+              meta: { icon: "el-icon-help", title: "设备实时OEE" }, // menus.macRealtimeOee
             },
           ],
         },
@@ -79,7 +79,7 @@ export default {
             {
               name: "mac-history-status",
               path: "mac-history-status",
-              meta: { icon: "el-icon-help", title: "菜单十七dffffffffffffffffffffffffffff" },
+              meta: { icon: "el-icon-help", title: "menus.macRealtimeOee" },
             },
           ],
         },

@@ -3,31 +3,20 @@
     <template v-if="hasOneShowingChild(item) && onlyOneChild">
       <router-link :to="resolvePath(onlyOneChild.path)">
         <MenuItem :index="resolvePath(onlyOneChild.path)">
-          <i :class="onlyOneChild.meta.icon"></i>
-          <span slot="title">{{ menuText(onlyOneChild) }}</span>
+        <i :class="onlyOneChild.meta.icon"></i>
+        <span slot="title">{{ menuText(onlyOneChild) }}</span>
         </MenuItem>
       </router-link>
     </template>
 
-    <Submenu
-      v-else
-      ref="subMenu"
-      :index="resolvePath(item.path)"
-      popper-append-to-body
-    >
+    <Submenu v-else ref="subMenu" :index="resolvePath(item.path)" popper-append-to-body>
       <template slot="title">
         <i :class="item.meta.icon"></i>
         <span slot="title">{{ menuText(item) }}</span>
       </template>
-      <sidebar-item
-        v-for="child in item[defaultProp.children]"
-        :key="child[defaultProp.path]"
-        :item="child"
-        :base-path="resolvePath(child.path)"
-        :defaultProp="defaultProp"
-        :menuPool="menuPool"
-        class="nest-menu"
-      />
+      <sidebar-item v-for="child in item[defaultProp.children]" :key="child[defaultProp.path]" :item="child"
+        :base-path="resolvePath(child.path)" :defaultProp="defaultProp" :menuPool="menuPool" :internation="internation"
+        class="nest-menu" />
     </Submenu>
   </div>
 </template>
@@ -43,6 +32,7 @@ export default {
     basePath: { type: String, default: "" },
     defaultProp: { type: Object, default: () => ({}) }, // 字段映射关系
     menuPool: { type: Array, default: () => [] },
+    internation: { type: Boolean, default: false, } // 是否国际化
   },
   mounted() {
     this.menuPool.push(this.item);
@@ -88,7 +78,8 @@ export default {
       return path.resolve(this.basePath, routePath);
     },
     menuText(menu) {
-      return this.deepPick(this.defaultProp.title.split("."), menu);
+      const title = this.deepPick(this.defaultProp.title.split("."), menu);
+      return this.internation ? this.$t(title) : title
     },
   },
   data() {
@@ -99,5 +90,4 @@ export default {
 };
 </script>
 
-<style lang="scss">
-</style>
+<style lang="scss"></style>

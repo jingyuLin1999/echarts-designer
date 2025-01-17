@@ -1,10 +1,7 @@
 <template>
   <div class="cool-navigation-mobile" :style="injectStyles">
     <div class="navbar">
-      <span
-        class="iconfont icon-caidan-dakai open-menu-icon"
-        @click="onOpenMenu(true)"
-      ></span>
+      <span class="iconfont icon-caidan-dakai open-menu-icon" @click="onOpenMenu(true)"></span>
       <Breadcrumb separator="/">
         <BreadcrumbItem>首页</BreadcrumbItem>
         <BreadcrumbItem v-for="(item, index) in breadcrumb" :key="index">{{
@@ -15,31 +12,15 @@
 
     <div v-if="openSidebar" class="drawer-bg" @click="onOpenMenu(false)" />
 
-    <div
-      :class="['sidebar-container', openSidebar ? '' : 'hideSidebar']"
-      :style="{ background: menuBgColor || bgColor }"
-    >
+    <div :class="['sidebar-container', openSidebar ? '' : 'hideSidebar']"
+      :style="{ background: menuBgColor || bgColor }">
       <p class="logo">{{ navTitle }}</p>
       <Scrollbar wrap-class="scrollbar-wrapper">
-        <Menu
-          :default-active="activeMenu || defaultActiveMenu"
-          :collapse="false"
-          :background-color="menuBgColor || bgColor"
-          :text-color="textColor"
-          :unique-opened="false"
-          :active-text-color="activeTextColor"
-          :collapse-transition="false"
-          mode="vertical"
-          @select="onSelectMenu"
-        >
-          <sidebar-item
-            v-for="route in menu"
-            :key="route[defaultProp.path]"
-            :item="route"
-            :base-path="route[defaultProp.path]"
-            :defaultProp="defaultProp"
-            :menuPool="menuPool"
-          />
+        <Menu :default-active="activeMenu || defaultActiveMenu" :collapse="false"
+          :background-color="menuBgColor || bgColor" :text-color="textColor" :unique-opened="false"
+          :active-text-color="activeTextColor" :collapse-transition="false" mode="vertical" @select="onSelectMenu">
+          <sidebar-item v-for="route in menu" :internation="internation" :key="route[defaultProp.path]" :item="route"
+            :base-path="route[defaultProp.path]" :defaultProp="defaultProp" :menuPool="menuPool" />
         </Menu>
       </Scrollbar>
     </div>
@@ -69,6 +50,7 @@ export default {
     defaultProp: { type: Object, default: () => ({}) }, // 字段映射关系
     defaultActiveMenu: { type: String, default: "" },
     navHeight: { type: String, default: "50px" },
+    internation: { type: Boolean, default: false, } // 是否国际化
   },
   computed: {
     injectStyles() {
@@ -144,10 +126,12 @@ $sideBarWidth: 230px;
 
 .cool-navigation-mobile {
   position: relative;
+
   .el-breadcrumb__inner {
     color: var(--textColor);
   }
-  > .navbar {
+
+  >.navbar {
     height: var(--navHeight);
     padding: 0 10px;
     display: flex;
@@ -156,7 +140,8 @@ $sideBarWidth: 230px;
     box-shadow: 0 0 3px rgb(218, 216, 216);
     background: var(--bgColor);
     overflow: hidden;
-    > .open-menu-icon {
+
+    >.open-menu-icon {
       margin-right: 16px;
       font-size: 26px;
       font-weight: 550;
@@ -164,7 +149,7 @@ $sideBarWidth: 230px;
     }
   }
 
-  > .drawer-bg {
+  >.drawer-bg {
     background: #000;
     opacity: 0.3;
     width: 100%;
@@ -186,6 +171,7 @@ $sideBarWidth: 230px;
     z-index: 1001;
     overflow: hidden;
     transition: all 0.3s ease-in-out;
+
     .logo {
       width: 100%;
       height: 50px;
@@ -197,6 +183,7 @@ $sideBarWidth: 230px;
       box-sizing: border-box;
       padding: 0 15px;
     }
+
     &.hideSidebar {
       pointer-events: none;
       transform: translate3d(-$sideBarWidth, 0, 0);
@@ -218,9 +205,11 @@ $sideBarWidth: 230px;
     .el-menu {
       border-right: 0;
     }
+
     .el-menu-item {
       box-sizing: border-box;
     }
+
     .el-scrollbar {
       width: 100%;
       height: 100% !important;
