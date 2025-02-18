@@ -22,7 +22,7 @@
       defaultActiveMenu="/product/product-status"
     >
       <template #logo> <span></span></template>
-    </CoolNavigation> -->
+</CoolNavigation> -->
     <div class="title">导航三</div>
     <CoolNavigation class="nav3" navTitle="数字化工厂" widget="nav3" :menu="menu" :menuSize="menuSize" menuBgColor="#324156"
       textColor="#EFF0F6" :internation="false" defaultActiveMenu="/dashboard">
@@ -224,8 +224,21 @@ export default {
           ],
         },
         {
+          name: "export-84",
           path: "/echarts-designer",
-          meta: { icon: "el-icon-help", title: "设计器", hidden: false },
+          meta: { icon: "el-icon-help", title: "设计器233", hidden: false },
+          children: [
+            {
+              name: "export-85",
+              path: "export-85",
+              meta: { icon: "el-icon-help", title: "菜单8511111111111" },
+            },
+          ]
+        },
+        {
+          name: "export-86",
+          path: "/86menu",
+          meta: { icon: "el-icon-help", title: "86菜单", hidden: false },
         },
         { path: '*', redirect: '/', hidden: true }
       ],

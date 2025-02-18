@@ -224,9 +224,9 @@ export default {
   .left-menu-item-li:hover>ul {
     display: inline-block;
 
-    :not(.menu-item) {
-      margin-top: -3px;
-    }
+    // :not(.menu-item) {
+    //   margin-top: -3px;
+    // }
 
     >li:first-of-type {
       margin-top: 2px;
