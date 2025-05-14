@@ -86,7 +86,7 @@ export default {
                     let { method, url, params } = pathItem;
                     let queryCondition = Object.assign({ ...pathItem },
                         { params: strToObj(params), filter: cloneFilter });
-                    if (method && url && isUrl(url)) {
+                    if (method && url) { // && isUrl(url)  代理时，可能不是标准的http,可能是/api，
                         let response = await chartApi(queryCondition);
                         responseArr.push(response);
                     };

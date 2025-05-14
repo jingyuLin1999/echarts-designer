@@ -56,115 +56,57 @@
 1、子组件请在widget拓展
 -->
 <template>
-  <div
-    :id="chartId"
-    :class="[
-      'echar-wrapper',
-      'dnd-drop-wrapper',
-      design ? 'echarts--grid' : 'echarts--background',
-    ]"
-    :style="injectStyles"
-  >
+  <div :id="chartId" :class="[
+    'echar-wrapper',
+    'dnd-drop-wrapper',
+    design ? 'echarts--grid' : 'echarts--background',
+  ]" :style="injectStyles">
     <div class="scrollbar">
       <!-- 移动端 只显示，不做设计 -->
       <div class="mobile-wrapper" v-if="isMobile && !design">
-        <Field
-          class="chart-unit"
-          v-for="item in echartsList"
-          :key="item.id"
-          :chartData="item"
-          :hooks="hooks"
-          :design="design"
-          :echarts="friendEchart"
-          :isMobile="isMobile"
-          :chartsHandle="chartsHandle"
-          :context="context"
+        <Field class="chart-unit" v-for="item in echartsList" :key="item.id" :chartData="item" :hooks="hooks"
+          :design="design" :echarts="friendEchart" :isMobile="isMobile" :chartsHandle="chartsHandle" :context="context"
           :style="{
             width: item.px.width + 'px',
             height: ['form', 'card'].includes(item.widget)
               ? '100%'
               : item.px.height + 'px',
-          }"
-        >
+          }">
         </Field>
       </div>
       <!-- PC端布局 可拖动放大图表 -->
-      <div
-        class="personal-computer"
-        v-else
-        :style="{ height: design ? echarts.height + 'px' : '100%' }"
-      >
-        <vue-draggable-resizable
-          :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
-          v-for="(item, index) in echartsList"
-          :key="item.id"
-          :parent="false"
-          :active="false"
-          :draggable="design"
-          :resizable="design"
-          :x="item.px.x"
-          :y="item.px.y"
-          :z="item.px.z"
-          :w="item.px.width"
-          :h="item.px.height"
-          :snap="true"
-          :grid="[2, 2]"
-          :isConflictCheck="false"
-          @refLineParams="getRefLineParams"
-          @dragging="onDragging"
-          @resizing="onResize"
-          @activated="onActivated(item)"
-          class-name-dragging="dragging-class"
-        >
+      <div class="personal-computer" v-else :style="{ height: design ? echarts.height + 'px' : '100%' }">
+        <vue-draggable-resizable :class="['draggable-wrapper', design ? '' : 'clear-design-border']"
+          v-for="(item, index) in echartsList" :key="item.id" :parent="false" :active="false" :draggable="design"
+          :resizable="design" :x="item.px.x" :y="item.px.y" :z="item.px.z" :w="item.px.width" :h="item.px.height"
+          :snap="true" :grid="[2, 2]" :isConflictCheck="false" @refLineParams="getRefLineParams" @dragging="onDragging"
+          @resizing="onResize" @activated="onActivated(item)" class-name-dragging="dragging-class">
           <div class="tools-wrapper" v-if="design">
-            <span class="tool" @click="copyPosition(item)"
-              ><icon class="el-icon-location-outline"
-            /></span>
-            <span class="delete-echart tool" @click="deleteChart(index)"
-              ><icon class="el-icon-delete"
-            /></span>
+            <span class="tool" @click="copyPosition(item)">
+              <icon class="el-icon-location-outline" />
+            </span>
+            <span class="delete-echart tool" @click="deleteChart(index)">
+              <icon class="el-icon-delete" />
+            </span>
           </div>
-          <Field
-            :chartData="item"
-            :hooks="hooks"
-            :design="design"
-            :echarts="friendEchart"
-            :isMobile="isMobile"
-            :chartsHandle="chartsHandle"
-            :context="context"
-          />
+          <Field :chartData="item" :hooks="hooks" :design="design" :echarts="friendEchart" :isMobile="isMobile"
+            :chartsHandle="chartsHandle" :context="context" />
         </vue-draggable-resizable>
         <!--辅助线-->
-        <span
-          class="ref-line v-line"
-          v-for="item in vLine"
-          :key="item.id"
-          v-show="item.display"
-          :style="{
-            left: item.position,
-            top: item.origin,
-            height: item.lineLength,
-          }"
-        />
-        <span
-          class="ref-line h-line"
-          v-for="item in hLine"
-          :key="item.id"
-          v-show="item.display"
-          :style="{
-            top: item.position,
-            left: item.origin,
-            width: item.lineLength,
-          }"
-        />
+        <span class="ref-line v-line" v-for="item in vLine" :key="item.id" v-show="item.display" :style="{
+          left: item.position,
+          top: item.origin,
+          height: item.lineLength,
+        }" />
+        <span class="ref-line h-line" v-for="item in hLine" :key="item.id" v-show="item.display" :style="{
+          top: item.position,
+          left: item.origin,
+          width: item.lineLength,
+        }" />
         <!-- 画布点击事件 -->
-        <div
-          class="click-canvas"
-          @click="clickCanvas"
-          :style="{
-            zIndex: design ? 0 : -2,
-          }"
-        ></div>
+        <div class="click-canvas" @click="clickCanvas" :style="{
+          zIndex: design ? 0 : -2,
+        }"></div>
       </div>
     </div>
   </div>
@@ -499,8 +441,11 @@ export default {
         if (!dataSource || !dataSource.url || reqParamsErr) return;
         // 请求数据
         let { method, url, respProp } = dataSource;
-        if (!isUrl(url))
-          url = sessionStorage.getItem("report-baseUrl") + "/" + url;
+        if (!isUrl(url)) {
+          let baseUrl = sessionStorage.getItem("report-baseUrl");
+          url = baseUrl == null ? url : baseUrl + "/" + url;
+        }
+
         let payload = await chartApi({ method, url, filter: cloneFilter });
         if (payload) {
           this.hooks.responseData.globalData = this.deepPick(
@@ -562,44 +507,51 @@ export default {
 };
 </script>
 
-<style lang="scss" >
+<style lang="scss">
 .echar-wrapper {
   width: 100%;
   height: 100%;
   position: relative;
+
   &.echarts--grid {
-    background: linear-gradient(-90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px)
-        0% 0% / var(--gridW) var(--gridH),
-      linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px) 0% 0% /
-        var(--gridW) var(--gridH),
+    background: linear-gradient(-90deg, rgba(0, 0, 0, 0.1) 1px, transparent 1px) 0% 0% / var(--gridW) var(--gridH),
+      linear-gradient(rgba(0, 0, 0, 0.1) 1px, transparent 1px) 0% 0% / var(--gridW) var(--gridH),
       var(--background);
   }
+
   &.echarts--background {
     background: var(--background);
   }
+
   .scrollbar {
     overflow-y: auto;
     overflow-x: hidden;
     // scrollbar-width: thin;
     height: var(--canvasH);
+
     &::-webkit-scrollbar {
       width: 0px;
       height: 14px;
       border-radius: 2px;
     }
+
     &::-webkit-scrollbar-track {
       background: var(--theme);
     }
+
     &::-webkit-scrollbar-thumb {
       background: var(--btnBgColor);
     }
+
     &::-webkit-scrollbar-thumb:hover {
       background: var(--tableBorderColor);
     }
+
     &::-webkit-scrollbar-corner {
       background: #179a16;
     }
   }
+
   .click-canvas {
     position: absolute;
     left: 0;
@@ -608,17 +560,21 @@ export default {
     height: 100%;
     z-index: 0;
   }
+
   .dragging-class {
     border: 1px solid black;
   }
+
   .clear-design-border {
     border: 0;
   }
+
   // PC端
   .personal-computer {
     width: 100%;
     height: 100%;
     position: relative;
+
     .draggable-wrapper {
       .tools-wrapper {
         width: 95%;
@@ -631,23 +587,27 @@ export default {
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        > .tool {
+
+        >.tool {
           cursor: pointer;
           display: block;
           width: 20px;
           text-align: center;
         }
-        > .tool:hover {
+
+        >.tool:hover {
           color: #f0696d;
         }
       }
     }
   }
+
   // 移动端
   .mobile-wrapper {
     display: flex;
     flex-wrap: wrap;
     padding-left: 5px;
+
     .chart-unit {
       margin-right: 5px;
       margin-top: 5px;
